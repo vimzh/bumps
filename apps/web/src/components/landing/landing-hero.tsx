@@ -16,6 +16,24 @@ export function LandingHero() {
       <div className="mt-8">
         <UploadButton />
       </div>
+      <p className="mt-12 max-w-md text-pretty text-sm leading-relaxed text-muted-foreground">
+        {landingContent.hero.compliance.lead}{" "}
+        {landingContent.hero.compliance.standards.map((standard, index) => (
+          <span key={standard.name}>
+            {index > 0 && " and "}
+            <a
+              className="whitespace-nowrap font-mono text-foreground underline decoration-muted-foreground/50 underline-offset-4 transition-colors hover:decoration-foreground"
+              href={standard.href}
+              rel="noopener noreferrer"
+              target="_blank"
+              title={standard.fullName}
+            >
+              {standard.name}
+            </a>
+          </span>
+        ))}{" "}
+        {landingContent.hero.compliance.tail}
+      </p>
     </section>
   );
 }

@@ -10,9 +10,14 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@bumps/floor-model": "workspace:*",
+    "@google/adk": "^2.0.0",
+    "@resvg/resvg-js": "^2.6.2",
     "drizzle-orm": "^0.45.2",
     "hono": "^4.13.3",
-    "mupdf": "^1.28.0"
+    "image-size": "^2.0.2",
+    "mupdf": "^1.28.0",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@types/bun": "latest",

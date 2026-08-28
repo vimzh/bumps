@@ -8,7 +8,7 @@
     --font-heading: var(--font-geist-sans);
     --font-sans: var(--font-geist-sans);
     --font-mono: var(--font-dm-mono);
-    --font-pixel: var(--font-geist-pixel-square);
+    --font-pixel: var(--font-doto);
     --color-sidebar-ring: var(--sidebar-ring);
     --color-sidebar-border: var(--sidebar-border);
     --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -211,5 +211,10 @@
   html {
     @apply font-sans;
     font-synthesis: none;
+    }
+  /* Doto: round dots (ROND axis) + heavy weight for the Nothing-style dotted wordmark */
+  .font-pixel {
+    font-variation-settings: "ROND" 100;
+    font-weight: 900;
     }
 }

@@ -37,6 +37,8 @@ export function UploadButton() {
         throw new Error(`Upload failed with status ${response.status}`);
       }
       const { id } = (await response.json()) as { id: string };
+      // Kick off parsing right away; the map page polls for the outcome.
+      await fetch(`${API_URL}/projects/${id}/parse`, { method: "POST" });
       router.push(`/map/${id}`);
     } catch {
       setState({ kind: "error", message: landingContent.hero.upload.failed });

@@ -70,7 +70,14 @@ projectRoutes.get('/:id', async (c) => {
   if (!project) {
     return c.json({ error: 'Project not found' }, 404)
   }
-  return c.json({ createdAt: project.createdAt, id: project.id, name: project.name })
+  return c.json({
+    createdAt: project.createdAt,
+    id: project.id,
+    name: project.name,
+    parseError: project.parseError,
+    parseProgress: project.parseProgress,
+    status: project.status,
+  })
 })
 
 projectRoutes.get('/:id/plan', async (c) => {

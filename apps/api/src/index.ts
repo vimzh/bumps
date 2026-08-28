@@ -1,5 +1,7 @@
 import { Hono } from 'hono'
 import { cors } from 'hono/cors'
+import { modelRoutes } from './models'
+import { parseRoutes } from './parse'
 import { projectRoutes } from './projects'
 
 const app = new Hono()
@@ -11,5 +13,7 @@ app.get('/', (c) => {
 })
 
 app.route('/projects', projectRoutes)
+app.route('/projects', modelRoutes)
+app.route('/projects', parseRoutes)
 
 export default app
