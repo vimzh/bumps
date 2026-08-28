@@ -1,4 +1,5 @@
 export const siteContent = {
-  title: "Next.js + Hono",
-  description: "A Bun monorepo with a Next.js frontend and Hono API.",
+  title: "bumps",
+  description:
+    "Upload a floor plan, get a 3D-printable tactile map for blind navigation.",
 } as const;

@@ -1,14 +1,15 @@
 export const landingContent = {
   hero: {
-    description:
-      "Consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore.",
-    primaryAction: {
-      href: "/home",
-      label: "Try now",
+    brand: "bumps",
+    subheading: "maps you can feel",
+    tagline:
+      "Upload a floor plan, get a 3D-printable tactile map for blind navigation.",
+    upload: {
+      failed: "Upload failed. Try again.",
+      hint: "PDF, PNG, or JPG · up to 10 MB",
+      label: "Upload floor plan",
+      tooLarge: "That file is over 10 MB. Try a smaller export.",
+      uploading: "Uploading…",
     },
-    secondaryAction: {
-      label: "See demo",
-    },
-    title: "Lorem ipsum dolor sit amet",
   },
 } as const;
