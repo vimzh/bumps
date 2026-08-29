@@ -2,6 +2,7 @@
 
 import { featureKinds, type Feature } from "@bumps/floor-model";
 import {
+
   DoorOpen,
   Minus,
   Plus,
@@ -9,6 +10,7 @@ import {
   Sofa,
   Square,
   type LucideIcon,
+  Route,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -26,6 +28,7 @@ export type PlaceableKind =
   | Feature["kind"]
   | "door"
   | "furniture"
+  | "path"
   | "room"
   | "wall"
   | "window";
@@ -33,7 +36,7 @@ export type PlaceableKind =
 // Rooms, furniture, and walls are drawn (drag); everything else is a click.
 export function placeModeFor(kind: PlaceableKind): PlaceMode {
   if (kind === "room" || kind === "furniture") return "rect";
-  if (kind === "wall") return "line";
+  if (kind === "wall" || kind === "path") return "line";
   return "point";
 }
 
@@ -41,6 +44,7 @@ const STRUCTURAL: { icon: LucideIcon; kind: PlaceableKind }[] = [
   { icon: DoorOpen, kind: "door" },
   { icon: RectangleHorizontal, kind: "window" },
   { icon: Minus, kind: "wall" },
+  { icon: Route, kind: "path" },
   { icon: Square, kind: "room" },
   { icon: Sofa, kind: "furniture" },
 ];

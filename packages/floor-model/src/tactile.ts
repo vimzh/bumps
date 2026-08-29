@@ -21,13 +21,15 @@ export const plateSchema = z.object({
   marginMm: z.number().nonnegative().default(10),
 })
 
-// A raised polyline with rectangular cross-section (walls).
+// A raised polyline with rectangular cross-section. Walls are solid;
+// guide paths are dashed (BANA broken-line convention).
 export const tactileLineSchema = z.object({
   id: z.string().min(1),
   kind: z.literal('line'),
   points: z.array(pointSchema).min(2),
   widthMm: z.number().positive().default(2),
   heightMm: z.number().positive().default(RELIEF_MM.wallLine),
+  style: z.enum(['dashed', 'solid']).default('solid'),
   sourceId: z.string().nullable().default(null),
 })
 
@@ -45,7 +47,7 @@ export const tactileAreaSchema = z.object({
 export const tactileSymbolSchema = z.object({
   id: z.string().min(1),
   kind: z.literal('symbol'),
-  symbol: z.enum(['door', ...featureKinds]),
+  symbol: z.enum(['door', 'north', ...featureKinds]),
   at: pointSchema,
   rotation: z.number().default(0),
   sizeMm: z.number().positive().default(6),
@@ -53,12 +55,13 @@ export const tactileSymbolSchema = z.object({
   sourceId: z.string().nullable().default(null),
 })
 
-// A braille label: 1-2 letter key on the map, resolved via the legend.
+// A braille run on the map: usually a 1-2 letter key resolved via the
+// legend; the plate title is a longer run.
 export const brailleLabelSchema = z.object({
   id: z.string().min(1),
   kind: z.literal('braille'),
-  // Uncontracted (Grade 1) UEB text of the key, e.g. "st".
-  key: z.string().min(1).max(3),
+  // Uncontracted (Grade 1) UEB text, e.g. "st" or a title line.
+  key: z.string().min(1).max(48),
   at: pointSchema,
   sourceId: z.string().nullable().default(null),
 })

@@ -19,8 +19,8 @@ function SymbolShape({ symbol }: { symbol: TactileSymbol }) {
       return (
         <g className="fill-foreground">
           <rect height={1.2} width={s} x={-half} y={-2.4} />
-          <rect height={1.2} width={s * 0.75} x={-s * 0.375} y={-0.6} />
-          <rect height={1.2} width={s * 0.5} x={-s * 0.25} y={1.2} />
+          <rect height={1.2} width={s} x={-half} y={-0.6} />
+          <rect height={1.2} width={s} x={-half} y={1.2} />
         </g>
       );
     case "elevator":
@@ -41,12 +41,9 @@ function SymbolShape({ symbol }: { symbol: TactileSymbol }) {
       );
     case "restroom":
       return (
-        <g className="fill-foreground">
-          <rect className="fill-none stroke-foreground" height={s} strokeWidth={0.8} width={s} x={-half} y={-half} />
-          <circle cx={-1.2} cy={-1.2} r={0.6} />
-          <circle cx={1.2} cy={-1.2} r={0.6} />
-          <circle cx={-1.2} cy={1.2} r={0.6} />
-          <circle cx={1.2} cy={1.2} r={0.6} />
+        <g>
+          <circle className="fill-none stroke-foreground" r={half} strokeWidth={0.9} />
+          <circle className="fill-foreground" r={1.2} />
         </g>
       );
     case "ramp":
@@ -70,6 +67,13 @@ function SymbolShape({ symbol }: { symbol: TactileSymbol }) {
         <g className="fill-foreground">
           <rect height={1.2} width={s} x={-half} y={1} />
           <rect height={3.4} width={1.2} x={-half} y={-2.4} />
+        </g>
+      );
+    case "north":
+      return (
+        <g className="fill-foreground">
+          <path d={`M 0 ${-half} L ${-half * 0.55} ${-half + 3} L ${half * 0.55} ${-half + 3} Z`} />
+          <rect height={s - 3} width={1.2} x={-0.6} y={-half + 3} />
         </g>
       );
     case "info-point":
@@ -137,7 +141,8 @@ export function TactileViewer({ design }: TactileViewerProps) {
               fill="none"
               key={element.id}
               points={element.points.map((p) => `${p.x},${p.y}`).join(" ")}
-              strokeLinecap="square"
+              strokeDasharray={element.style === "dashed" ? "3 2" : undefined}
+              strokeLinecap={element.style === "dashed" ? "butt" : "square"}
               strokeWidth={element.widthMm}
             />
           );

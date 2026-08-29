@@ -80,13 +80,15 @@ describe('convertToTactile', () => {
   })
 
   test('walls become 2mm/1mm lines split at doorways; windows drop with a note', () => {
-    const lines = design.elements.filter((e) => e.kind === 'line')
+    const lines = design.elements.filter(
+      (e) => e.kind === 'line' && e.style === 'solid',
+    )
     // 8 walls; two corridor walls carry 2 doors each (3 segments), the
     // bottom wall 1 door (2 segments): 5 + 3 + 3 + 2 = 13 segments.
     expect(lines).toHaveLength(13)
     for (const line of lines) {
-      expect(line.widthMm).toBe(2)
-      expect(line.heightMm).toBe(1)
+      expect(line.kind === 'line' && line.widthMm).toBe(2)
+      expect(line.kind === 'line' && line.heightMm).toBe(1)
     }
     expect(notes.some((n) => n.kind === 'dropped-window')).toBe(true)
     const symbols = design.elements.filter((e) => e.kind === 'symbol')
@@ -97,8 +99,11 @@ describe('convertToTactile', () => {
   })
 
   test('labels become unique braille keys with legend entries', () => {
-    const braille = design.elements.filter((e) => e.kind === 'braille')
-    // 5 labeled rooms + 2 furniture blocks; no you-are-here marker
+    const braille = design.elements.filter(
+      (e) => e.kind === 'braille' && e.sourceId !== null,
+    )
+    // 5 labeled rooms + 2 furniture blocks; no you-are-here marker.
+    // (The plate title is a separate source-less braille run.)
     expect(braille).toHaveLength(7)
     const keys = design.legend.map((entry) => entry.key)
     expect(new Set(keys).size).toBe(keys.length)
@@ -208,6 +213,30 @@ describe('sliver-room labels', () => {
       buildValidationContext(model),
     )
     expect(violations.filter((v) => v.rule === 'label-fit')).toHaveLength(0)
+  })
+})
+
+describe('map fabric: paths, title, north', () => {
+  const { design } = convertToTactile(sampleFloorModel)
+
+  test('guide paths become dashed 1.5mm lines', () => {
+    const dashed = design.elements.filter(
+      (e) => e.kind === 'line' && e.style === 'dashed',
+    )
+    expect(dashed).toHaveLength(1)
+    expect(dashed[0]!.kind === 'line' && dashed[0]!.widthMm).toBe(1.5)
+  })
+
+  test('the plate carries a braille title when it fits', () => {
+    const title = design.elements.find((e) => e.id === 't-title')
+    expect(title).toBeDefined()
+    expect(title!.kind === 'braille' && title!.key).toBe('sample office floor')
+  })
+
+  test('a known north renders as a rotated arrow symbol', () => {
+    const north = design.elements.find((e) => e.id === 't-north')
+    expect(north).toBeDefined()
+    expect(north!.kind === 'symbol' && north!.symbol).toBe('north')
   })
 })
 

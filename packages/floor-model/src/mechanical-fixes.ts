@@ -140,7 +140,8 @@ function relocationCandidates(
   if (!movable) return []
   const xs = polygon.map((p) => p.x)
   const ys = polygon.map((p) => p.y)
-  const gap = 2
+  // Clear of any wall line running along the polygon edge.
+  const gap = 4.5
   const adjacent: Point[] = [
     { x: (Math.min(...xs) + Math.max(...xs)) / 2, y: Math.max(...ys) + gap + size.heightMm / 2 },
     { x: (Math.min(...xs) + Math.max(...xs)) / 2, y: Math.min(...ys) - gap - size.heightMm / 2 },

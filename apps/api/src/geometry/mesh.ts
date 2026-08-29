@@ -81,9 +81,10 @@ function symbolCrossSection(symbol: TactileSymbol): CrossSectionT {
     case 'door':
       return rect(s, 2)
     case 'stairs':
-      return rect(s, 1.2, 0, 2.4 - 0.6)
-        .add(rect(s * 0.75, 1.2, 0, 0))
-        .add(rect(s * 0.5, 1.2, 0, -1.8))
+      // Equal rungs — the TREPPE/ladder consensus glyph on real maps.
+      return rect(s, 1.2, 0, 1.8)
+        .add(rect(s, 1.2, 0, 0))
+        .add(rect(s, 1.2, 0, -1.8))
     case 'elevator':
       return frame(s, 1).add(CrossSection.circle(0.9, CIRCLE_SEGMENTS))
     case 'entrance':
@@ -96,18 +97,9 @@ function symbolCrossSection(symbol: TactileSymbol): CrossSectionT {
       ])
     case 'exit':
       return frame(s, 1).add(rect(s * 1.1, 1).rotate(45))
-    case 'restroom': {
-      let cs = frame(s, 0.9)
-      for (const [dx, dy] of [
-        [-1.2, -1.2],
-        [1.2, -1.2],
-        [-1.2, 1.2],
-        [1.2, 1.2],
-      ] as const) {
-        cs = cs.add(CrossSection.circle(0.6, 16).translate([dx, dy]))
-      }
-      return cs
-    }
+    case 'restroom':
+      // Circle with a center dot — the WC glyph on CCH's installed legend.
+      return ring(half, 0.9).add(CrossSection.circle(1.2, CIRCLE_SEGMENTS))
     case 'ramp':
       return ofPolysCCW([
         [
@@ -124,6 +116,15 @@ function symbolCrossSection(symbol: TactileSymbol): CrossSectionT {
       )
     case 'seating':
       return rect(s, 1.2, 0, -1.6).add(rect(1.2, 3.4, -half + 0.6, 0.1))
+    case 'north':
+      // Arrow: triangular head + shaft; rotation carries plan north.
+      return ofPolysCCW([
+        [
+          [0, half],
+          [-half * 0.55, half - 3],
+          [half * 0.55, half - 3],
+        ],
+      ]).add(rect(1.2, s - 3, 0, -1.5))
     case 'info-point':
       return ring(half, 0.8)
         .add(CrossSection.circle(0.7, 16).translate([0, 1.4]))
@@ -159,6 +160,48 @@ function lineCrossSection(points: Point[], widthMm: number, yUp: (p: Point) => P
       ],
     ])
     cs = cs ? cs.add(quad) : quad
+  }
+  return cs ?? ofPolysCCW([])
+}
+
+// BANA broken-line convention for guide paths: short raised dashes.
+const DASH_MM = 3
+const DASH_GAP_MM = 2
+
+function dashedLineCrossSection(
+  points: Point[],
+  widthMm: number,
+  yUp: (p: Point) => Point,
+): CrossSectionT {
+  let cs: CrossSectionT | null = null
+  const half = widthMm / 2
+  for (let i = 0; i < points.length - 1; i++) {
+    const a = yUp(points[i]!)
+    const b = yUp(points[i + 1]!)
+    const dx = b.x - a.x
+    const dy = b.y - a.y
+    const len = Math.hypot(dx, dy)
+    if (len === 0) continue
+    const ux = dx / len
+    const uy = dy / len
+    const nx = -uy * half
+    const ny = ux * half
+    for (let t = 0; t < len; t += DASH_MM + DASH_GAP_MM) {
+      const end = Math.min(t + DASH_MM, len)
+      const ax = a.x + ux * t
+      const ay = a.y + uy * t
+      const bx = a.x + ux * end
+      const by = a.y + uy * end
+      const quad = ofPolysCCW([
+        [
+          [ax + nx, ay + ny],
+          [ax - nx, ay - ny],
+          [bx - nx, by - ny],
+          [bx + nx, by + ny],
+        ],
+      ])
+      cs = cs ? cs.add(quad) : quad
+    }
   }
   return cs ?? ofPolysCCW([])
 }
@@ -205,7 +248,10 @@ export function buildMapMesh(design: TactileDesign): ManifoldT {
 
   for (const element of design.elements) {
     if (element.kind === 'line') {
-      const cs = lineCrossSection(element.points, element.widthMm, yUp)
+      const cs =
+        element.style === 'dashed'
+          ? dashedLineCrossSection(element.points, element.widthMm, yUp)
+          : lineCrossSection(element.points, element.widthMm, yUp)
       parts.push(Manifold.extrude(cs, element.heightMm).translate([0, 0, baseMm]))
     } else if (element.kind === 'area') {
       const cs = ofPolysCCW([

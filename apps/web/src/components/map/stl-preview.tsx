@@ -4,7 +4,12 @@ import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { STLLoader } from "three/addons/loaders/STLLoader.js";
-import { compositeSize, type Point, type TactileDesign } from "@bumps/floor-model";
+import {
+  compositeSize,
+  textBrailleSize,
+  type Point,
+  type TactileDesign,
+} from "@bumps/floor-model";
 
 // "Better view" palette: semantic colors per element type so a sighted
 // reviewer can read the plate at a glance. The print itself is monochrome.
@@ -57,9 +62,12 @@ function buildReviewColors(
   const lines = design.elements.filter((e) => e.kind === "line");
   const areas = design.elements.filter((e) => e.kind === "area");
   const symbols = design.elements.filter((e) => e.kind === "symbol");
-  const brailleAts = design.elements
+  const brailleRuns = design.elements
     .filter((e) => e.kind === "braille")
-    .map((e) => e.at);
+    .map((e) => ({
+      at: e.at,
+      size: e.kind === "braille" ? textBrailleSize(e.key) : { heightMm: 8, widthMm: 16 },
+    }));
 
   for (let i = 0; i < positions.count; i++) {
     const x = positions.getX(i);
@@ -67,15 +75,14 @@ function buildReviewColors(
     const z = positions.getZ(i);
     let color = REVIEW_COLORS.base;
     if (z > baseTop - 0.6) {
-      // Braille runs are ~15mm wide from their top-left origin.
       const nearBraille =
         z > baseTop &&
-        brailleAts.some(
-          (at) =>
+        brailleRuns.some(
+          ({ at, size }) =>
             x >= at.x - 2 &&
-            x <= at.x + 18 &&
+            x <= at.x + size.widthMm + 2 &&
             designY >= at.y - 2 &&
-            designY <= at.y + 8
+            designY <= at.y + size.heightMm + 2
         );
       if (nearBraille) {
         color = REVIEW_COLORS.braille;

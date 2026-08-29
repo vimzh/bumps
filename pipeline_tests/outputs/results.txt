@@ -34,3 +34,33 @@ rendered ../../pipeline_tests/outputs/queenmary-ours.png | valid=false | grid=2x
 20:17:55 === met-historic: upload met-plan-historic.jpg
 20:20:37 met-historic PARSE failed: Interrupted by a server restart — try again
 20:20:37 RERUN COMPLETE
+20:44:00 === fabric reparse queenscollege
+20:45:21 queenscollege REPARSED v6 rooms=32 paths=0 north=90 walls=4
+20:48:22 queenscollege TACTILE failed Layout agent returned schema-invalid output: moves: Invalid input: expected array, received undefine
+design not done: failed
+20:48:22 === fabric reparse psu
+20:51:35 psu REPARSED v2 rooms=15 paths=2 north=0 walls=0
+20:51:42 psu TACTILE valid=True grid={'cols': 1, 'rows': 1} passes=[2, 0] paths=2 title=False north=True
+rendered ../../pipeline_tests/outputs/psu-ours.png | valid=true | grid=1x1 | legend=hg=helen gordon,ps=parking structure three,uh=u honors,bl=blumel,vs=vernier science center,sr=science research and teaching center,lh=lincoln hall,ch=cramer hall,sm=smith memorial student union,pa=parking structure two,km=karl miller center,uc=urban center building,aa=academic and student recreation center,ra=richard and maurine neuberger center,fa=fourth avenue building
+20:52:07 cch-2f TACTILE valid=False grid={'cols': 2, 'rows': 1} passes=[5, 1, 1, 1, 1, 1] paths=0 title=True north=False
+rendered ../../pipeline_tests/outputs/cch-2f-ours.png | valid=false | grid=2x1 | legend=mf=main foyer hall 1,h1=hall 1,hd=hall d,he=hall e,hf=hall f,hg=hall g,hy=hall y 112,rg=rooftop garden,ch=chairs
+20:52:32 getty TACTILE valid=False grid={'cols': 1, 'rows': 1} passes=[5, 1, 1, 1, 1, 1] paths=0 title=True north=False
+rendered ../../pipeline_tests/outputs/getty-ours.png | valid=false | grid=1x1 | legend=me=museum entrance hall,co=counter
+20:53:03 met-historic TACTILE valid=False grid={'cols': 1, 'rows': 1} passes=[7, 2, 2, 2, 2, 2] paths=0 title=True north=False
+rendered ../../pipeline_tests/outputs/met-historic-ours.png | valid=false | grid=1x1 | legend=wg=west gallery,ch=central hall,eg=east gallery,sw=sculpture wing,ew=english wing,c=chairs,ta=table,de=desks
+20:53:28 queenmary TACTILE valid=False grid={'cols': 2, 'rows': 1} passes=[6, 1, 1, 1, 1, 1] paths=0 title=True north=False
+rendered ../../pipeline_tests/outputs/queenmary-ours.png | valid=false | grid=2x1 | legend=co=corridor,c=counter
+20:53:29 FABRIC RERUN COMPLETE
+20:56:17 queenscollege TACTILE valid=False grid={'cols': 1, 'rows': 1} passes=[16, 3, 3, 3, 3, 3] paths=0 title=True north=True
+rendered ../../pipeline_tests/outputs/queenscollege-ours.png | valid=false | grid=1x1 | legend=qh=queens hall,p2=ps 219 paul klapper,th=townsend harris high school,sb=science building,rl=rosenthal library,ts=the summit,fg=fitzgerald gym,rh=remsen hall,hh=honors hall,ra=razran hall,ti=tech incubator,dh=delany hall,ch=colwin hall,fh=frese hall,ph=powdermaker hall,cd=campbell dome,ah=alumni hall,di=dining hall,mb=music building,kh=klapper hall,ki=kiely hall,jh=jefferson hall,r=rathaus hall,gc=gertz center,ca=colden auditorium,k=king hall,k2=kissena hall,su=student union,st=student union parking garage,gb=g building,gt=goldstein theatre,ps=public safety,c=chairs
+20:56:25 psu TACTILE valid=True grid={'cols': 1, 'rows': 1} passes=[2, 0] paths=2 title=True north=True
+rendered ../../pipeline_tests/outputs/psu-ours.png | valid=true | grid=1x1 | legend=hg=helen gordon,ps=parking structure three,uh=u honors,bl=blumel,vs=vernier science center,sr=science research and teaching center,lh=lincoln hall,ch=cramer hall,sm=smith memorial student union,pa=parking structure two,km=karl miller center,uc=urban center building,aa=academic and student recreation center,ra=richard and maurine neuberger center,fa=fourth avenue building
+20:56:31 cch-2f TACTILE valid=True grid={'cols': 2, 'rows': 1} passes=[4, 0] paths=0 title=True north=False
+rendered ../../pipeline_tests/outputs/cch-2f-ours.png | valid=true | grid=2x1 | legend=mf=main foyer hall 1,h1=hall 1,hd=hall d,he=hall e,hf=hall f,hg=hall g,hy=hall y 112,rg=rooftop garden,ch=chairs
+20:56:38 getty TACTILE valid=True grid={'cols': 1, 'rows': 1} passes=[3, 0] paths=0 title=True north=False
+rendered ../../pipeline_tests/outputs/getty-ours.png | valid=true | grid=1x1 | legend=me=museum entrance hall,co=counter
+20:56:57 met-historic TACTILE valid=True grid={'cols': 1, 'rows': 1} passes=[6, 1, 1, 1, 0] paths=0 title=True north=False
+rendered ../../pipeline_tests/outputs/met-historic-ours.png | valid=true | grid=1x1 | legend=wg=west gallery,ch=central hall,eg=east gallery,sw=sculpture wing,ew=english wing,c=chairs,ta=table,de=desks
+20:57:04 queenmary TACTILE valid=True grid={'cols': 2, 'rows': 1} passes=[5, 0] paths=0 title=True north=False
+rendered ../../pipeline_tests/outputs/queenmary-ours.png | valid=true | grid=2x1 | legend=co=corridor,c=counter
+20:57:04 FABRIC RERUN COMPLETE

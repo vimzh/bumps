@@ -12,6 +12,7 @@ export const mapContent = {
       exit: "Exit",
       furniture: "Furniture",
       "info-point": "Info point",
+      path: "Path",
       ramp: "Ramp",
       reception: "Reception",
       restroom: "Restroom",

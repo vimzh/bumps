@@ -4,6 +4,7 @@ import {
   findElement,
   furnitureSchema,
   openingSchema,
+  pathSchema,
   pointSchema,
   roomSchema,
   wallSchema,
@@ -19,6 +20,7 @@ const elementSchema = z.discriminatedUnion('kind', [
   roomSchema,
   featureSchema,
   furnitureSchema,
+  pathSchema,
 ])
 
 export const editOperationSchema = z.discriminatedUnion('op', [
@@ -87,6 +89,7 @@ function mapElements(model: FloorModel, fn: <T>(element: T) => T): FloorModel {
     rooms: model.rooms.map(fn),
     features: model.features.map(fn),
     furniture: model.furniture.map(fn),
+    paths: (model.paths ?? []).map(fn),
   }
 }
 
@@ -112,6 +115,8 @@ export function applyOperation(
           return { ...model, rooms: [...model.rooms, element] }
         case 'furniture':
           return { ...model, furniture: [...model.furniture, element] }
+        case 'path':
+          return { ...model, paths: [...(model.paths ?? []), element] }
         default:
           return { ...model, features: [...model.features, element] }
       }
@@ -133,6 +138,12 @@ export function applyOperation(
           return {
             ...el,
             polygon: (el.polygon as Point[]).map((p) => movePoint(p, dx, dy)),
+          } as typeof element
+        }
+        if ('points' in el) {
+          return {
+            ...el,
+            points: (el.points as Point[]).map((p) => movePoint(p, dx, dy)),
           } as typeof element
         }
         return { ...el, at: movePoint(el.at as Point, dx, dy) } as typeof element
@@ -176,6 +187,17 @@ export function applyOperation(
           ),
         }
       }
+      if (element.kind === 'path') {
+        if (points.length < 2) {
+          throw new EditOperationError('Reshaping a path takes at least 2 points')
+        }
+        return {
+          ...model,
+          paths: model.paths.map((path) =>
+            path.id === element.id ? { ...path, points } : path,
+          ),
+        }
+      }
       if (points.length !== 1) {
         throw new EditOperationError('Reshaping a point element takes exactly 1 point')
       }
@@ -197,6 +219,7 @@ export function applyOperation(
         rooms: keep(model.rooms),
         features: keep(model.features),
         furniture: keep(model.furniture),
+        paths: keep(model.paths ?? []),
       }
     }
     case 'relabel': {

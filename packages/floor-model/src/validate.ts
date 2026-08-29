@@ -194,6 +194,9 @@ export function validateTactileDesign(
     }
   }
   for (const label of labels) {
+    // The plate title lives in the top margin band by design (the
+    // header zone on real plates); content margins do not apply to it.
+    if (label.id === 't-title') continue
     if (!inMargin(brailleRect(label))) {
       violations.push({
         elementIds: [label.id],
@@ -296,8 +299,17 @@ export function validateTactileDesign(
     }
   }
   for (const symbol of symbols) {
-    // Door thresholds intentionally sit on their wall.
-    if (symbol.symbol === 'door') continue
+    // Door thresholds sit on their wall by definition; entrance/exit
+    // arrows and entrance ramps mark boundary crossings, and real maps
+    // (Muckenthaler, QMH) draw them touching the boundary line.
+    if (
+      symbol.symbol === 'door' ||
+      symbol.symbol === 'entrance' ||
+      symbol.symbol === 'exit' ||
+      symbol.symbol === 'ramp'
+    ) {
+      continue
+    }
     for (const line of lines) {
       pushClearance(
         symbol.id,

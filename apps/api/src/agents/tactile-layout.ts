@@ -15,9 +15,10 @@ export const MAX_LAYOUT_ITERATIONS = 4
 // The agent may ONLY nudge braille labels and point symbols. It never touches
 // lines, sizes, or heights — the validator (deterministic code) is the only
 // authority on compliance.
-// Tolerant of model dialects: numbers may arrive as strings, and some
-// models shorten dxMm/dyMm to dx/dy.
-const layoutOutputSchema = z.object({
+// Tolerant of model dialects: numbers may arrive as strings, some models
+// shorten dxMm/dyMm to dx/dy, some return the array bare or omit it when
+// they see nothing to move.
+const layoutOutputObject = z.object({
   moves: z.array(
     z
       .object({
@@ -32,8 +33,14 @@ const layoutOutputSchema = z.object({
         dyMm: m.dyMm ?? m.dy ?? 0,
         elementId: m.elementId,
       })),
-  ),
+    )
+    .default([]),
 })
+
+const layoutOutputSchema = z.preprocess(
+  (value) => (Array.isArray(value) ? { moves: value } : value),
+  layoutOutputObject,
+)
 
 const INSTRUCTION = `You fix layout violations on a tactile map plate for blind readers.
 
@@ -53,7 +60,7 @@ export const tactileLayoutAgent = new LlmAgent({
   description: 'Nudges braille labels and symbols to clear standards violations',
   model: makeModel(MODEL_CRITICAL),
   instruction: INSTRUCTION,
-  outputSchema: layoutOutputSchema,
+  outputSchema: layoutOutputObject,
   generateContentConfig: {
     temperature: 0.1,
     thinkingConfig: { thinkingBudget: -1 },

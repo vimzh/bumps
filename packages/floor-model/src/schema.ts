@@ -72,6 +72,15 @@ export const furnitureSchema = z.object({
   confidence: confidenceSchema,
 })
 
+// Guide paths / walkways: raised broken lines on the plate (BANA guide-
+// path convention). Campus walkways, corridors' guidance lines, routes.
+export const pathSchema = z.object({
+  id: z.string().min(1),
+  kind: z.literal('path'),
+  points: z.array(pointSchema).min(2),
+  confidence: confidenceSchema,
+})
+
 export const floorModelSchema = z.object({
   schemaVersion: z.literal(1),
   // Map title, embossed on the plate edge and used in the legend.
@@ -88,6 +97,7 @@ export const floorModelSchema = z.object({
   rooms: z.array(roomSchema),
   features: z.array(featureSchema),
   furniture: z.array(furnitureSchema).default([]),
+  paths: z.array(pathSchema).default([]),
 })
 
 export type Point = z.infer<typeof pointSchema>
@@ -96,9 +106,10 @@ export type Opening = z.infer<typeof openingSchema>
 export type Room = z.infer<typeof roomSchema>
 export type Feature = z.infer<typeof featureSchema>
 export type Furniture = z.infer<typeof furnitureSchema>
+export type Path = z.infer<typeof pathSchema>
 export type FloorModel = z.infer<typeof floorModelSchema>
 
-export type FloorElement = Feature | Furniture | Opening | Room | Wall
+export type FloorElement = Feature | Furniture | Opening | Path | Room | Wall
 
 export function allElements(model: FloorModel): FloorElement[] {
   return [
@@ -106,8 +117,9 @@ export function allElements(model: FloorModel): FloorElement[] {
     ...model.openings,
     ...model.rooms,
     ...model.features,
-    // Models stored before the furniture field existed may lack it.
+    // Models stored before these fields existed may lack them.
     ...(model.furniture ?? []),
+    ...(model.paths ?? []),
   ]
 }
 

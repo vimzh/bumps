@@ -368,6 +368,21 @@ export function EditCanvas({
             transform={dragTransform(item.id)}
           />
         ))}
+        {(model.paths ?? []).map((path) => (
+          <polyline
+            className={cn(
+              "cursor-move fill-none stroke-foreground/70 [stroke-dasharray:14_10]",
+              path.confidence < NEEDS_REVIEW_THRESHOLD && "stroke-destructive",
+              selectedId === path.id && "stroke-(--color-brand)"
+            )}
+            key={path.id}
+            onPointerDown={(event) => startDrag(event, path.id, "element")}
+            points={path.points.map((p) => `${p.x},${p.y}`).join(" ")}
+            strokeLinecap="round"
+            strokeWidth={selectedId === path.id ? 10 : 7}
+            transform={dragTransform(path.id)}
+          />
+        ))}
         {model.walls.map((wall) => (
           <line
             className={cn(

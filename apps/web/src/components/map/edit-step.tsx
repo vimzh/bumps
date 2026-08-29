@@ -32,7 +32,7 @@ function newId(kind: string): string {
 }
 
 function pointElement(
-  kind: Exclude<PlaceableKind, "furniture" | "room" | "wall">,
+  kind: Exclude<PlaceableKind, "furniture" | "path" | "room" | "wall">,
   at: Point,
   model: FloorModel
 ): EditOperation & { op: "add" } {
@@ -103,6 +103,18 @@ function lineElement(
       id: newId("wall"),
       kind: "wall",
       thickness: Math.max(6, Math.round(model.plan.widthPx * 0.008)),
+    },
+  };
+}
+
+function pathElement(a: Point, b: Point): EditOperation & { op: "add" } {
+  return {
+    op: "add",
+    element: {
+      confidence: 1,
+      id: newId("path"),
+      kind: "path",
+      points: [a, b],
     },
   };
 }
@@ -289,8 +301,11 @@ export function EditStep({
                   void apply(withConfirm(id, [{ op: "move", id, dx, dy }]))
                 }
                 onPlaceLine={(a, b) => {
-                  if (placing !== "wall") return;
-                  const operation = lineElement(a, b, model);
+                  if (placing !== "wall" && placing !== "path") return;
+                  const operation =
+                    placing === "path"
+                      ? pathElement(a, b)
+                      : lineElement(a, b, model);
                   setPlacing(null);
                   void apply([operation]).then(() =>
                     setSelectedId(operation.element.id)
@@ -301,7 +316,8 @@ export function EditStep({
                     !placing ||
                     placing === "room" ||
                     placing === "furniture" ||
-                    placing === "wall"
+                    placing === "wall" ||
+                    placing === "path"
                   ) {
                     return;
                   }

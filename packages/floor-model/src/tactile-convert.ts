@@ -232,6 +232,7 @@ export function convertToTactile(model: FloorModel): ConversionResult {
         heightMm: RELIEF_MM.wallLine,
         id: segment === 1 ? `t-${wall.id}` : `t-${wall.id}-s${segment}`,
         kind: 'line',
+      style: 'solid',
         points: [
           { x: a.x + ux * from, y: a.y + uy * from },
           { x: a.x + ux * to, y: a.y + uy * to },
@@ -272,6 +273,20 @@ export function convertToTactile(model: FloorModel): ConversionResult {
     })
   }
 
+  // Guide paths / walkways -> dashed raised lines (BANA broken-line
+  // convention: distinct by touch from solid walls at the same height).
+  for (const path of model.paths ?? []) {
+    elements.push({
+      heightMm: RELIEF_MM.wallLine,
+      id: `t-${path.id}`,
+      kind: 'line',
+      points: path.points.map(toMm),
+      sourceId: path.id,
+      style: 'dashed',
+      widthMm: 1.5,
+    })
+  }
+
   // Room labels -> braille keys at room centroids + legend entries.
   // Furniture labels share the same key space; same-label blocks (a row of
   // clubbed "chairs") share one key and one legend entry.
@@ -292,8 +307,13 @@ export function convertToTactile(model: FloorModel): ConversionResult {
   ])
   // A plan with no walls (campus/site block-plans) would otherwise emit
   // nothing but floating keys; real tactile campus maps render buildings
-  // as raised blocks, so we do too.
-  const roomsAsBlocks = model.walls.length === 0 && labeledRooms.length > 0
+  // as raised blocks, so we do too. Many labeled rooms with almost no
+  // walls is the same situation with a few stray parsed segments.
+  const roomsAsBlocks =
+    labeledRooms.length > 0 &&
+    (model.walls.length === 0 ||
+      (labeledRooms.length >= 8 &&
+        model.walls.length <= labeledRooms.length / 4))
   if (roomsAsBlocks) {
     for (const room of labeledRooms) {
       elements.push({
@@ -324,7 +344,7 @@ export function convertToTactile(model: FloorModel): ConversionResult {
         size.heightMm,
         polygonMm,
         toMm(centroid(room.polygon)),
-      ) ?? adjacentRectPosition(size.widthMm, size.heightMm, polygonMm, 2)
+      ) ?? adjacentRectPosition(size.widthMm, size.heightMm, polygonMm, 4.5)
     elements.push({
       at: { x: center.x - size.widthMm / 2, y: center.y - size.heightMm / 2 },
       id: `t-label-${room.id}`,
@@ -361,7 +381,7 @@ export function convertToTactile(model: FloorModel): ConversionResult {
         size.heightMm,
         polygonMm,
         centroid(polygonMm),
-      ) ?? adjacentRectPosition(size.widthMm, size.heightMm, polygonMm, 2)
+      ) ?? adjacentRectPosition(size.widthMm, size.heightMm, polygonMm, 4.5)
     elements.push({
       at: { x: center.x - size.widthMm / 2, y: center.y - size.heightMm / 2 },
       id: `t-label-${item.id}`,
@@ -387,6 +407,54 @@ export function convertToTactile(model: FloorModel): ConversionResult {
       sourceId: marker.id,
     })
     legend.push({ key, text: 'you are here' })
+  }
+
+  // North arrow: real installed maps carry one whenever orientation is
+  // known. Bottom-right corner inside the margin; rotation = plan.north.
+  if (model.plan.north !== null) {
+    const compositeW = PLATE.widthMm * cols
+    const compositeH = PLATE.heightMm * rows
+    elements.push({
+      at: {
+        x: compositeW - PLATE.marginMm - SYMBOL_SIZE_MM,
+        y: compositeH - PLATE.marginMm - SYMBOL_SIZE_MM,
+      },
+      heightMm: RELIEF_MM.pointSymbol,
+      id: 't-north',
+      kind: 'symbol',
+      rotation: model.plan.north,
+      sizeMm: SYMBOL_SIZE_MM + 2,
+      sourceId: null,
+      symbol: 'north',
+    })
+  }
+
+  // Braille title in the top margin band — the header zone real plates
+  // use — where it cannot collide with map content. On multi-plate grids
+  // it must fit the FIRST plate (a braille run split across a seam is
+  // gibberish), so trim trailing words until it fits; skip if none fit.
+  let titleText = model.title ? sanitizeLabel(model.title) : ''
+  if (titleText.length > 0) {
+    const titleMaxW =
+      (cols > 1 ? PLATE.widthMm - 4 : PLATE.widthMm * cols) -
+      2 * PLATE.marginMm
+    while (titleText.length > 0 && textBrailleSize(titleText).widthMm > titleMaxW) {
+      const cut = titleText.lastIndexOf(' ')
+      titleText = cut > 0 ? titleText.slice(0, cut) : ''
+    }
+    if (titleText.length > 0) {
+      const titleSize = textBrailleSize(titleText)
+      elements.push({
+        at: {
+          x: PLATE.marginMm,
+          y: Math.max(1.2, (PLATE.marginMm - titleSize.heightMm) / 2),
+        },
+        id: 't-title',
+        key: titleText,
+        kind: 'braille',
+        sourceId: null,
+      })
+    }
   }
 
   const design: TactileDesign = {
