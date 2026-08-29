@@ -73,7 +73,7 @@ export async function runParseLoop(params: {
   saveIteration: (
     model: FloorModel,
     iteration: number,
-    critique: Critique,
+    critique: Critique | null,
   ) => Promise<void>
 }): Promise<void> {
   const { dimensions, onProgress, planPath, saveIteration } = params
@@ -97,12 +97,24 @@ export async function runParseLoop(params: {
 
   for (let iteration = 1; iteration <= MAX_ITERATIONS; iteration++) {
     await progress('critiquing', iteration, aggregateConfidence(model))
-    const critique = await runCritique({
-      modelJson: JSON.stringify(model),
-      planMime: plan.mimeType,
-      planPngBase64: plan.data,
-      renderPngBase64: renderModelPngBase64(model),
-    })
+    let critique: Critique
+    try {
+      critique = await runCritique({
+        modelJson: JSON.stringify(model),
+        planMime: plan.mimeType,
+        planPngBase64: plan.data,
+        renderPngBase64: renderModelPngBase64(model),
+      })
+    } catch (error) {
+      // A parse without a review beats no parse at all: keep the model,
+      // skip further refinement, and let the user review it by hand.
+      console.error(
+        '[parse-loop] critique unavailable, accepting parse as-is:',
+        error instanceof Error ? error.message.slice(0, 200) : error,
+      )
+      await saveIteration(model, iteration, null)
+      return
+    }
     // Drop adjustments pointing at ids that don't exist.
     const validIds = new Set(allElements(model).map((e) => e.id))
     critique.confidenceAdjustments = critique.confidenceAdjustments.filter(
@@ -123,11 +135,21 @@ export async function runParseLoop(params: {
       return
     }
     await progress('refining', iteration + 1, aggregate)
-    model = await refineParse(
-      planPath,
-      dimensions,
-      model,
-      JSON.stringify(critique.findings),
-    )
+    try {
+      model = await refineParse(
+        planPath,
+        dimensions,
+        model,
+        JSON.stringify(critique.findings),
+      )
+    } catch (error) {
+      // Refinement failing (quota, transient) should not lose the model
+      // we already have — the saved iteration stands.
+      console.error(
+        '[parse-loop] refinement unavailable, keeping current model:',
+        error instanceof Error ? error.message.slice(0, 200) : error,
+      )
+      return
+    }
   }
 }

@@ -19,14 +19,25 @@ export function SelectionCard({
   onDelete,
   onRelabel,
 }: SelectionCardProps) {
-  const isRoom = element.kind === "room";
-  const [label, setLabel] = useState(isRoom ? (element.label ?? "") : "");
+  const isLabeled = element.kind === "room" || element.kind === "furniture";
+  const [label, setLabel] = useState(isLabeled ? (element.label ?? "") : "");
 
   useEffect(() => {
-    setLabel(element.kind === "room" ? (element.label ?? "") : "");
+    setLabel(
+      element.kind === "room" || element.kind === "furniture"
+        ? (element.label ?? "")
+        : ""
+    );
   }, [element]);
 
   function commitLabel() {
+    if (element.kind === "furniture") {
+      const next = label.trim();
+      if (next !== "" && next !== element.label) {
+        onRelabel(element.id, next);
+      }
+      return;
+    }
     if (element.kind !== "room") return;
     const next = label.trim() === "" ? null : label.trim();
     if (next !== element.label) {
@@ -35,7 +46,7 @@ export function SelectionCard({
   }
 
   return (
-    <div className="rounded-sm border bg-card p-3">
+    <div className="p-3">
       <h2 className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
         {mapContent.edit.selectionTitle}
       </h2>
@@ -43,7 +54,7 @@ export function SelectionCard({
         {mapContent.edit.kinds[element.kind]} · {element.id} ·{" "}
         {mapContent.edit.confidencePrefix} {element.confidence.toFixed(2)}
       </p>
-      {isRoom && (
+      {isLabeled && (
         <Input
           className="mt-2 h-8 rounded-sm text-sm"
           onBlur={commitLabel}

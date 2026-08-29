@@ -101,7 +101,9 @@ describe('renderer', () => {
       expect(svg).toContain(`data-id="${id}"`)
     }
     expect(svg).toContain('>Corridor</text>')
+    expect(svg).toContain('>chairs</text>')
     const dataIds = svg.match(/data-id="/g) ?? []
-    expect(dataIds).toHaveLength(8 + 6 + 5 + 4)
+    // walls + openings + rooms + features + furniture
+    expect(dataIds).toHaveLength(8 + 6 + 5 + 4 + 2)
   })
 })

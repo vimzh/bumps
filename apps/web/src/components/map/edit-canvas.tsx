@@ -2,14 +2,24 @@
 
 import { useRef, useState } from "react";
 import {
+  findElement,
   NEEDS_REVIEW_THRESHOLD,
   type FloorModel,
   type Point,
 } from "@bumps/floor-model";
-import { FEATURE_ICON } from "@/components/map/feature-icons";
+import { FeatureGlyph } from "@/components/map/feature-glyph";
 import { cn } from "@/lib/utils";
 
 const DRAG_THRESHOLD_PX = 3;
+
+// Grid step as a "nice" number (1/2/5 × 10^n) sized to the plan.
+function niceStep(raw: number): number {
+  const pow = 10 ** Math.floor(Math.log10(Math.max(raw, 1)));
+  for (const m of [1, 2, 5, 10]) {
+    if (m * pow >= raw) return m * pow;
+  }
+  return 10 * pow;
+}
 
 type DragState = {
   id: string;
@@ -22,13 +32,19 @@ type DragState = {
   vertexIndex: number;
 };
 
+// How a pending placement is drawn: point kinds click, rooms/furniture
+// drag corner-to-corner, walls drag end-to-end.
+export type PlaceMode = "line" | "point" | "rect";
+
 type EditCanvasProps = {
   model: FloorModel;
-  onCanvasClick: (at: Point) => void;
+  onPlaceLine: (a: Point, b: Point) => void;
+  onPlacePoint: (at: Point) => void;
+  onPlaceRect: (a: Point, b: Point) => void;
   onMove: (id: string, dx: number, dy: number) => void;
   onReshape: (id: string, points: Point[]) => void;
   onSelect: (id: string | null) => void;
-  placing: boolean;
+  placing: PlaceMode | null;
   selectedId: string | null;
 };
 
@@ -42,8 +58,10 @@ function centroid(polygon: Point[]): Point {
 
 export function EditCanvas({
   model,
-  onCanvasClick,
   onMove,
+  onPlaceLine,
+  onPlacePoint,
+  onPlaceRect,
   onReshape,
   onSelect,
   placing,
@@ -52,8 +70,12 @@ export function EditCanvas({
   const containerRef = useRef<HTMLDivElement>(null);
   const [drag, setDrag] = useState<DragState | null>(null);
   const [delta, setDelta] = useState<Point>({ x: 0, y: 0 });
+  const [draw, setDraw] = useState<{ end: Point; start: Point } | null>(null);
 
   const { heightPx, widthPx } = model.plan;
+  const gridStep = niceStep(widthPx / 60);
+  const gridMajor = gridStep * 5;
+  const snap = (value: number) => Math.round(value / gridStep) * gridStep;
 
   function toPlan(clientX: number, clientY: number): Point {
     const rect = containerRef.current!.getBoundingClientRect();
@@ -79,7 +101,11 @@ export function EditCanvas({
   ) {
     if (placing) return;
     event.stopPropagation();
-    event.currentTarget.setPointerCapture(event.pointerId);
+    try {
+      event.currentTarget.setPointerCapture(event.pointerId);
+    } catch {
+      // Capture is a nicety; selection and drags still work without it.
+    }
     setDrag({
       id,
       kind,
@@ -93,6 +119,11 @@ export function EditCanvas({
   }
 
   function handlePointerMove(event: React.PointerEvent) {
+    if (draw) {
+      const at = toPlan(event.clientX, event.clientY);
+      setDraw({ ...draw, end: { x: snap(at.x), y: snap(at.y) } });
+      return;
+    }
     if (!drag || event.pointerId !== drag.pointerId) return;
     const dx = event.clientX - drag.startX;
     const dy = event.clientY - drag.startY;
@@ -106,10 +137,56 @@ export function EditCanvas({
     setDelta(planDelta(dx, dy));
   }
 
+  // Live-snapped delta for the dragged element, anchored so the element's
+  // reference point lands on grid intersections while dragging.
+  function snappedDelta(id: string): Point {
+    const element = findElement(model, id);
+    const anchor =
+      element && "at" in element
+        ? element.at
+        : element && "a" in element
+          ? element.a
+          : element && "polygon" in element
+            ? element.polygon[0]!
+            : { x: 0, y: 0 };
+    return {
+      x: snap(anchor.x + delta.x) - anchor.x,
+      y: snap(anchor.y + delta.y) - anchor.y,
+    };
+  }
+
+  // Wall endpoints get an orthogonality assist: near-aligned snaps to
+  // axis-aligned, since slanted walls are rare and usually mistakes.
+  function wallVertexPosition(
+    wall: { a: Point; b: Point },
+    index: number,
+    d: Point
+  ): Point {
+    const moved = index === 0 ? wall.a : wall.b;
+    const other = index === 0 ? wall.b : wall.a;
+    const p = { x: snap(moved.x + d.x), y: snap(moved.y + d.y) };
+    if (Math.abs(p.x - other.x) <= gridStep) p.x = other.x;
+    if (Math.abs(p.y - other.y) <= gridStep) p.y = other.y;
+    return p;
+  }
+
   function handlePointerUp(event: React.PointerEvent) {
+    if (draw) {
+      const { end, start } = draw;
+      setDraw(null);
+      const big =
+        Math.abs(end.x - start.x) >= gridStep &&
+        Math.abs(end.y - start.y) >= gridStep;
+      const long =
+        Math.hypot(end.x - start.x, end.y - start.y) >= gridStep * 2;
+      if (placing === "rect" && big) onPlaceRect(start, end);
+      if (placing === "line" && long) onPlaceLine(start, end);
+      return;
+    }
     if (!drag || event.pointerId !== drag.pointerId) return;
     const { id, kind, moved, vertexIndex } = drag;
-    const finalDelta = delta;
+    const finalDelta = snappedDelta(id);
+    const rawDelta = delta;
     setDrag(null);
     setDelta({ x: 0, y: 0 });
     if (!moved) {
@@ -117,43 +194,57 @@ export function EditCanvas({
       return;
     }
     if (kind === "element") {
-      onMove(id, Math.round(finalDelta.x), Math.round(finalDelta.y));
+      onMove(id, finalDelta.x, finalDelta.y);
       return;
     }
-    // Vertex drag → reshape with the updated point set.
+    // Vertex drag → reshape with the updated, grid-snapped point.
     const wall = model.walls.find((w) => w.id === id);
     if (wall) {
       const points = [wall.a, wall.b].map((p, i) =>
-        i === vertexIndex
-          ? { x: Math.round(p.x + finalDelta.x), y: Math.round(p.y + finalDelta.y) }
-          : p
+        i === vertexIndex ? wallVertexPosition(wall, i, rawDelta) : p
       );
       onReshape(id, points);
       return;
     }
-    const room = model.rooms.find((r) => r.id === id);
-    if (room) {
-      const points = room.polygon.map((p, i) =>
+    const polyOwner =
+      model.rooms.find((r) => r.id === id) ??
+      model.furniture.find((f) => f.id === id);
+    if (polyOwner) {
+      const points = polyOwner.polygon.map((p, i) =>
         i === vertexIndex
-          ? { x: Math.round(p.x + finalDelta.x), y: Math.round(p.y + finalDelta.y) }
+          ? { x: snap(p.x + rawDelta.x), y: snap(p.y + rawDelta.y) }
           : p
       );
       onReshape(id, points);
     }
   }
 
-  const dragTransform = (id: string) =>
-    drag?.kind === "element" && drag.id === id && drag.moved
-      ? `translate(${delta.x} ${delta.y})`
-      : undefined;
+  const dragTransform = (id: string) => {
+    if (!(drag?.kind === "element" && drag.id === id && drag.moved)) {
+      return undefined;
+    }
+    const d = snappedDelta(id);
+    return `translate(${d.x} ${d.y})`;
+  };
 
-  const vertexPreview = (id: string, index: number, point: Point): Point =>
-    drag?.kind === "vertex" && drag.id === id && drag.vertexIndex === index
-      ? { x: point.x + delta.x, y: point.y + delta.y }
-      : point;
+  const vertexPreview = (
+    id: string,
+    index: number,
+    point: Point,
+    wall?: { a: Point; b: Point }
+  ): Point => {
+    if (
+      !(drag?.kind === "vertex" && drag.id === id && drag.vertexIndex === index)
+    ) {
+      return point;
+    }
+    if (wall) return wallVertexPosition(wall, index, delta);
+    return { x: snap(point.x + delta.x), y: snap(point.y + delta.y) };
+  };
 
   const selectedWall = model.walls.find((w) => w.id === selectedId);
   const selectedRoom = model.rooms.find((r) => r.id === selectedId);
+  const selectedFurniture = model.furniture.find((f) => f.id === selectedId);
 
   const position = (point: Point) => ({
     left: `${(point.x / widthPx) * 100}%`,
@@ -163,13 +254,20 @@ export function EditCanvas({
   return (
     <div
       className={cn(
-        "relative touch-none overflow-hidden bg-card",
+        "relative touch-none overflow-hidden bg-white",
         placing ? "cursor-crosshair" : "cursor-default"
       )}
       onClick={(event) => {
-        if (placing) {
+        if (placing === "point") {
           const at = toPlan(event.clientX, event.clientY);
-          onCanvasClick({ x: Math.round(at.x), y: Math.round(at.y) });
+          onPlacePoint({ x: snap(at.x), y: snap(at.y) });
+        }
+      }}
+      onPointerDown={(event) => {
+        if (placing === "rect" || placing === "line") {
+          const at = toPlan(event.clientX, event.clientY);
+          const start = { x: snap(at.x), y: snap(at.y) };
+          setDraw({ end: start, start });
         }
       }}
       onPointerMove={handlePointerMove}
@@ -187,13 +285,47 @@ export function EditCanvas({
         preserveAspectRatio="none"
         viewBox={`0 0 ${widthPx} ${heightPx}`}
       >
-        {/* Background hit area for deselect */}
+        <defs>
+          <pattern
+            height={gridStep}
+            id="edit-grid-fine"
+            patternUnits="userSpaceOnUse"
+            width={gridStep}
+          >
+            <path
+              className="stroke-foreground/8"
+              d={`M ${gridStep} 0 L 0 0 0 ${gridStep}`}
+              fill="none"
+              strokeWidth={gridStep * 0.03}
+            />
+          </pattern>
+          <pattern
+            height={gridMajor}
+            id="edit-grid-major"
+            patternUnits="userSpaceOnUse"
+            width={gridMajor}
+          >
+            <path
+              className="stroke-foreground/15"
+              d={`M ${gridMajor} 0 L 0 0 0 ${gridMajor}`}
+              fill="none"
+              strokeWidth={gridStep * 0.05}
+            />
+          </pattern>
+        </defs>
+        {/* Grid + background hit area for deselect */}
         <rect
-          fill="transparent"
+          fill="url(#edit-grid-fine)"
           height={heightPx}
           onClick={() => {
             if (!placing) onSelect(null);
           }}
+          width={widthPx}
+        />
+        <rect
+          className="pointer-events-none"
+          fill="url(#edit-grid-major)"
+          height={heightPx}
           width={widthPx}
         />
         {model.rooms.map((room) => (
@@ -214,6 +346,26 @@ export function EditCanvas({
                 : 2
             }
             transform={dragTransform(room.id)}
+          />
+        ))}
+        {model.furniture.map((item) => (
+          <polygon
+            className={cn(
+              "cursor-move fill-muted-foreground/25 stroke-muted-foreground",
+              item.confidence < NEEDS_REVIEW_THRESHOLD &&
+                "stroke-destructive [stroke-dasharray:6_5]",
+              selectedId === item.id && "fill-accent stroke-foreground"
+            )}
+            key={item.id}
+            onPointerDown={(event) => startDrag(event, item.id, "element")}
+            points={item.polygon.map((p) => `${p.x},${p.y}`).join(" ")}
+            strokeWidth={
+              selectedId === item.id ||
+              item.confidence < NEEDS_REVIEW_THRESHOLD
+                ? 3
+                : 1.5
+            }
+            transform={dragTransform(item.id)}
           />
         ))}
         {model.walls.map((wall) => (
@@ -255,10 +407,50 @@ export function EditCanvas({
             transform={dragTransform(opening.id)}
           />
         ))}
+        {model.features.map((feature) => {
+          const dragging =
+            drag?.kind === "element" && drag.id === feature.id && drag.moved;
+          const d = dragging ? snappedDelta(feature.id) : { x: 0, y: 0 };
+          const at = { x: feature.at.x + d.x, y: feature.at.y + d.y };
+          const s = Math.max(20, widthPx * 0.03);
+          const flagged = feature.confidence < NEEDS_REVIEW_THRESHOLD;
+          return (
+            <g
+              className={cn(
+                "cursor-move",
+                flagged
+                  ? "text-destructive"
+                  : feature.kind === "you-are-here"
+                    ? "text-(--color-brand)"
+                    : "text-foreground",
+                selectedId === feature.id && "text-(--color-brand)"
+              )}
+              key={feature.id}
+              onPointerDown={(event) => startDrag(event, feature.id, "element")}
+              transform={`translate(${at.x} ${at.y})`}
+            >
+              {/* Invisible hit area so thin linework stays easy to grab */}
+              <circle fill="transparent" r={s * 0.8} />
+              {(flagged || selectedId === feature.id) && (
+                <circle
+                  className="fill-none stroke-current"
+                  r={s * 0.85}
+                  strokeDasharray={flagged ? "5 4" : undefined}
+                  strokeWidth={s * 0.06}
+                />
+              )}
+              <FeatureGlyph
+                kind={feature.kind}
+                rotation={feature.rotation}
+                size={s}
+              />
+            </g>
+          );
+        })}
         {/* Vertex handles for the selected wall or room */}
         {selectedWall &&
           [selectedWall.a, selectedWall.b].map((point, index) => {
-            const p = vertexPreview(selectedWall.id, index, point);
+            const p = vertexPreview(selectedWall.id, index, point, selectedWall);
             return (
               <circle
                 className="cursor-grab fill-background stroke-foreground"
@@ -290,6 +482,45 @@ export function EditCanvas({
               />
             );
           })}
+        {selectedFurniture &&
+          selectedFurniture.polygon.map((point, index) => {
+            const p = vertexPreview(selectedFurniture.id, index, point);
+            return (
+              <circle
+                className="cursor-grab fill-background stroke-foreground"
+                cx={p.x}
+                cy={p.y}
+                key={`fhandle-${index}`}
+                onPointerDown={(event) =>
+                  startDrag(event, selectedFurniture.id, "vertex", index)
+                }
+                r={10}
+                strokeWidth={3}
+              />
+            );
+          })}
+        {draw && placing === "rect" && (
+          <rect
+            className="fill-(--color-brand)/10 stroke-(--color-brand)"
+            height={Math.abs(draw.end.y - draw.start.y)}
+            strokeDasharray="8 6"
+            strokeWidth={3}
+            width={Math.abs(draw.end.x - draw.start.x)}
+            x={Math.min(draw.start.x, draw.end.x)}
+            y={Math.min(draw.start.y, draw.end.y)}
+          />
+        )}
+        {draw && placing === "line" && (
+          <line
+            className="stroke-(--color-brand)"
+            strokeDasharray="8 6"
+            strokeWidth={6}
+            x1={draw.start.x}
+            x2={draw.end.x}
+            y1={draw.start.y}
+            y2={draw.end.y}
+          />
+        )}
       </svg>
       {model.rooms
         .filter((room) => room.label !== null)
@@ -302,30 +533,16 @@ export function EditCanvas({
             {room.label}
           </span>
         ))}
-      {model.features.map((feature) => {
-        const Icon = FEATURE_ICON[feature.kind];
-        const dragging =
-          drag?.kind === "element" && drag.id === feature.id && drag.moved;
-        const at = dragging
-          ? { x: feature.at.x + delta.x, y: feature.at.y + delta.y }
-          : feature.at;
-        return (
-          <span
-            className={cn(
-              "absolute flex size-7 -translate-x-1/2 -translate-y-1/2 cursor-move items-center justify-center rounded-sm border bg-background text-foreground",
-              feature.confidence < NEEDS_REVIEW_THRESHOLD &&
-                "border-dashed border-destructive text-destructive",
-              selectedId === feature.id && "border-2 border-foreground"
-            )}
-            key={feature.id}
-            onPointerDown={(event) => startDrag(event, feature.id, "element")}
-            style={position(at)}
-            title={feature.kind}
-          >
-            <Icon aria-label={feature.kind} className="size-4" />
-          </span>
-        );
-      })}
+      {model.furniture.map((item) => (
+        <span
+          className="pointer-events-none absolute -translate-x-1/2 -translate-y-1/2 font-mono text-[10px] text-foreground/70"
+          key={`label-${item.id}`}
+          style={position(centroid(item.polygon))}
+          title={item.label}
+        >
+          {item.label}
+        </span>
+      ))}
     </div>
   );
 }

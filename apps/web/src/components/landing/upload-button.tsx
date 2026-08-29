@@ -7,7 +7,7 @@ import { landingContent } from "@/data/landing";
 import { API_URL } from "@/lib/api";
 import { cn } from "@/lib/utils";
 
-const ACCEPTED_TYPES = ".pdf,.png,.jpg,.jpeg";
+const ACCEPTED_TYPES = ".pdf,.png,.jpg,.jpeg,.webp";
 const MAX_UPLOAD_BYTES = 10 * 1024 * 1024;
 
 type UploadState =

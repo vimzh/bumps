@@ -23,6 +23,12 @@ async function latestModelRow(projectId: string) {
   })
 }
 
+// Stored models predate schema additions (e.g. furniture); re-parsing
+// applies defaults so every model leaving the API is current-shape.
+function normalizeModel(raw: unknown): FloorModel {
+  return floorModelSchema.parse(raw)
+}
+
 async function projectExists(projectId: string) {
   const project = await db.query.projects.findFirst({
     where: eq(projects.id, projectId),
@@ -71,7 +77,7 @@ modelRoutes.get('/:id/model', async (c) => {
   return c.json({
     critique: row.critique,
     iteration: row.iteration,
-    model: row.model,
+    model: normalizeModel(row.model),
     version: row.version,
   })
 })
@@ -106,7 +112,7 @@ modelRoutes.post('/:id/model/operations', async (c) => {
   }
   let next: FloorModel
   try {
-    next = applyOperations(latest.model as FloorModel, parsed.data.operations)
+    next = applyOperations(normalizeModel(latest.model), parsed.data.operations)
   } catch (error) {
     if (error instanceof EditOperationError) {
       return c.json({ error: error.message }, 422)
@@ -144,7 +150,7 @@ modelRoutes.post('/:id/model/edit', async (c) => {
   let result
   try {
     result = await runEditAgent({
-      model: latest.model as FloorModel,
+      model: normalizeModel(latest.model),
       prompt: body.data.prompt,
       selectedId: body.data.selectedId ?? null,
     })
@@ -163,7 +169,7 @@ modelRoutes.post('/:id/model/edit', async (c) => {
   let next: FloorModel
   try {
     next = floorModelSchema.parse(
-      applyOperations(latest.model as FloorModel, result.operations),
+      applyOperations(normalizeModel(latest.model), result.operations),
     )
   } catch (error) {
     if (error instanceof EditOperationError) {
@@ -193,6 +199,6 @@ modelRoutes.get('/:id/model/svg', async (c) => {
   if (!row) {
     return c.json({ error: 'No floor model for this project' }, 404)
   }
-  const svg = renderFloorModelSvg(row.model as FloorModel)
+  const svg = renderFloorModelSvg(normalizeModel(row.model))
   return c.body(svg, 200, { 'Content-Type': 'image/svg+xml' })
 })

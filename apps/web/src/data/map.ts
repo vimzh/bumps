@@ -10,6 +10,7 @@ export const mapContent = {
       elevator: "Elevator",
       entrance: "Entrance",
       exit: "Exit",
+      furniture: "Furniture",
       "info-point": "Info point",
       ramp: "Ramp",
       reception: "Reception",
@@ -23,6 +24,7 @@ export const mapContent = {
     },
     labelPlaceholder: "Room label",
     nextLabel: "Next",
+    paletteDragHint: "Drag on the map to draw it.",
     paletteHint: "Click the map to place it.",
     paletteTitle: "Add",
     prompt: {
@@ -69,6 +71,9 @@ export const mapContent = {
     tactile: "Tactile",
   },
   export: {
+    betterViewHint:
+      "Colors walls, braille, symbols, and blocks for sighted review — the print itself is one color.",
+    betterViewLabel: "Better view",
     blocked: "Export blocked — the design still has violations.",
     downloadLegend: "Download legend STL",
     downloadMap: "Download map STL",

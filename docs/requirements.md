@@ -12,7 +12,7 @@ Product brief: [idea.md](idea.md). This doc locks the tech stack and the submiss
 
 | Layer | Choice | Why / hackathon rule it satisfies |
 |---|---|---|
-| Model | **Gemini 3.5 Flash** (via Vertex AI), tiered by criticality: **max thinking budget** for ParserAgent + TactileAgent, low/none for EditAgent | Required: Gemini 3.5 Flash or newer. Gemini 3.5 Pro is not GA as of Aug 2026 (and 3.1 Pro is older than the required floor), so thinking budget is how we buy intelligence for critical calls. Model IDs are env vars — swap critical calls to 3.5 Pro if it ships before the deadline |
+| Model | **Gemini 3.6 Flash via the GA Interactions API** (default; env-selectable — `MODEL_CRITICAL`/`MODEL_FAST`/`USE_INTERACTIONS_API`), tiered thinking budgets by criticality | Required: Gemini 3.5 Flash **or newer** — 3.6 qualifies. Newer flash models are served only on the Interactions API, whose free-tier quota bucket is separate from the legacy endpoint's (3.5-flash free tier is 20 requests/day — too tight for the agent loops). The Interactions path doesn't enforce response schemas server-side, so agents carry JSON-only instructions + code-side extraction/validation with bounded re-asks |
 | Agent framework | **Google ADK for TypeScript** (`@google/adk`) — ParserAgent, EditAgent, TactileAgent, ValidatorAgent | Required: ≥1 Google framework; official Google release, keeps the whole repo TypeScript |
 | Cloud infra | **Google Cloud Run** — two services: `web` and `api` | Required: ≥1 GCP infra service; demo video must prove this deployment |
 | Web app | **Next.js (App Router) + shadcn/ui** (existing starter `apps/web`): minimal landing, wizard UI, canvas editor, three.js STL preview | Repo convention |

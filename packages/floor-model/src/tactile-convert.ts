@@ -16,9 +16,12 @@ export const PLATE = { baseMm: 3, heightMm: 200, marginMm: 10, widthMm: 200 } as
 const MIN_WALL_LENGTH_MM = 3
 const WALL_WIDTH_MM = 2
 const SYMBOL_SIZE_MM = 6
+// Doorways read as gaps in the wall line (standard tactile practice);
+// a gap must be wide enough for a fingertip to find it.
+const MIN_DOOR_GAP_MM = 6
 
 export type ConversionNote = {
-  kind: 'dropped-wall' | 'dropped-window' | 'short-label'
+  kind: 'dropped-wall' | 'dropped-window' | 'label-skipped' | 'short-label'
   elementId: string
   message: string
 }
@@ -34,6 +37,7 @@ function contentBounds(model: FloorModel) {
   for (const room of model.rooms) points.push(...room.polygon)
   for (const opening of model.openings) points.push(opening.at)
   for (const feature of model.features) points.push(feature.at)
+  for (const item of model.furniture) points.push(...item.polygon)
   if (points.length === 0) {
     return { maxX: model.plan.widthPx, maxY: model.plan.heightPx, minX: 0, minY: 0 }
   }
@@ -43,6 +47,22 @@ function contentBounds(model: FloorModel) {
     minX: Math.min(...points.map((p) => p.x)),
     minY: Math.min(...points.map((p) => p.y)),
   }
+}
+
+function distPointToSegment(p: Point, a: Point, b: Point): number {
+  const abx = b.x - a.x
+  const aby = b.y - a.y
+  const lengthSq = abx * abx + aby * aby
+  const t =
+    lengthSq === 0
+      ? 0
+      : Math.max(0, Math.min(1, ((p.x - a.x) * abx + (p.y - a.y) * aby) / lengthSq))
+  return Math.hypot(p.x - (a.x + t * abx), p.y - (a.y + t * aby))
+}
+
+// How far (plan px) a door may sit from a wall and still belong to it.
+function candidateThreshold(wall: Wall, doorWidth: number): number {
+  return wall.thickness / 2 + doorWidth / 2
 }
 
 function centroid(polygon: Point[]): Point {
@@ -106,7 +126,36 @@ export function convertToTactile(model: FloorModel): ConversionResult {
   const elements: TactileElement[] = []
   const legend: LegendEntry[] = []
 
-  // Walls -> raised lines (drop sub-threshold fragments rather than shrink).
+  // Associate every door with a wall: declared wallId first, else the
+  // nearest wall the door actually sits on.
+  const doors = model.openings.filter((o) => o.kind === 'door')
+  const doorsByWall = new Map<string, typeof doors>()
+  for (const door of doors) {
+    let wall = door.wallId
+      ? model.walls.find((w): w is Wall => w.id === door.wallId)
+      : undefined
+    if (!wall) {
+      let best = Number.POSITIVE_INFINITY
+      for (const candidate of model.walls) {
+        const d = distPointToSegment(door.at, candidate.a, candidate.b)
+        if (d < best) {
+          best = d
+          wall = candidate
+        }
+      }
+      // Only adopt a wall the door is plausibly on.
+      if (wall && best > candidateThreshold(wall, door.width)) wall = undefined
+    }
+    if (wall) {
+      const list = doorsByWall.get(wall.id) ?? []
+      list.push(door)
+      doorsByWall.set(wall.id, list)
+    }
+  }
+
+  // Walls -> raised lines with a GAP at every doorway (standard tactile
+  // practice: a break in the wall line reads as "door here"). Sub-threshold
+  // fragments are dropped rather than shrunk.
   for (const wall of model.walls) {
     const a = toMm(wall.a)
     const b = toMm(wall.b)
@@ -119,18 +168,43 @@ export function convertToTactile(model: FloorModel): ConversionResult {
       })
       continue
     }
-    elements.push({
-      heightMm: RELIEF_MM.wallLine,
-      id: `t-${wall.id}`,
-      kind: 'line',
-      points: [a, b],
-      sourceId: wall.id,
-      widthMm: WALL_WIDTH_MM,
-    })
+    const ux = (b.x - a.x) / lengthMm
+    const uy = (b.y - a.y) / lengthMm
+    // Door positions as [start, end] intervals along the wall axis (mm).
+    const gaps = (doorsByWall.get(wall.id) ?? [])
+      .map((door) => {
+        const at = toMm(door.at)
+        const s = (at.x - a.x) * ux + (at.y - a.y) * uy
+        const half = Math.max(door.width * mmPerPx, MIN_DOOR_GAP_MM) / 2
+        return [Math.max(0, s - half), Math.min(lengthMm, s + half)] as const
+      })
+      .filter(([s0, s1]) => s1 > 0 && s0 < lengthMm)
+      .sort((g, h) => g[0] - h[0])
+    let cursor = 0
+    let segment = 0
+    const pushSegment = (from: number, to: number) => {
+      if (to - from < MIN_WALL_LENGTH_MM) return
+      segment += 1
+      elements.push({
+        heightMm: RELIEF_MM.wallLine,
+        id: segment === 1 ? `t-${wall.id}` : `t-${wall.id}-s${segment}`,
+        kind: 'line',
+        points: [
+          { x: a.x + ux * from, y: a.y + uy * from },
+          { x: a.x + ux * to, y: a.y + uy * to },
+        ],
+        sourceId: wall.id,
+        widthMm: WALL_WIDTH_MM,
+      })
+    }
+    for (const [s0, s1] of gaps) {
+      pushSegment(cursor, s0)
+      cursor = Math.max(cursor, s1)
+    }
+    pushSegment(cursor, lengthMm)
   }
 
-  // Doors -> threshold-bar symbols oriented along their wall; windows are
-  // not navigation-relevant on a tactile map and are dropped with a note.
+  // Windows are not navigation-relevant on a tactile map: dropped with a note.
   for (const opening of model.openings) {
     if (opening.kind === 'window') {
       notes.push({
@@ -138,24 +212,7 @@ export function convertToTactile(model: FloorModel): ConversionResult {
         kind: 'dropped-window',
         message: `Window ${opening.id} omitted (not navigation-relevant)`,
       })
-      continue
     }
-    const wall = opening.wallId
-      ? model.walls.find((w): w is Wall => w.id === opening.wallId)
-      : undefined
-    const rotation = wall
-      ? (Math.atan2(wall.b.y - wall.a.y, wall.b.x - wall.a.x) * 180) / Math.PI
-      : 0
-    elements.push({
-      at: toMm(opening.at),
-      heightMm: RELIEF_MM.pointSymbol,
-      id: `t-${opening.id}`,
-      kind: 'symbol',
-      rotation,
-      sizeMm: SYMBOL_SIZE_MM,
-      sourceId: opening.id,
-      symbol: 'door',
-    })
   }
 
   // Features -> standardized point symbols.
@@ -173,11 +230,23 @@ export function convertToTactile(model: FloorModel): ConversionResult {
   }
 
   // Room labels -> braille keys at room centroids + legend entries.
+  // Furniture labels share the same key space; same-label blocks (a row of
+  // clubbed "chairs") share one key and one legend entry.
   const labeledRooms = model.rooms.filter(
     (room): room is Room & { label: string } =>
       room.label !== null && sanitizeLabel(room.label).length > 0,
   )
-  const keyByLabel = assignKeys(labeledRooms.map((room) => room.label))
+  const furnitureLabels = [
+    ...new Set(
+      model.furniture
+        .map((item) => sanitizeLabel(item.label))
+        .filter((label) => label.length > 0),
+    ),
+  ]
+  const keyByLabel = assignKeys([
+    ...labeledRooms.map((room) => room.label),
+    ...furnitureLabels,
+  ])
   for (const room of labeledRooms) {
     const key = keyByLabel.get(room.label)!
     const at = toMm(centroid(room.polygon))
@@ -192,6 +261,47 @@ export function convertToTactile(model: FloorModel): ConversionResult {
     })
     if (!legend.some((entry) => entry.key === key)) {
       legend.push({ key, text: sanitizeLabel(room.label) })
+    }
+  }
+
+  // Furniture -> low-relief solid blocks, height-differentiated from walls,
+  // with the braille key on the block when it fits.
+  for (const item of model.furniture) {
+    const polygonMm = item.polygon.map(toMm)
+    elements.push({
+      heightMm: RELIEF_MM.areaTexture,
+      id: `t-${item.id}`,
+      kind: 'area',
+      polygon: polygonMm,
+      sourceId: item.id,
+      texture: 'solid',
+    })
+    const label = sanitizeLabel(item.label)
+    const key = keyByLabel.get(label)
+    if (!key) continue
+    const xs = polygonMm.map((p) => p.x)
+    const ys = polygonMm.map((p) => p.y)
+    const blockW = Math.max(...xs) - Math.min(...xs)
+    const blockH = Math.max(...ys) - Math.min(...ys)
+    const size = textBrailleSize(key)
+    if (size.widthMm + 2 > blockW || size.heightMm + 2 > blockH) {
+      notes.push({
+        elementId: item.id,
+        kind: 'label-skipped',
+        message: `Block ${item.id} ("${label}") is too small for its braille key`,
+      })
+      continue
+    }
+    const center = centroid(polygonMm)
+    elements.push({
+      at: { x: center.x - size.widthMm / 2, y: center.y - size.heightMm / 2 },
+      id: `t-label-${item.id}`,
+      key,
+      kind: 'braille',
+      sourceId: item.id,
+    })
+    if (!legend.some((entry) => entry.key === key)) {
+      legend.push({ key, text: label })
     }
   }
 

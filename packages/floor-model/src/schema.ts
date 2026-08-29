@@ -60,6 +60,18 @@ export const featureSchema = z.object({
   confidence: confidenceSchema,
 })
 
+// Furniture is represented as labeled blocks (clubbed: a row of chairs is
+// one block labeled "chairs"). On the plate they become low-relief areas
+// with a braille key — height-differentiated from walls, per the research
+// on reduced spacing between height-differentiated tactile elements.
+export const furnitureSchema = z.object({
+  id: z.string().min(1),
+  kind: z.literal('furniture'),
+  polygon: z.array(pointSchema).min(3),
+  label: z.string().min(1),
+  confidence: confidenceSchema,
+})
+
 export const floorModelSchema = z.object({
   schemaVersion: z.literal(1),
   // Map title, embossed on the plate edge and used in the legend.
@@ -75,6 +87,7 @@ export const floorModelSchema = z.object({
   openings: z.array(openingSchema),
   rooms: z.array(roomSchema),
   features: z.array(featureSchema),
+  furniture: z.array(furnitureSchema).default([]),
 })
 
 export type Point = z.infer<typeof pointSchema>
@@ -82,12 +95,20 @@ export type Wall = z.infer<typeof wallSchema>
 export type Opening = z.infer<typeof openingSchema>
 export type Room = z.infer<typeof roomSchema>
 export type Feature = z.infer<typeof featureSchema>
+export type Furniture = z.infer<typeof furnitureSchema>
 export type FloorModel = z.infer<typeof floorModelSchema>
 
-export type FloorElement = Feature | Opening | Room | Wall
+export type FloorElement = Feature | Furniture | Opening | Room | Wall
 
 export function allElements(model: FloorModel): FloorElement[] {
-  return [...model.walls, ...model.openings, ...model.rooms, ...model.features]
+  return [
+    ...model.walls,
+    ...model.openings,
+    ...model.rooms,
+    ...model.features,
+    // Models stored before the furniture field existed may lack it.
+    ...(model.furniture ?? []),
+  ]
 }
 
 export function findElement(

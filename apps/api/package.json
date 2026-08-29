@@ -2,7 +2,7 @@
   "name": "api",
   "private": true,
   "scripts": {
-    "dev": "bun run --hot --port 3003 src/index.ts",
+    "dev": "bun run --watch --port 3003 src/index.ts",
     "build": "bun build src/index.ts --outdir dist --target bun",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "bun run src/db/migrate.ts",

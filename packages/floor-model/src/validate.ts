@@ -3,6 +3,7 @@ import type { FloorModel, Point } from './schema'
 import { planToPlateTransform } from './tactile-convert'
 import type {
   BrailleLabel,
+  TactileArea,
   TactileDesign,
   TactileLine,
   TactileSymbol,
@@ -150,6 +151,9 @@ export function validateTactileDesign(
   const lines = design.elements.filter(
     (e): e is TactileLine => e.kind === 'line',
   )
+  const areas = design.elements.filter(
+    (e): e is TactileArea => e.kind === 'area',
+  )
 
   // Legibility gate: unfixable by layout — the floor is too big for the plate.
   for (const door of context.doorOpeningsMm) {
@@ -195,6 +199,26 @@ export function validateTactileDesign(
         elementIds: [label.id],
         measuredMm: null,
         message: `Braille ${label.id} lies outside the plate margin`,
+        requiredMm: marginMm,
+        rule: 'margin',
+      })
+    }
+  }
+  for (const area of areas) {
+    const xs = area.polygon.map((p) => p.x)
+    const ys = area.polygon.map((p) => p.y)
+    if (
+      !inMargin({
+        maxX: Math.max(...xs),
+        maxY: Math.max(...ys),
+        minX: Math.min(...xs),
+        minY: Math.min(...ys),
+      })
+    ) {
+      violations.push({
+        elementIds: [area.id],
+        measuredMm: null,
+        message: `Block ${area.id} lies outside the plate margin`,
         requiredMm: marginMm,
         rule: 'margin',
       })
@@ -283,21 +307,30 @@ export function validateTactileDesign(
     }
   }
 
-  // Label-fit: a room's braille key must sit inside that room.
+  // Label-fit: a room's braille key must sit inside that room, and a
+  // block's key inside its block. (Note: braille on a block is exempt from
+  // block clearance by construction — height differentiation separates them.)
   const roomById = new Map(context.roomsMm.map((room) => [room.id, room]))
+  const areaBySource = new Map(
+    areas.filter((a) => a.sourceId).map((a) => [a.sourceId!, a]),
+  )
   for (const label of labels) {
     if (!label.sourceId) continue
-    const room = roomById.get(label.sourceId)
-    if (!room) continue
     const rect = brailleRect(label)
+    const room = roomById.get(label.sourceId)
+    const area = areaBySource.get(label.sourceId)
+    const polygon = area?.polygon ?? room?.polygonMm
+    if (!polygon) continue
     const fits = rectCorners(rect).every((corner) =>
-      pointInPolygon(corner, room.polygonMm),
+      pointInPolygon(corner, polygon),
     )
     if (!fits) {
       violations.push({
         elementIds: [label.id],
         measuredMm: null,
-        message: `Braille key for room ${label.sourceId} does not fit inside the room`,
+        message: area
+          ? `Braille key for block ${label.sourceId} does not fit inside the block`
+          : `Braille key for room ${label.sourceId} does not fit inside the room`,
         requiredMm: null,
         rule: 'label-fit',
       })

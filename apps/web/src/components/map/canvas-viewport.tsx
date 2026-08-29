@@ -91,7 +91,7 @@ export function CanvasViewport({
 
   return (
     <div
-      className="relative h-full w-full overflow-hidden overscroll-contain rounded-sm border bg-muted/40"
+      className="relative h-full w-full overflow-hidden overscroll-contain bg-muted/40"
       onWheel={(event) => {
         event.preventDefault();
         if (event.ctrlKey || event.metaKey) {

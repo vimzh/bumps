@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import { LlmAgent, InMemorySessionService, Runner } from '@google/adk'
-import { MODEL_CRITICAL } from './parser'
+import { JSON_ONLY, makeModel, MODEL_CRITICAL, parseAgentJson } from './llm'
 import { withModelRetry } from './retry'
 
 // Kept to Gemini's response-schema subset (no string length constraints).
@@ -30,7 +30,7 @@ const INSTRUCTION = `You review machine extractions of architectural floor plans
 
 You receive two images:
 - IMAGE 1: the original floor plan.
-- IMAGE 2: a rendering of the extracted model. Legend: gray filled polygons = rooms (label text at center), black lines = walls, colored circles = doors/windows, small squares with letters = features (S stairs, E elevator, WC restroom, arrow entrance, X exit, R ramp).
+- IMAGE 2: a rendering of the extracted model. Legend: light gray filled polygons = rooms (label text at center), darker gray blocks with labels = furniture blocks, black lines = walls, colored circles = doors/windows, small squares with letters = features (S stairs, E elevator, WC restroom, arrow entrance, X exit, R ramp).
 
 You also receive the extracted model as JSON (ids included).
 
@@ -41,16 +41,19 @@ Report structural discrepancies between the images:
 - mislabeled: wrong or missing room label that is legible in the plan
 
 Rules:
-- Only report real structural issues. Ignore rendering style, colors, line weights, furniture, dimensions, and hatching.
+- Only report real structural issues. Ignore rendering style, colors, line weights, dimensions, and hatching.
+- Furniture is expected as coarse clubbed blocks (a row of chairs = one "chairs" block), not per-item outlines. Report furniture when a substantial piece is missing entirely (chair clusters count), a block is badly oversized versus what is drawn, badly misplaced, or invented — always severity "minor".
+- Check EVERY enclosed room has at least one doorway (a door in the model). A sealed room almost always means a missed door arc — report it as missing, severity "major".
+- Check for missed SHORT wall stubs and partial partitions; a missing stub wall is severity "major" when it changes how a person would navigate.
 - severity "major" = would mislead a blind reader navigating (missing room, wall, door, or feature; badly wrong geometry). "minor" = cosmetic or small offsets.
 - Use element ids from the JSON for extra/misplaced/mislabeled findings; elementId null for missing ones.
 - confidenceAdjustments: for elements you verified match the plan well, raise confidence; for dubious ones, lower it. Only include elements you actually assessed.
-- verdict "pass" when the model faithfully captures the plan's structure with no major findings.`
+- verdict "pass" when the model faithfully captures the plan's structure with no major findings.` + JSON_ONLY
 
 export const critiqueAgent = new LlmAgent({
   name: 'floor_plan_critic',
   description: 'Compares a floor plan against a rendering of its extracted model',
-  model: MODEL_CRITICAL,
+  model: makeModel(MODEL_CRITICAL),
   instruction: INSTRUCTION,
   outputSchema: critiqueSchema,
   generateContentConfig: {
@@ -105,5 +108,5 @@ async function runCritiqueOnce(params: {
   if (!finalText) {
     throw new Error('Critique returned no output')
   }
-  return critiqueSchema.parse(JSON.parse(finalText))
+  return parseAgentJson(critiqueSchema, finalText, 'Critique')
 }

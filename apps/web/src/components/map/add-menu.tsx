@@ -6,6 +6,7 @@ import {
   Minus,
   Plus,
   RectangleHorizontal,
+  Sofa,
   Square,
   type LucideIcon,
 } from "lucide-react";
@@ -18,15 +19,30 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { FEATURE_ICON } from "@/components/map/feature-icons";
+import type { PlaceMode } from "@/components/map/edit-canvas";
 import { mapContent } from "@/data/map";
 
-export type PlaceableKind = Feature["kind"] | "door" | "room" | "wall" | "window";
+export type PlaceableKind =
+  | Feature["kind"]
+  | "door"
+  | "furniture"
+  | "room"
+  | "wall"
+  | "window";
+
+// Rooms, furniture, and walls are drawn (drag); everything else is a click.
+export function placeModeFor(kind: PlaceableKind): PlaceMode {
+  if (kind === "room" || kind === "furniture") return "rect";
+  if (kind === "wall") return "line";
+  return "point";
+}
 
 const STRUCTURAL: { icon: LucideIcon; kind: PlaceableKind }[] = [
   { icon: DoorOpen, kind: "door" },
   { icon: RectangleHorizontal, kind: "window" },
   { icon: Minus, kind: "wall" },
   { icon: Square, kind: "room" },
+  { icon: Sofa, kind: "furniture" },
 ];
 
 type AddMenuProps = {
@@ -43,7 +59,10 @@ export function AddMenu({ onPick, placing }: AddMenuProps) {
         size="sm"
         type="button"
       >
-        {mapContent.edit.kinds[placing]} — {mapContent.edit.paletteHint}
+        {mapContent.edit.kinds[placing]} —{" "}
+        {placeModeFor(placing) === "point"
+          ? mapContent.edit.paletteHint
+          : mapContent.edit.paletteDragHint}
       </Button>
     );
   }

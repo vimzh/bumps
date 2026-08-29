@@ -3,6 +3,7 @@ import { Hono } from 'hono'
 import {
   buildValidationContext,
   convertToTactile,
+  floorModelSchema,
   type FloorModel,
 } from '@bumps/floor-model'
 import { runTactileLayout } from './agents/tactile-layout'
@@ -57,7 +58,7 @@ tactileRoutes.post('/:id/tactile', async (c) => {
     return c.json({ status: 'running' }, 202)
   }
   const rowId = Bun.randomUUIDv7()
-  const model = latest.model as FloorModel
+  const model = floorModelSchema.parse(latest.model)
   const { design, notes } = convertToTactile(model)
   await db.insert(tactileDesigns).values({
     design,

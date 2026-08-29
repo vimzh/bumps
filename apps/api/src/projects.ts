@@ -13,6 +13,7 @@ const EXTENSION_BY_TYPE: Record<string, string> = {
   'application/pdf': 'pdf',
   'image/jpeg': 'jpg',
   'image/png': 'png',
+  'image/webp': 'webp',
 }
 
 function extensionFor(file: File): string | undefined {
@@ -20,7 +21,7 @@ function extensionFor(file: File): string | undefined {
   if (byType) return byType
   const byName = path.extname(file.name).toLowerCase().replace('.', '')
   if (byName === 'jpeg') return 'jpg'
-  return ['pdf', 'png', 'jpg'].includes(byName) ? byName : undefined
+  return ['pdf', 'png', 'jpg', 'webp'].includes(byName) ? byName : undefined
 }
 
 export const projectRoutes = new Hono()
@@ -33,7 +34,7 @@ projectRoutes.post('/', async (c) => {
   }
   const extension = extensionFor(file)
   if (!extension) {
-    return c.json({ error: 'Only PDF, PNG, or JPG uploads are supported' }, 415)
+    return c.json({ error: 'Only PDF, PNG, JPG, or WebP uploads are supported' }, 415)
   }
   if (file.size > MAX_UPLOAD_BYTES) {
     return c.json({ error: 'File exceeds the 10 MB limit' }, 413)

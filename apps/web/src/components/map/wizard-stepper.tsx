@@ -12,7 +12,7 @@ type WizardStepperProps = {
 export function WizardStepper({ current }: WizardStepperProps) {
   const currentIndex = ORDER.indexOf(current);
   return (
-    <nav className="flex items-center justify-center gap-2 py-5">
+    <nav className="flex items-center justify-center gap-2">
       {ORDER.map((step, index) => (
         <div className="flex items-center gap-2" key={step}>
           {index > 0 && <span className="w-6 border-t border-border" />}

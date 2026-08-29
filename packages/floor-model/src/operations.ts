@@ -2,11 +2,13 @@ import { z } from 'zod'
 import {
   featureSchema,
   findElement,
+  furnitureSchema,
   openingSchema,
   pointSchema,
   roomSchema,
   wallSchema,
   type FloorModel,
+  type Furniture,
   type Point,
   type Room,
 } from './schema'
@@ -16,6 +18,7 @@ const elementSchema = z.discriminatedUnion('kind', [
   openingSchema,
   roomSchema,
   featureSchema,
+  furnitureSchema,
 ])
 
 export const editOperationSchema = z.discriminatedUnion('op', [
@@ -83,6 +86,7 @@ function mapElements(model: FloorModel, fn: <T>(element: T) => T): FloorModel {
     openings: model.openings.map(fn),
     rooms: model.rooms.map(fn),
     features: model.features.map(fn),
+    furniture: model.furniture.map(fn),
   }
 }
 
@@ -106,6 +110,8 @@ export function applyOperation(
           return { ...model, openings: [...model.openings, element] }
         case 'room':
           return { ...model, rooms: [...model.rooms, element] }
+        case 'furniture':
+          return { ...model, furniture: [...model.furniture, element] }
         default:
           return { ...model, features: [...model.features, element] }
       }
@@ -157,6 +163,19 @@ export function applyOperation(
           ),
         }
       }
+      if (element.kind === 'furniture') {
+        if (points.length < 3) {
+          throw new EditOperationError(
+            'Reshaping furniture takes at least 3 points',
+          )
+        }
+        return {
+          ...model,
+          furniture: model.furniture.map((item) =>
+            item.id === element.id ? { ...item, polygon: points } : item,
+          ),
+        }
+      }
       if (points.length !== 1) {
         throw new EditOperationError('Reshaping a point element takes exactly 1 point')
       }
@@ -177,12 +196,25 @@ export function applyOperation(
         openings: keep(model.openings),
         rooms: keep(model.rooms),
         features: keep(model.features),
+        furniture: keep(model.furniture),
       }
     }
     case 'relabel': {
       const element = requireElement(model, operation.id)
+      if (element.kind === 'furniture') {
+        if (operation.label === null || operation.label.trim() === '') {
+          throw new EditOperationError('Furniture needs a non-empty label')
+        }
+        const label = operation.label
+        return {
+          ...model,
+          furniture: model.furniture.map((item) =>
+            item.id === operation.id ? { ...item, label } : item,
+          ),
+        }
+      }
       if (element.kind !== 'room') {
-        throw new EditOperationError('Only rooms can be relabeled')
+        throw new EditOperationError('Only rooms and furniture can be relabeled')
       }
       return {
         ...model,
@@ -195,8 +227,27 @@ export function applyOperation(
       const [firstId, secondId] = operation.ids
       const first = requireElement(model, firstId!)
       const second = requireElement(model, secondId!)
+      if (first.kind === 'furniture' && second.kind === 'furniture') {
+        const a = first as Furniture
+        const b = second as Furniture
+        const merged: Furniture = {
+          ...a,
+          confidence: Math.min(a.confidence, b.confidence),
+          label: operation.label ?? a.label,
+          polygon: convexHull([...a.polygon, ...b.polygon]),
+        }
+        return {
+          ...model,
+          furniture: [
+            ...model.furniture.filter(
+              (item) => item.id !== firstId && item.id !== secondId,
+            ),
+            merged,
+          ],
+        }
+      }
       if (first.kind !== 'room' || second.kind !== 'room') {
-        throw new EditOperationError('Only rooms can be merged')
+        throw new EditOperationError('Only rooms or furniture can be merged')
       }
       const firstRoom = first as Room
       const secondRoom = second as Room

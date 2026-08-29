@@ -6,7 +6,7 @@ import {
   type ValidationContext,
   type ValidationViolation,
 } from '@bumps/floor-model'
-import { MODEL_CRITICAL } from './parser'
+import { JSON_ONLY, makeModel, MODEL_CRITICAL, parseAgentJson } from './llm'
 import { withModelRetry } from './retry'
 
 export const MAX_LAYOUT_ITERATIONS = 4
@@ -35,12 +35,12 @@ Guidance:
 - Keep >= 3 mm clear space between any two elements (>= 6 mm between same-kind symbols), and >= 3 mm from walls (lines).
 - Door symbols may stay on their wall; do not move them off it unless a violation names them.
 - Prefer the smallest moves that clear ALL listed violations. Move only elements involved in violations.
-- Everything must stay inside the plate margin.`
+- Everything must stay inside the plate margin.` + JSON_ONLY
 
 export const tactileLayoutAgent = new LlmAgent({
   name: 'tactile_layout',
   description: 'Nudges braille labels and symbols to clear standards violations',
-  model: MODEL_CRITICAL,
+  model: makeModel(MODEL_CRITICAL),
   instruction: INSTRUCTION,
   outputSchema: layoutOutputSchema,
   generateContentConfig: {
@@ -78,7 +78,7 @@ async function proposeMoves(
       if (text) finalText = text
     }
     if (!finalText) throw new Error('Layout agent returned no output')
-    return layoutOutputSchema.parse(JSON.parse(finalText)).moves
+    return parseAgentJson(layoutOutputSchema, finalText, 'Layout agent').moves
   })
 }
 

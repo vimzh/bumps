@@ -88,7 +88,7 @@ export function PromptPanel({
   }
 
   return (
-    <div className="flex h-full min-h-0 flex-col rounded-sm border bg-card">
+    <div className="flex h-full min-h-0 flex-col bg-card">
       <h2 className="border-b px-3 py-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
         {mapContent.edit.prompt.title}
       </h2>

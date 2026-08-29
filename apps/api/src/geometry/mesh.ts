@@ -29,8 +29,28 @@ const DOME_SPHERE_R =
   (DOT_RADIUS * DOT_RADIUS + BRAILLE_MM.dotHeight * BRAILLE_MM.dotHeight) /
   (2 * BRAILLE_MM.dotHeight)
 
+type Poly2 = [number, number][]
+
+function signedArea(poly: Poly2): number {
+  let area = 0
+  for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+    area += (poly[j]![0] + poly[i]![0]) * (poly[j]![1] - poly[i]![1])
+  }
+  return area / 2
+}
+
+// CrossSection's Positive fill rule treats clockwise rings as holes; a
+// flipped or model-supplied polygon can arrive CW and silently produce an
+// empty (union-poisoning) manifold. Normalize every ring to CCW.
+// (This shoelace variant is negative for CCW rings — verified empirically.)
+function ofPolysCCW(polys: Poly2[]): CrossSectionT {
+  return CrossSection.ofPolygons(
+    polys.map((poly) => (signedArea(poly) > 0 ? [...poly].reverse() : poly)),
+  )
+}
+
 function rect(w: number, h: number, cx = 0, cy = 0): CrossSectionT {
-  return CrossSection.ofPolygons([
+  return ofPolysCCW([
     [
       [cx - w / 2, cy - h / 2],
       [cx + w / 2, cy - h / 2],
@@ -66,7 +86,7 @@ function symbolCrossSection(symbol: TactileSymbol): CrossSectionT {
     case 'elevator':
       return frame(s, 1).add(CrossSection.circle(0.9, CIRCLE_SEGMENTS))
     case 'entrance':
-      return CrossSection.ofPolygons([
+      return ofPolysCCW([
         [
           [0, half],
           [-half, -half],
@@ -88,7 +108,7 @@ function symbolCrossSection(symbol: TactileSymbol): CrossSectionT {
       return cs
     }
     case 'ramp':
-      return CrossSection.ofPolygons([
+      return ofPolysCCW([
         [
           [-half, -half],
           [half, -half],
@@ -129,7 +149,7 @@ function lineCrossSection(points: Point[], widthMm: number, yUp: (p: Point) => P
     const by = b.y + uy * half
     const nx = -uy * half
     const ny = ux * half
-    const quad = CrossSection.ofPolygons([
+    const quad = ofPolysCCW([
       [
         [ax + nx, ay + ny],
         [ax - nx, ay - ny],
@@ -139,7 +159,7 @@ function lineCrossSection(points: Point[], widthMm: number, yUp: (p: Point) => P
     ])
     cs = cs ? cs.add(quad) : quad
   }
-  return cs ?? CrossSection.ofPolygons([])
+  return cs ?? ofPolysCCW([])
 }
 
 function brailleDomes(
@@ -157,17 +177,33 @@ function brailleDomes(
   })
 }
 
+function pointInPolygon(point: Point, polygon: Point[]): boolean {
+  let inside = false
+  for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+    const a = polygon[i]!
+    const b = polygon[j]!
+    if (
+      a.y > point.y !== b.y > point.y &&
+      point.x < ((b.x - a.x) * (point.y - a.y)) / (b.y - a.y) + a.x
+    ) {
+      inside = !inside
+    }
+  }
+  return inside
+}
+
 export function buildMapMesh(design: TactileDesign): ManifoldT {
   const { baseMm, heightMm, widthMm } = design.plate
   const yUp = (p: Point): Point => ({ x: p.x, y: heightMm - p.y })
   const parts: ManifoldT[] = [Manifold.cube([widthMm, heightMm, baseMm])]
+  const areaElements = design.elements.filter((e) => e.kind === 'area')
 
   for (const element of design.elements) {
     if (element.kind === 'line') {
       const cs = lineCrossSection(element.points, element.widthMm, yUp)
       parts.push(Manifold.extrude(cs, element.heightMm).translate([0, 0, baseMm]))
     } else if (element.kind === 'area') {
-      const cs = CrossSection.ofPolygons([
+      const cs = ofPolysCCW([
         element.polygon.map((p) => {
           const q = yUp(p)
           return [q.x, q.y] as [number, number]
@@ -181,12 +217,22 @@ export function buildMapMesh(design: TactileDesign): ManifoldT {
         .translate([at.x, at.y])
       parts.push(Manifold.extrude(cs, element.heightMm).translate([0, 0, baseMm]))
     } else {
+      // Braille on a furniture block rises from the block's surface.
+      const lift =
+        areaElements.find(
+          (area) =>
+            area.kind === 'area' && pointInPolygon(element.at, area.polygon),
+        )?.heightMm ?? 0
       parts.push(
-        ...brailleDomes(textDotCenters(element.key, element.at), baseMm, yUp),
+        ...brailleDomes(
+          textDotCenters(element.key, element.at),
+          baseMm + lift,
+          yUp,
+        ),
       )
     }
   }
-  return Manifold.union(parts)
+  return Manifold.union(parts.filter((part) => !part.isEmpty()))
 }
 
 // Legend plate: title row, then key -> text rows, all Grade 1 braille.
@@ -214,7 +260,7 @@ export function buildLegendMesh(design: TactileDesign): ManifoldT | null {
     }
     parts.push(...brailleDomes(textDotCenters(text, origin), baseMm, yUp))
   })
-  return Manifold.union(parts)
+  return Manifold.union(parts.filter((part) => !part.isEmpty()))
 }
 
 export function meshToBinaryStl(mesh: Mesh): Uint8Array {

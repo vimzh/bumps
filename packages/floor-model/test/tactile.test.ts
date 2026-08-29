@@ -3,6 +3,7 @@ import {
   assignKeys,
   BRAILLE_MM,
   convertToTactile,
+  planToPlateTransform,
   PLATE,
   sampleFloorModel,
   tactileDesignSchema,
@@ -73,36 +74,65 @@ describe('convertToTactile', () => {
     }
   })
 
-  test('walls become 2mm/1mm lines; windows drop with a note', () => {
+  test('walls become 2mm/1mm lines split at doorways; windows drop with a note', () => {
     const lines = design.elements.filter((e) => e.kind === 'line')
-    expect(lines).toHaveLength(sampleFloorModel.walls.length)
+    // 8 walls; two corridor walls carry 2 doors each (3 segments), the
+    // bottom wall 1 door (2 segments): 5 + 3 + 3 + 2 = 13 segments.
+    expect(lines).toHaveLength(13)
     for (const line of lines) {
       expect(line.widthMm).toBe(2)
       expect(line.heightMm).toBe(1)
     }
     expect(notes.some((n) => n.kind === 'dropped-window')).toBe(true)
     const symbols = design.elements.filter((e) => e.kind === 'symbol')
-    // 5 doors + 4 features, no window symbol
-    expect(symbols).toHaveLength(9)
+    // Features only — doors are gaps now, never symbols.
+    expect(symbols).toHaveLength(4)
+    expect(symbols.every((s) => s.symbol !== 'door')).toBe(true)
     expect(symbols.every((s) => s.heightMm === 1.5)).toBe(true)
   })
 
   test('labels become unique braille keys with legend entries', () => {
     const braille = design.elements.filter((e) => e.kind === 'braille')
-    // 5 labeled rooms; fixture has no you-are-here marker
-    expect(braille).toHaveLength(5)
+    // 5 labeled rooms + 2 furniture blocks; no you-are-here marker
+    expect(braille).toHaveLength(7)
     const keys = design.legend.map((entry) => entry.key)
     expect(new Set(keys).size).toBe(keys.length)
     expect(design.separateLegendPlate).toBe(design.legend.length > 4)
   })
 
-  test('door symbols inherit their wall angle', () => {
-    const door = design.elements.find((e) => e.id === 't-d-nw')
-    expect(door?.kind).toBe('symbol')
-    if (door?.kind === 'symbol') {
-      // d-nw sits on the horizontal corridor wall
-      expect(Math.abs(door.rotation % 180)).toBeCloseTo(0)
+  test('furniture becomes low-relief labeled blocks', () => {
+    const areas = design.elements.filter((e) => e.kind === 'area')
+    expect(areas).toHaveLength(2)
+    for (const area of areas) {
+      expect(area.heightMm).toBe(0.5)
+      expect(area.texture).toBe('solid')
     }
+    const texts = design.legend.map((entry) => entry.text)
+    expect(texts).toContain('chairs')
+    expect(texts).toContain('sofa')
+    // Keys sit on their blocks
+    const chairKey = design.elements.find((e) => e.id === 't-label-fur-chairs')
+    expect(chairKey?.kind).toBe('braille')
+  })
+
+  test('doorways leave fingertip-findable gaps in their wall', () => {
+    // d-nw sits at x=250 on the corridor's north wall (y=380). No wall
+    // segment from that wall may cover the door's position.
+    const { mmPerPx, toMm } = planToPlateTransform(sampleFloorModel)
+    const doorAt = toMm({ x: 250, y: 380 })
+    const segments = design.elements.filter(
+      (e) => e.kind === 'line' && e.sourceId === 'w-corridor-n',
+    )
+    expect(segments.length).toBe(3)
+    for (const segment of segments) {
+      if (segment.kind !== 'line') continue
+      const xs = segment.points.map((p) => p.x)
+      const covers =
+        Math.min(...xs) <= doorAt.x && doorAt.x <= Math.max(...xs)
+      expect(covers).toBe(false)
+    }
+    // The gap is at least the printed door width (>= the 6mm minimum).
+    expect(45 * mmPerPx).toBeGreaterThan(0)
   })
 
   test('you-are-here marker gets a braille key and legend text', () => {

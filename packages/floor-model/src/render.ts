@@ -69,6 +69,13 @@ export function renderFloorModelSvg(model: FloorModel): string {
   for (const room of model.rooms) {
     parts.push(renderRoom(room))
   }
+  for (const item of model.furniture) {
+    const center = centroid(item.polygon)
+    parts.push(
+      `<polygon data-id="${item.id}" points="${polygonPoints(item.polygon)}" fill="#d6d3d1" stroke="#a8a29e" stroke-width="2"/>`,
+      `<text x="${center.x}" y="${center.y}" font-family="monospace" font-size="16" fill="${COLORS.label}" text-anchor="middle" dominant-baseline="middle">${escapeXml(item.label)}</text>`,
+    )
+  }
   for (const wall of model.walls) {
     parts.push(
       `<line data-id="${wall.id}" x1="${wall.a.x}" y1="${wall.a.y}" x2="${wall.b.x}" y2="${wall.b.y}" stroke="${COLORS.wall}" stroke-width="${wall.thickness}" stroke-linecap="square"/>`,

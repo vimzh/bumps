@@ -2,7 +2,6 @@ import { notFound } from "next/navigation";
 import type { FloorModel } from "@bumps/floor-model";
 import { ParseView } from "@/components/map/parse-view";
 import { Wizard } from "@/components/map/wizard";
-import { WizardStepper } from "@/components/map/wizard-stepper";
 import { API_URL } from "@/lib/api";
 
 type Project = {
@@ -28,18 +27,13 @@ export default async function MapPage({ params }: PageProps<"/map/[id]">) {
   });
   if (!modelResponse.ok) {
     return (
-      <div className="relative">
-        <div className="absolute inset-x-0 top-0">
-          <WizardStepper current="parse" />
-        </div>
-        <ParseView
-          initialError={project.parseError}
-          initialProgress={project.parseProgress}
-          initialStatus={project.status}
-          projectId={project.id}
-          projectName={project.name}
-        />
-      </div>
+      <ParseView
+        initialError={project.parseError}
+        initialProgress={project.parseProgress}
+        initialStatus={project.status}
+        projectId={project.id}
+        projectName={project.name}
+      />
     );
   }
   const { model, version } = (await modelResponse.json()) as {

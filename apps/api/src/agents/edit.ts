@@ -5,13 +5,13 @@ import {
   type EditOperation,
   type FloorModel,
 } from '@bumps/floor-model'
-import { MODEL_FAST } from './parser'
+import { JSON_ONLY, llmPointSchema, makeModel, MODEL_FAST, parseAgentJson } from './llm'
 import { withModelRetry } from './retry'
 
 // Flat operation shape for the LLM: Gemini's response-schema subset cannot
 // express our discriminated union, so the agent emits this and code converts
 // it into real EditOperations (rejecting anything malformed wholesale).
-const llmPoint = z.object({ x: z.number(), y: z.number() })
+const llmPoint = llmPointSchema
 
 const llmEditOp = z.object({
   op: z.enum(['add', 'move', 'reshape', 'delete', 'relabel', 'merge', 'confirm']),
@@ -22,7 +22,7 @@ const llmEditOp = z.object({
   points: z.array(llmPoint).nullable(),
   label: z.string().nullable(),
   elementKind: z
-    .enum(['wall', 'door', 'window', 'room', ...featureKinds])
+    .enum(['wall', 'door', 'window', 'room', 'furniture', ...featureKinds])
     .nullable(),
   at: llmPoint.nullable(),
   a: llmPoint.nullable(),
@@ -136,6 +136,22 @@ function convertOne(flat: LlmEditOp, model: FloorModel): EditOperation {
           },
         }
       }
+      if (kind === 'furniture') {
+        const polygon = require(flat.polygon, 'add furniture needs polygon')
+        if (polygon.length < 3) {
+          throw new EditConversionError('add furniture polygon needs 3+ points')
+        }
+        return {
+          op: 'add',
+          element: {
+            confidence: 1,
+            id: newId(kind),
+            kind,
+            label: flat.label ?? 'furniture',
+            polygon,
+          },
+        }
+      }
       return {
         op: 'add',
         element: {
@@ -158,10 +174,10 @@ Operations (set unused fields to null):
 - move: id, dx, dy (pixels)
 - reshape: id, points (walls: [a,b]; rooms: full polygon; point elements: [at])
 - delete: id
-- relabel: id, label (rooms only; null clears the label)
-- merge: ids (exactly two room ids), optional label
+- relabel: id, label (rooms and furniture; null clears a room label; furniture labels must stay non-empty)
+- merge: ids (two room ids, or two furniture ids to club blocks together), optional label
 - confirm: id (marks an element as verified correct)
-- add: elementKind plus geometry — door/window: at (+ optional width); wall: a, b; room: polygon (+ optional label); features: at
+- add: elementKind plus geometry — door/window: at (+ optional width); wall: a, b; room: polygon (+ optional label); furniture: polygon + label ("sofa", "chairs"); features: at
 
 Rules:
 - Reference ONLY ids present in the model JSON. Never invent ids.
@@ -169,12 +185,12 @@ Rules:
 - Prefer the fewest operations that satisfy the request.
 - "this", "it", "the selected one" refer to the selected element id when provided.
 - If the request is ambiguous (several plausible targets, unclear intent) or asks for something outside these operations, set action="clarify" and ask ONE short question. Do not guess.
-- action="apply": operations non-empty, summary = one past-tense sentence in plain words (e.g. "Renamed Lobby to Entrance Hall and deleted 2 windows."). action="clarify": operations empty, question set.`
+- action="apply": operations non-empty, summary = one past-tense sentence in plain words (e.g. "Renamed Lobby to Entrance Hall and deleted 2 windows."). action="clarify": operations empty, question set.` + JSON_ONLY
 
 export const editAgent = new LlmAgent({
   name: 'floor_plan_editor',
   description: 'Turns natural-language edit requests into floor model operations',
-  model: MODEL_FAST,
+  model: makeModel(MODEL_FAST),
   instruction: INSTRUCTION,
   outputSchema: editAgentOutputSchema,
   generateContentConfig: {
@@ -226,7 +242,7 @@ async function runEditAgentOnce(params: {
     throw new Error('Edit agent returned no output')
   }
 
-  const output = editAgentOutputSchema.parse(JSON.parse(finalText))
+  const output = parseAgentJson(editAgentOutputSchema, finalText, 'Edit agent')
   if (output.action === 'clarify') {
     return {
       action: 'clarify',

@@ -5,7 +5,7 @@ import type { FloorModel } from "@bumps/floor-model";
 import { EditStep } from "@/components/map/edit-step";
 import { ExportStep } from "@/components/map/export-step";
 import { TactileStep } from "@/components/map/tactile-step";
-import { WizardStepper, type WizardStep } from "@/components/map/wizard-stepper";
+import type { WizardStep } from "@/components/map/wizard-stepper";
 
 type WizardProps = {
   initialModel: FloorModel;
@@ -17,8 +17,7 @@ export function Wizard({ initialModel, initialVersion, projectId }: WizardProps)
   const [step, setStep] = useState<WizardStep>("edit");
 
   return (
-    <section className="flex h-dvh flex-col overflow-hidden px-6 pb-4">
-      <WizardStepper current={step} />
+    <section className="flex h-dvh flex-col overflow-hidden">
       {step === "edit" ? (
         <EditStep
           initialModel={initialModel}

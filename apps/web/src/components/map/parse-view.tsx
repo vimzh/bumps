@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { CanvasViewport } from "@/components/map/canvas-viewport";
+import { MapTopBar } from "@/components/map/map-top-bar";
 import { mapContent } from "@/data/map";
 import { API_URL } from "@/lib/api";
 
@@ -110,13 +111,17 @@ export function ParseView({
   }
 
   return (
-    <section className="flex h-dvh flex-col overflow-hidden px-6 pb-4 pt-16">
-      <header className="flex items-baseline justify-between gap-4 pb-3">
-        <p className="text-sm text-muted-foreground">
-          {mapContent.uploadedLabel} ·{" "}
-          <span className="font-mono">{projectName}</span>
-        </p>
-        <div aria-live="polite" className="flex items-center gap-3">
+    <section className="flex h-dvh flex-col overflow-hidden">
+      <MapTopBar
+        current="parse"
+        info={
+          <span className="truncate">
+            {mapContent.uploadedLabel} ·{" "}
+            <span className="font-mono">{projectName}</span>
+          </span>
+        }
+        actions={
+          <div aria-live="polite" className="flex items-center gap-3">
           {status === "parsing" ? (
             <>
               {progress?.history.map((entry) => (
@@ -158,8 +163,9 @@ export function ParseView({
               </Button>
             </>
           )}
-        </div>
-      </header>
+          </div>
+        }
+      />
       <div className="min-h-0 flex-1">
         {planSize && (
           <CanvasViewport

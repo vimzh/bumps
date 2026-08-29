@@ -9,6 +9,7 @@ import {
 } from "@bumps/floor-model";
 import { Button } from "@/components/ui/button";
 import { CanvasViewport } from "@/components/map/canvas-viewport";
+import { MapTopBar } from "@/components/map/map-top-bar";
 import { TactileViewer } from "@/components/map/tactile-viewer";
 import { mapContent } from "@/data/map";
 import { API_URL } from "@/lib/api";
@@ -89,67 +90,72 @@ export function TactileStep({ onBack, onNext, projectId }: TactileStepProps) {
   }, [convert]);
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col gap-3">
-      <div className="flex items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <p className="text-sm text-muted-foreground">
-            {mapContent.tactile.title} · {mapContent.tactile.plateLabel}
-            {state.kind === "ready" && state.design.title
-              ? ` · ${state.design.title}`
-              : null}
-          </p>
-          {state.kind === "ready" && (
-            <span
-              className={
-                state.valid
-                  ? "rounded-sm border border-foreground/30 px-2 py-0.5 font-mono text-xs"
-                  : "rounded-sm border border-destructive px-2 py-0.5 font-mono text-xs text-destructive"
-              }
+    <div className="flex min-h-0 flex-1 flex-col">
+      <MapTopBar
+        actions={
+          <>
+            <Button
+              className="h-8 cursor-pointer rounded-sm px-3 text-xs"
+              onClick={onBack}
+              size="sm"
+              type="button"
+              variant="outline"
             >
-              {state.valid
-                ? mapContent.tactile.readyBadge
-                : mapContent.tactile.failedBadge}
+              {mapContent.edit.backLabel}
+            </Button>
+            <Button
+              className="h-8 cursor-pointer rounded-sm px-3 text-xs"
+              disabled={state.kind === "loading"}
+              onClick={() => void convert()}
+              size="sm"
+              type="button"
+              variant="outline"
+            >
+              {mapContent.tactile.reconvertLabel}
+            </Button>
+            <Button
+              className="h-8 cursor-pointer rounded-sm px-4 text-xs"
+              disabled={state.kind !== "ready" || !state.valid}
+              onClick={onNext}
+              size="sm"
+              type="button"
+            >
+              {mapContent.edit.nextLabel}
+            </Button>
+          </>
+        }
+        current="tactile"
+        info={
+          <>
+            <span className="truncate">
+              {mapContent.tactile.title} · {mapContent.tactile.plateLabel}
+              {state.kind === "ready" && state.design.title
+                ? ` · ${state.design.title}`
+                : null}
             </span>
-          )}
-        </div>
-        <div className="flex items-center gap-2">
-          <Button
-            className="h-8 cursor-pointer rounded-sm px-3 text-xs"
-            onClick={onBack}
-            size="sm"
-            type="button"
-            variant="outline"
-          >
-            {mapContent.edit.backLabel}
-          </Button>
-          <Button
-            className="h-8 cursor-pointer rounded-sm px-3 text-xs"
-            disabled={state.kind === "loading"}
-            onClick={() => void convert()}
-            size="sm"
-            type="button"
-            variant="outline"
-          >
-            {mapContent.tactile.reconvertLabel}
-          </Button>
-          <Button
-            className="h-8 cursor-pointer rounded-sm px-4 text-xs"
-            disabled={state.kind !== "ready" || !state.valid}
-            onClick={onNext}
-            size="sm"
-            type="button"
-          >
-            {mapContent.edit.nextLabel}
-          </Button>
-        </div>
-      </div>
+            {state.kind === "ready" && (
+              <span
+                className={
+                  state.valid
+                    ? "shrink-0 rounded-sm border border-foreground/30 px-2 py-0.5 font-mono text-xs text-foreground"
+                    : "shrink-0 rounded-sm border border-destructive px-2 py-0.5 font-mono text-xs text-destructive"
+                }
+              >
+                {state.valid
+                  ? mapContent.tactile.readyBadge
+                  : mapContent.tactile.failedBadge}
+              </span>
+            )}
+          </>
+        }
+      />
       {state.kind === "loading" && (
-        <p className="animate-pulse text-sm text-muted-foreground">
+        <p className="animate-pulse p-4 text-sm text-muted-foreground">
           {mapContent.tactile.converting}
         </p>
       )}
       {state.kind === "error" && (
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 p-4">
           <p className="text-sm text-destructive">{state.message}</p>
           <Button
             className="h-8 cursor-pointer rounded-sm px-3 text-xs"
@@ -162,7 +168,7 @@ export function TactileStep({ onBack, onNext, projectId }: TactileStepProps) {
         </div>
       )}
       {state.kind === "ready" && (
-        <div className="flex min-h-0 flex-1 gap-3">
+        <div className="flex min-h-0 flex-1">
           <div className="min-w-0 flex-1">
             <CanvasViewport
               contentHeight={state.design.plate.heightMm}
@@ -171,7 +177,7 @@ export function TactileStep({ onBack, onNext, projectId }: TactileStepProps) {
               <TactileViewer design={state.design} />
             </CanvasViewport>
           </div>
-          <aside className="flex w-80 min-h-0 shrink-0 flex-col gap-3 overflow-y-auto">
+          <aside className="flex w-80 min-h-0 shrink-0 flex-col gap-3 overflow-y-auto border-l bg-card p-3">
             {state.iterations.length > 1 && (
               <p className="font-mono text-xs text-muted-foreground">
                 {mapContent.tactile.iterationsLead}:{" "}
