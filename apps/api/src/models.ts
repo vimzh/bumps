@@ -9,6 +9,7 @@ import {
   renderFloorModelSvg,
   type FloorModel,
 } from '@bumps/floor-model'
+import { EditConversionError, runEditAgent } from './agents/edit'
 import { db } from './db'
 import { floorModels, projects } from './db/schema'
 
@@ -120,6 +121,71 @@ modelRoutes.post('/:id/model/operations', async (c) => {
     version,
   })
   return c.json({ version }, 201)
+})
+
+const editBodySchema = z.object({
+  prompt: z.string().min(1),
+  selectedId: z.string().nullable().optional(),
+})
+
+// Natural-language editing: the EditAgent proposes operations, code validates
+// and applies them; anything referencing unknown ids is rejected wholesale.
+modelRoutes.post('/:id/model/edit', async (c) => {
+  const projectId = c.req.param('id')
+  const latest = await latestModelRow(projectId)
+  if (!latest) {
+    return c.json({ error: 'No floor model for this project' }, 404)
+  }
+  const body = editBodySchema.safeParse(await c.req.json())
+  if (!body.success) {
+    return c.json({ error: 'Invalid request', issues: body.error.issues }, 422)
+  }
+
+  let result
+  try {
+    result = await runEditAgent({
+      model: latest.model as FloorModel,
+      prompt: body.data.prompt,
+      selectedId: body.data.selectedId ?? null,
+    })
+  } catch (error) {
+    if (error instanceof EditConversionError) {
+      return c.json({ error: error.message }, 422)
+    }
+    const message = error instanceof Error ? error.message : 'Edit failed'
+    return c.json({ error: message.slice(0, 300) }, 502)
+  }
+
+  if (result.action === 'clarify') {
+    return c.json({ action: 'clarify', question: result.question })
+  }
+
+  let next: FloorModel
+  try {
+    next = floorModelSchema.parse(
+      applyOperations(latest.model as FloorModel, result.operations),
+    )
+  } catch (error) {
+    if (error instanceof EditOperationError) {
+      return c.json({ error: error.message }, 422)
+    }
+    return c.json({ error: 'Edit produced an invalid model' }, 422)
+  }
+
+  const version = latest.version + 1
+  await db.insert(floorModels).values({
+    id: Bun.randomUUIDv7(),
+    model: next,
+    projectId,
+    version,
+  })
+  return c.json({
+    action: 'applied',
+    model: next,
+    operationCount: result.operations.length,
+    summary: result.summary,
+    version,
+  })
 })
 
 modelRoutes.get('/:id/model/svg', async (c) => {

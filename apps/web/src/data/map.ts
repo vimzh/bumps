@@ -1,5 +1,6 @@
 export const mapContent = {
   edit: {
+    addLabel: "Add",
     backLabel: "← Back to edit",
     confidencePrefix: "confidence",
     confirmLabel: "Confirm",
@@ -24,6 +25,13 @@ export const mapContent = {
     nextLabel: "Next",
     paletteHint: "Click the map to place it.",
     paletteTitle: "Add",
+    prompt: {
+      busy: "Thinking…",
+      failed: "Couldn't apply that. Try again.",
+      placeholder: "Describe a change — e.g. rename the lobby",
+      send: "Apply",
+      title: "Prompt",
+    },
     reviewEmpty: "Nothing left to review.",
     reviewTitle: "Needs review",
     saveFailed: "Couldn't save that change. Try again.",
@@ -64,4 +72,9 @@ export const mapContent = {
     "Tactile conversion is the next build step — it isn't wired up yet.",
   uploadedLabel: "Uploaded plan",
   versionPrefix: "v",
+  viewport: {
+    fit: "Fit to view",
+    zoomIn: "Zoom in",
+    zoomOut: "Zoom out",
+  },
 } as const;

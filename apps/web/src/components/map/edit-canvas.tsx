@@ -163,7 +163,7 @@ export function EditCanvas({
   return (
     <div
       className={cn(
-        "relative w-full touch-none overflow-hidden rounded-sm border bg-card",
+        "relative touch-none overflow-hidden bg-card",
         placing ? "cursor-crosshair" : "cursor-default"
       )}
       onClick={(event) => {
@@ -175,7 +175,7 @@ export function EditCanvas({
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
       ref={containerRef}
-      style={{ aspectRatio: `${widthPx} / ${heightPx}` }}
+      style={{ height: heightPx, width: widthPx }}
     >
       <svg
         className="absolute inset-0 h-full w-full"

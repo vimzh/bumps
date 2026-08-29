@@ -11,8 +11,10 @@ import {
   type Point,
 } from "@bumps/floor-model";
 import { Button } from "@/components/ui/button";
+import { AddMenu, type PlaceableKind } from "@/components/map/add-menu";
+import { CanvasViewport } from "@/components/map/canvas-viewport";
 import { EditCanvas } from "@/components/map/edit-canvas";
-import { Palette, type PlaceableKind } from "@/components/map/palette";
+import { PromptPanel } from "@/components/map/prompt-panel";
 import { ReviewPanel } from "@/components/map/review-panel";
 import { SelectionCard } from "@/components/map/selection-card";
 import { mapContent } from "@/data/map";
@@ -178,7 +180,7 @@ export function EditStep({
   }
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex min-h-0 flex-1 flex-col gap-3">
       <div className="flex items-center justify-between gap-4">
         <p className="text-sm text-muted-foreground">
           {mapContent.modelLabel} · {mapContent.versionPrefix}
@@ -208,46 +210,74 @@ export function EditStep({
           </Button>
         </div>
       </div>
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-[1fr_280px]">
-        <EditCanvas
-          model={model}
-          onCanvasClick={(at) => {
-            if (!placing) return;
-            const operation = defaultElement(placing, at, model);
-            setPlacing(null);
-            void apply([operation]).then(() =>
-              setSelectedId(operation.element.id)
-            );
-          }}
-          onMove={(id, dx, dy) =>
-            void apply(withConfirm(id, [{ op: "move", id, dx, dy }]))
-          }
-          onReshape={(id, points) =>
-            void apply(withConfirm(id, [{ op: "reshape", id, points }]))
-          }
-          onSelect={setSelectedId}
-          placing={placing !== null}
-          selectedId={selectedId}
-        />
-        <aside className="flex flex-col gap-4">
-          <Palette onPick={setPlacing} placing={placing} />
-          {selected && (
-            <SelectionCard
-              element={selected}
-              onConfirm={(id) => void apply([{ op: "confirm", id }])}
-              onDelete={(id) => {
-                setSelectedId(null);
-                void apply([{ op: "delete", id }]);
+      <div className="flex min-h-0 flex-1 gap-3">
+        <div className="relative min-w-0 flex-1">
+          <CanvasViewport
+            contentHeight={model.plan.heightPx}
+            contentWidth={model.plan.widthPx}
+          >
+            <EditCanvas
+              model={model}
+              onCanvasClick={(at) => {
+                if (!placing) return;
+                const operation = defaultElement(placing, at, model);
+                setPlacing(null);
+                void apply([operation]).then(() =>
+                  setSelectedId(operation.element.id)
+                );
               }}
-              onRelabel={(id, label) =>
-                void apply(withConfirm(id, [{ op: "relabel", id, label }]))
+              onMove={(id, dx, dy) =>
+                void apply(withConfirm(id, [{ op: "move", id, dx, dy }]))
               }
+              onReshape={(id, points) =>
+                void apply(withConfirm(id, [{ op: "reshape", id, points }]))
+              }
+              onSelect={setSelectedId}
+              placing={placing !== null}
+              selectedId={selectedId}
             />
+          </CanvasViewport>
+          <div className="absolute right-3 top-3">
+            <AddMenu onPick={setPlacing} placing={placing} />
+          </div>
+          {reviewElements.length > 0 && (
+            <div className="absolute left-3 top-3 max-h-[45%] w-64 overflow-y-auto rounded-sm border bg-card/95 p-3 shadow-sm backdrop-blur">
+              <ReviewPanel
+                elements={reviewElements}
+                onConfirm={(id) => void apply([{ op: "confirm", id }])}
+                onSelect={setSelectedId}
+                selectedId={selectedId}
+              />
+            </div>
           )}
-          <ReviewPanel
-            elements={reviewElements}
-            onConfirm={(id) => void apply([{ op: "confirm", id }])}
-            onSelect={setSelectedId}
+          {selected && (
+            <div className="absolute bottom-3 left-3 w-64">
+              <SelectionCard
+                element={selected}
+                onConfirm={(id) => void apply([{ op: "confirm", id }])}
+                onDelete={(id) => {
+                  setSelectedId(null);
+                  void apply([{ op: "delete", id }]);
+                }}
+                onRelabel={(id, label) =>
+                  void apply(withConfirm(id, [{ op: "relabel", id, label }]))
+                }
+              />
+            </div>
+          )}
+        </div>
+        <aside className="w-80 min-h-0 shrink-0">
+          <PromptPanel
+            onApplied={(nextModel, savedVersion) => {
+              setUndoStack((stack) => [
+                ...stack.slice(-(UNDO_LIMIT - 1)),
+                model,
+              ]);
+              setModel(nextModel);
+              setVersion(savedVersion);
+              setSelectedId(null);
+            }}
+            projectId={projectId}
             selectedId={selectedId}
           />
         </aside>

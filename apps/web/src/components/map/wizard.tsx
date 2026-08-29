@@ -17,7 +17,7 @@ export function Wizard({ initialModel, initialVersion, projectId }: WizardProps)
   const [step, setStep] = useState<WizardStep>("edit");
 
   return (
-    <section className="mx-auto flex min-h-dvh max-w-6xl flex-col px-6 pb-10">
+    <section className="flex h-dvh flex-col overflow-hidden px-6 pb-4">
       <WizardStepper current={step} />
       {step === "edit" ? (
         <EditStep

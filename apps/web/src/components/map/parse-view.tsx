@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { CanvasViewport } from "@/components/map/canvas-viewport";
 import { mapContent } from "@/data/map";
 import { API_URL } from "@/lib/api";
 
@@ -43,6 +44,22 @@ export function ParseView({
   const [progress, setProgress] = useState<ParseProgress | null>(
     initialProgress
   );
+  const [planSize, setPlanSize] = useState<{
+    height: number;
+    width: number;
+  } | null>(null);
+
+  // Probe the plan's natural size programmatically: a rendered <img> can
+  // finish loading before hydration attaches onLoad and never report it.
+  useEffect(() => {
+    const probe = new Image();
+    probe.onload = () =>
+      setPlanSize({ height: probe.naturalHeight, width: probe.naturalWidth });
+    probe.src = `${API_URL}/projects/${projectId}/plan`;
+    return () => {
+      probe.onload = null;
+    };
+  }, [projectId]);
 
   useEffect(() => {
     if (status !== "parsing") {
@@ -93,60 +110,69 @@ export function ParseView({
   }
 
   return (
-    <section className="mx-auto flex min-h-dvh max-w-3xl flex-col items-center justify-center gap-6 px-6 py-16">
-      <header className="text-center">
+    <section className="flex h-dvh flex-col overflow-hidden px-6 pb-4 pt-16">
+      <header className="flex items-baseline justify-between gap-4 pb-3">
         <p className="text-sm text-muted-foreground">
-          {mapContent.uploadedLabel}
+          {mapContent.uploadedLabel} ·{" "}
+          <span className="font-mono">{projectName}</span>
         </p>
-        <h1 className="mt-1 font-mono text-base">{projectName}</h1>
-      </header>
-      {/* eslint-disable-next-line @next/next/no-img-element -- API-served image, dimensions unknown */}
-      <img
-        alt={mapContent.planAlt}
-        className="max-h-[55dvh] w-auto max-w-full border"
-        src={`${API_URL}/projects/${projectId}/plan`}
-      />
-      <div aria-live="polite" className="flex flex-col items-center gap-2">
-        {status === "parsing" ? (
-          <>
-            <p className="animate-pulse text-sm text-muted-foreground">
-              {progress
-                ? `${mapContent.parse.passLabel} ${progress.iteration}/${progress.maxIterations} · ${mapContent.parse.stages[progress.stage]}`
-                : mapContent.parse.parsingHint}
-            </p>
-            {progress?.history.map((entry) => (
-              <p
-                className="font-mono text-xs text-muted-foreground"
-                key={entry.iteration}
+        <div aria-live="polite" className="flex items-center gap-3">
+          {status === "parsing" ? (
+            <>
+              {progress?.history.map((entry) => (
+                <p
+                  className="font-mono text-xs text-muted-foreground"
+                  key={entry.iteration}
+                >
+                  {mapContent.parse.passLabel.toLowerCase()} {entry.iteration}:{" "}
+                  {entry.findingsCount} {mapContent.parse.findingsSuffix} ·{" "}
+                  {entry.aggregateConfidence.toFixed(2)}
+                </p>
+              ))}
+              <p className="animate-pulse text-sm text-muted-foreground">
+                {progress
+                  ? `${mapContent.parse.passLabel} ${progress.iteration}/${progress.maxIterations} · ${mapContent.parse.stages[progress.stage]}`
+                  : mapContent.parse.parsingHint}
+              </p>
+            </>
+          ) : (
+            <>
+              {(status === "failed" || error) && (
+                <p className="max-w-md text-sm text-destructive">
+                  {error
+                    ? status === "failed"
+                      ? `${mapContent.parse.failedLead} ${error}`
+                      : error
+                    : null}
+                </p>
+              )}
+              <Button
+                className="h-8 cursor-pointer rounded-sm px-3 text-xs"
+                onClick={() => void startParse()}
+                size="sm"
+                type="button"
               >
-                {mapContent.parse.passLabel.toLowerCase()} {entry.iteration}:{" "}
-                {entry.findingsCount} {mapContent.parse.findingsSuffix} ·{" "}
-                {mapContent.parse.confidenceLabel}{" "}
-                {entry.aggregateConfidence.toFixed(2)}
-              </p>
-            ))}
-          </>
-        ) : (
-          <>
-            {(status === "failed" || error) && (
-              <p className="max-w-md text-center text-sm text-destructive">
-                {error
-                  ? status === "failed"
-                    ? `${mapContent.parse.failedLead} ${error}`
-                    : error
-                  : null}
-              </p>
-            )}
-            <Button
-              className="cursor-pointer rounded-md"
-              onClick={() => void startParse()}
-              type="button"
-            >
-              {status === "failed"
-                ? mapContent.parse.retryLabel
-                : mapContent.parse.parseLabel}
-            </Button>
-          </>
+                {status === "failed"
+                  ? mapContent.parse.retryLabel
+                  : mapContent.parse.parseLabel}
+              </Button>
+            </>
+          )}
+        </div>
+      </header>
+      <div className="min-h-0 flex-1">
+        {planSize && (
+          <CanvasViewport
+            contentHeight={planSize.height}
+            contentWidth={planSize.width}
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element -- API-served image */}
+            <img
+              alt={mapContent.planAlt}
+              className="h-full w-full"
+              src={`${API_URL}/projects/${projectId}/plan`}
+            />
+          </CanvasViewport>
         )}
       </div>
     </section>
