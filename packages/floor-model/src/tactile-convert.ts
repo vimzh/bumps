@@ -1,4 +1,5 @@
 import { textBrailleSize } from './braille'
+import { adjacentRectPosition, fitRectInPolygon } from './fit'
 import type { FloorModel, Point, Room, Wall } from './schema'
 import {
   RELIEF_MM,
@@ -21,7 +22,12 @@ const SYMBOL_SIZE_MM = 6
 const MIN_DOOR_GAP_MM = 6
 
 export type ConversionNote = {
-  kind: 'dropped-wall' | 'dropped-window' | 'label-skipped' | 'short-label'
+  kind:
+    | 'dropped-wall'
+    | 'dropped-window'
+    | 'label-skipped'
+    | 'multi-plate'
+    | 'short-label'
   elementId: string
   message: string
 }
@@ -102,26 +108,63 @@ export function assignKeys(labels: string[]): Map<string, string> {
   return keys
 }
 
-// The plan-pixel -> plate-mm transform, shared by conversion and the
-// validation-context builder so both always agree.
-export function planToPlateTransform(model: FloorModel) {
+// The plan-pixel -> composite-mm transform for a given plate grid.
+function layoutForGrid(model: FloorModel, rows: number, cols: number) {
   const bounds = contentBounds(model)
   const contentW = Math.max(1, bounds.maxX - bounds.minX)
   const contentH = Math.max(1, bounds.maxY - bounds.minY)
-  const inner = PLATE.widthMm - 2 * PLATE.marginMm
-  const mmPerPx = Math.min(inner / contentW, inner / contentH)
-  const offsetX = PLATE.marginMm + (inner - contentW * mmPerPx) / 2
-  const offsetY = PLATE.marginMm + (inner - contentH * mmPerPx) / 2
+  // Margins apply only at the assembled map's outer border; seams between
+  // plates are continuous.
+  const innerW = PLATE.widthMm * cols - 2 * PLATE.marginMm
+  const innerH = PLATE.heightMm * rows - 2 * PLATE.marginMm
+  const mmPerPx = Math.min(innerW / contentW, innerH / contentH)
+  const offsetX = PLATE.marginMm + (innerW - contentW * mmPerPx) / 2
+  const offsetY = PLATE.marginMm + (innerH - contentH * mmPerPx) / 2
   const toMm = (p: Point): Point => ({
     x: (p.x - bounds.minX) * mmPerPx + offsetX,
     y: (p.y - bounds.minY) * mmPerPx + offsetY,
   })
-  return { bounds, mmPerPx, offsetX, offsetY, toMm }
+  return { bounds, cols, mmPerPx, offsetX, offsetY, rows, toMm }
+}
+
+// Deciding step: the smallest plate grid (1x1 -> 2x1/1x2 by aspect -> 2x2)
+// whose scale keeps door openings finger-readable. There is no user choice
+// here on purpose — anything smaller is unreadable, anything larger wasteful.
+export function planToPlateTransform(model: FloorModel) {
+  const bounds = contentBounds(model)
+  const contentW = Math.max(1, bounds.maxX - bounds.minX)
+  const contentH = Math.max(1, bounds.maxY - bounds.minY)
+  const wide = contentW >= contentH
+  const candidates: [number, number][] = [
+    [1, 1],
+    wide ? [1, 2] : [2, 1],
+    [2, 2],
+  ]
+  const doorWidths = model.openings
+    .filter((o) => o.kind === 'door')
+    .map((o) => o.width)
+  const minDoorPx = doorWidths.length > 0 ? Math.min(...doorWidths) : null
+  for (const [rows, cols] of candidates) {
+    const layout = layoutForGrid(model, rows, cols)
+    if (minDoorPx === null || minDoorPx * layout.mmPerPx >= 5) {
+      return layout
+    }
+  }
+  // Even 2x2 is too small: return the max grid and let the validator's
+  // scale gate fail the design loudly.
+  return layoutForGrid(model, 2, 2)
 }
 
 export function convertToTactile(model: FloorModel): ConversionResult {
   const notes: ConversionNote[] = []
-  const { mmPerPx, toMm } = planToPlateTransform(model)
+  const { cols, mmPerPx, rows, toMm } = planToPlateTransform(model)
+  if (rows * cols > 1) {
+    notes.push({
+      elementId: 'plate-grid',
+      kind: 'multi-plate',
+      message: `Floor is large: fitting on ${rows * cols} plates (${cols}×${rows} of ${PLATE.widthMm}×${PLATE.heightMm} mm)`,
+    })
+  }
 
   const elements: TactileElement[] = []
   const legend: LegendEntry[] = []
@@ -249,11 +292,19 @@ export function convertToTactile(model: FloorModel): ConversionResult {
   ])
   for (const room of labeledRooms) {
     const key = keyByLabel.get(room.label)!
-    const at = toMm(centroid(room.polygon))
     const size = textBrailleSize(key)
+    // Search for a spot fully inside the room; thin diagonal halls that
+    // can never hold their key get an adjacent label just below instead.
+    const polygonMm = room.polygon.map(toMm)
+    const center =
+      fitRectInPolygon(
+        size.widthMm,
+        size.heightMm,
+        polygonMm,
+        toMm(centroid(room.polygon)),
+      ) ?? adjacentRectPosition(size.widthMm, size.heightMm, polygonMm, 2)
     elements.push({
-      // Center the key on the centroid.
-      at: { x: at.x - size.widthMm / 2, y: at.y - size.heightMm / 2 },
+      at: { x: center.x - size.widthMm / 2, y: center.y - size.heightMm / 2 },
       id: `t-label-${room.id}`,
       key,
       kind: 'braille',
@@ -322,6 +373,7 @@ export function convertToTactile(model: FloorModel): ConversionResult {
 
   const design: TactileDesign = {
     elements,
+    grid: { cols, rows },
     legend,
     mmPerPx,
     plate: { ...PLATE },

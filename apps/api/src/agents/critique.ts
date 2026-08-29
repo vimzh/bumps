@@ -4,25 +4,86 @@ import { JSON_ONLY, makeModel, MODEL_CRITICAL, parseAgentJson } from './llm'
 import { withModelRetry } from './retry'
 
 // Kept to Gemini's response-schema subset (no string length constraints).
-export const critiqueSchema = z.object({
-  verdict: z.enum(['pass', 'needs_refinement']),
-  findings: z.array(
-    z.object({
-      kind: z.enum(['missing', 'extra', 'misplaced', 'mislabeled']),
-      // Id of the affected element in the current model, when it exists.
-      elementId: z.string().nullable(),
-      description: z.string(),
-      severity: z.enum(['minor', 'major']),
-    }),
-  ),
-  // Per-element confidence overrides based on what the review saw.
-  confidenceAdjustments: z.array(
+const findingSchema = z.object({
+  kind: z.enum(['missing', 'extra', 'misplaced', 'mislabeled']).optional(),
+  // Some models emit "type" instead of "kind".
+  type: z.enum(['missing', 'extra', 'misplaced', 'mislabeled']).optional(),
+  // Id of the affected element in the current model, when it exists.
+  elementId: z.string().nullable().optional(),
+  description: z.string(),
+  severity: z.enum(['minor', 'major']).optional(),
+})
+
+// Absolute confidences are used; relative "adjustment" deltas some models
+// emit are accepted but discarded (findings drive refinement either way).
+const adjustmentsSchema = z
+  .array(
     z.object({
       elementId: z.string(),
-      confidence: z.number().min(0).max(1),
+      confidence: z.number().min(0).max(1).optional(),
+      adjustment: z.number().optional(),
     }),
-  ),
+  )
+  .optional()
+
+// Plain canonical shape for the agent's outputSchema (ADK needs ZodObject).
+export const critiqueOutputSchema = z.object({
+  verdict: z.enum(['pass', 'needs_refinement']),
+  findings: z.array(findingSchema),
+  confidenceAdjustments: adjustmentsSchema,
 })
+
+// Canonical shape, plus the grouped dialect some models prefer
+// ({missing: [...], extra: [...], ...}); both normalize to Critique.
+export const critiqueSchema = z
+  .union([
+    z.object({
+      verdict: z.string(),
+      findings: z.array(findingSchema),
+      confidenceAdjustments: adjustmentsSchema,
+    }),
+    z.object({
+      verdict: z.string().optional(),
+      missing: z.array(findingSchema).optional(),
+      extra: z.array(findingSchema).optional(),
+      misplaced: z.array(findingSchema).optional(),
+      mislabeled: z.array(findingSchema).optional(),
+      confidenceAdjustments: adjustmentsSchema,
+    }),
+  ])
+  .transform((raw) => {
+    const grouped =
+      'findings' in raw && raw.findings
+        ? raw.findings
+        : (['missing', 'extra', 'misplaced', 'mislabeled'] as const).flatMap(
+            (kind) =>
+              ((raw as Record<string, unknown>)[kind] as
+                | z.infer<typeof findingSchema>[]
+                | undefined
+                | null ?? []).map((f) => ({ ...f, kind: f.kind ?? kind })),
+          )
+    const findings = grouped.map((f) => ({
+      description: f.description,
+      elementId: f.elementId ?? null,
+      kind: f.kind ?? f.type ?? 'misplaced',
+      severity: f.severity ?? 'major',
+    }))
+    const verdict =
+      raw.verdict === 'pass' && findings.length === 0
+        ? ('pass' as const)
+        : raw.verdict === 'pass'
+          ? ('pass' as const)
+          : ('needs_refinement' as const)
+    return {
+      confidenceAdjustments: (raw.confidenceAdjustments ?? []).flatMap((a) =>
+        a.confidence === undefined
+          ? []
+          : [{ confidence: a.confidence, elementId: a.elementId }],
+      ),
+      findings,
+      verdict,
+    }
+  })
 
 export type Critique = z.infer<typeof critiqueSchema>
 
@@ -55,7 +116,7 @@ export const critiqueAgent = new LlmAgent({
   description: 'Compares a floor plan against a rendering of its extracted model',
   model: makeModel(MODEL_CRITICAL),
   instruction: INSTRUCTION,
-  outputSchema: critiqueSchema,
+  outputSchema: critiqueOutputSchema,
   generateContentConfig: {
     temperature: 0.1,
     thinkingConfig: { thinkingBudget: -1 },

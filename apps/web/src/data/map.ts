@@ -77,6 +77,10 @@ export const mapContent = {
     blocked: "Export blocked — the design still has violations.",
     downloadLegend: "Download legend STL",
     downloadMap: "Download map STL",
+    downloadPlatePrefix: "Download plate",
+    multiPlateNote:
+      "Large map: printed as multiple plates assembled edge-to-edge. The preview shows the assembled map; download one STL per plate.",
+    previewOnly: "assembled preview",
     failed: "Export failed. Try again.",
     generating: "Generating printable STL…",
     printHint:
@@ -86,6 +90,7 @@ export const mapContent = {
     trianglesSuffix: "triangles",
   },
   tactile: {
+    assembledSuffix: "assembled",
     converting: "Converting & validating against tactile standards…",
     exportHint: "STL export is the next build step.",
     failed: "Conversion failed.",

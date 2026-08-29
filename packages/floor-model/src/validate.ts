@@ -1,13 +1,15 @@
 import { textBrailleSize } from './braille'
+import { fitRectInPolygon, pointInPolygon } from './fit'
 import type { FloorModel, Point } from './schema'
 import { planToPlateTransform } from './tactile-convert'
-import type {
-  BrailleLabel,
-  TactileArea,
-  TactileDesign,
-  TactileLine,
-  TactileSymbol,
-  ValidationViolation,
+import {
+  compositeSize,
+  type BrailleLabel,
+  type TactileArea,
+  type TactileDesign,
+  type TactileLine,
+  type TactileSymbol,
+  type ValidationViolation,
 } from './tactile'
 
 // Deterministic standards validator (Phase 8). Every rule from the standards
@@ -20,7 +22,17 @@ export const MIN_SYMBOL_MM = 5
 export const MIN_DOOR_OPENING_MM = 5
 
 // Rules layout iteration can fix by moving braille/symbols; 'scale' cannot.
-export const MOVABLE_RULES = ['clearance', 'label-fit', 'margin'] as const
+export const MOVABLE_RULES = [
+  'clearance',
+  'label-fit',
+  'margin',
+  'seam-clearance',
+] as const
+export const SEAM_CLEARANCE_MM = 3
+// Float tolerance for all mm comparisons, and the adjacency budget for
+// keys labeling features too small to hold them.
+const MEASURE_EPS_MM = 0.05
+export const ADJACENT_LABEL_MM = 10
 
 export type ValidationContext = {
   // Scaled room polygons (mm), for the label-fit rule.
@@ -54,20 +66,6 @@ function brailleRect(label: BrailleLabel): Rect {
   }
 }
 
-function pointInPolygon(point: Point, polygon: Point[]): boolean {
-  let inside = false
-  for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
-    const a = polygon[i]!
-    const b = polygon[j]!
-    if (
-      a.y > point.y !== b.y > point.y &&
-      point.x < ((b.x - a.x) * (point.y - a.y)) / (b.y - a.y) + a.x
-    ) {
-      inside = !inside
-    }
-  }
-  return inside
-}
 
 function distPointSegment(p: Point, a: Point, b: Point): number {
   const abx = b.x - a.x
@@ -141,7 +139,9 @@ export function validateTactileDesign(
   context: ValidationContext,
 ): ValidationViolation[] {
   const violations: ValidationViolation[] = []
-  const { heightMm, marginMm, widthMm } = design.plate
+  const { marginMm } = design.plate
+  const { heightMm, widthMm } = compositeSize(design)
+  const grid = design.grid ?? { cols: 1, rows: 1 }
   const symbols = design.elements.filter(
     (e): e is TactileSymbol => e.kind === 'symbol',
   )
@@ -245,7 +245,8 @@ export function validateTactileDesign(
     measured: number,
     required: number,
   ) => {
-    if (measured < required) {
+    // Float tolerance: 2.9999 of scaled geometry is a met 3 mm rule.
+    if (measured < required - MEASURE_EPS_MM) {
       violations.push({
         elementIds: [aId, bId],
         measuredMm: Math.max(0, measured),
@@ -307,6 +308,42 @@ export function validateTactileDesign(
     }
   }
 
+  // Seam clearance: braille and point symbols must never straddle (or
+  // crowd) the joints between plates — a split braille cell is gibberish.
+  // Walls and areas may cross seams; they slice cleanly.
+  const seamsX = grid.cols > 1 ? [design.plate.widthMm] : []
+  const seamsY = grid.rows > 1 ? [design.plate.heightMm] : []
+  const seamViolation = (id: string, measured: number) => {
+    violations.push({
+      elementIds: [id],
+      measuredMm: Math.max(0, measured),
+      message: `${id} is ${Math.max(0, measured).toFixed(1)} mm from a plate seam — keep braille and symbols at least ${SEAM_CLEARANCE_MM} mm clear`,
+      requiredMm: SEAM_CLEARANCE_MM,
+      rule: 'seam-clearance',
+    })
+  }
+  for (const label of labels) {
+    const rect = brailleRect(label)
+    for (const sx of seamsX) {
+      const d = rect.minX < sx && rect.maxX > sx ? 0 : Math.min(Math.abs(rect.minX - sx), Math.abs(rect.maxX - sx))
+      if (d < SEAM_CLEARANCE_MM - MEASURE_EPS_MM) seamViolation(label.id, d)
+    }
+    for (const sy of seamsY) {
+      const d = rect.minY < sy && rect.maxY > sy ? 0 : Math.min(Math.abs(rect.minY - sy), Math.abs(rect.maxY - sy))
+      if (d < SEAM_CLEARANCE_MM - MEASURE_EPS_MM) seamViolation(label.id, d)
+    }
+  }
+  for (const symbol of symbols) {
+    for (const sx of seamsX) {
+      const d = Math.abs(symbol.at.x - sx) - symbol.sizeMm / 2
+      if (d < SEAM_CLEARANCE_MM - MEASURE_EPS_MM) seamViolation(symbol.id, d)
+    }
+    for (const sy of seamsY) {
+      const d = Math.abs(symbol.at.y - sy) - symbol.sizeMm / 2
+      if (d < SEAM_CLEARANCE_MM - MEASURE_EPS_MM) seamViolation(symbol.id, d)
+    }
+  }
+
   // Label-fit: a room's braille key must sit inside that room, and a
   // block's key inside its block. (Note: braille on a block is exempt from
   // block clearance by construction — height differentiation separates them.)
@@ -324,17 +361,49 @@ export function validateTactileDesign(
     const fits = rectCorners(rect).every((corner) =>
       pointInPolygon(corner, polygon),
     )
-    if (!fits) {
+    if (fits) continue
+    // A feature that can never hold its key (too small, or a thin
+    // diagonal sliver whose bbox is deceptively large) takes an adjacent
+    // label instead — the convention on real tactile maps.
+    const xs = polygon.map((p) => p.x)
+    const ys = polygon.map((p) => p.y)
+    const bounds = {
+      maxX: Math.max(...xs),
+      maxY: Math.max(...ys),
+      minX: Math.min(...xs),
+      minY: Math.min(...ys),
+    }
+    const canEverFit =
+      fitRectInPolygon(
+        rect.maxX - rect.minX + 1,
+        rect.maxY - rect.minY + 1,
+        polygon,
+        {
+          x: (bounds.minX + bounds.maxX) / 2,
+          y: (bounds.minY + bounds.maxY) / 2,
+        },
+      ) !== null
+    if (!canEverFit) {
+      const gap = rectRectDistance(rect, bounds)
+      if (gap <= ADJACENT_LABEL_MM + MEASURE_EPS_MM) continue
       violations.push({
         elementIds: [label.id],
-        measuredMm: null,
-        message: area
-          ? `Braille key for block ${label.sourceId} does not fit inside the block`
-          : `Braille key for room ${label.sourceId} does not fit inside the room`,
-        requiredMm: null,
+        measuredMm: gap,
+        message: `Braille key for ${label.sourceId} is ${gap.toFixed(1)} mm away — it is too small to label inside, so keep the key within ${ADJACENT_LABEL_MM} mm of it`,
+        requiredMm: ADJACENT_LABEL_MM,
         rule: 'label-fit',
       })
+      continue
     }
+    violations.push({
+      elementIds: [label.id],
+      measuredMm: null,
+      message: area
+        ? `Braille key for block ${label.sourceId} does not fit inside the block`
+        : `Braille key for room ${label.sourceId} does not fit inside the room`,
+      requiredMm: null,
+      rule: 'label-fit',
+    })
   }
 
   return violations

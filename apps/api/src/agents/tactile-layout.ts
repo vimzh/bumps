@@ -1,6 +1,7 @@
 import { z } from 'zod'
 import { LlmAgent, InMemorySessionService, Runner } from '@google/adk'
 import {
+  resolveMechanicalViolations,
   validateTactileDesign,
   type TactileDesign,
   type ValidationContext,
@@ -14,13 +15,23 @@ export const MAX_LAYOUT_ITERATIONS = 4
 // The agent may ONLY nudge braille labels and point symbols. It never touches
 // lines, sizes, or heights — the validator (deterministic code) is the only
 // authority on compliance.
+// Tolerant of model dialects: numbers may arrive as strings, and some
+// models shorten dxMm/dyMm to dx/dy.
 const layoutOutputSchema = z.object({
   moves: z.array(
-    z.object({
-      elementId: z.string(),
-      dxMm: z.number(),
-      dyMm: z.number(),
-    }),
+    z
+      .object({
+        elementId: z.string(),
+        dxMm: z.coerce.number().optional(),
+        dyMm: z.coerce.number().optional(),
+        dx: z.coerce.number().optional(),
+        dy: z.coerce.number().optional(),
+      })
+      .transform((m) => ({
+        dxMm: m.dxMm ?? m.dx ?? 0,
+        dyMm: m.dyMm ?? m.dy ?? 0,
+        elementId: m.elementId,
+      })),
   ),
 })
 
@@ -126,6 +137,20 @@ export async function runTactileLayout(
     return { design, iterations, valid: false, violations }
   }
 
+  // Geometry disposes first: seam-clearance is pure arithmetic, so it is
+  // repaired deterministically; the agent only sees what needs judgment.
+  const mechanicalPass = () => {
+    const fixed = resolveMechanicalViolations(design, context)
+    if (fixed !== design) {
+      const fixedViolations = validateTactileDesign(fixed, context)
+      if (fixedViolations.length <= violations.length) {
+        design = fixed
+        violations = fixedViolations
+      }
+    }
+  }
+  mechanicalPass()
+
   for (
     let iteration = 0;
     violations.length > 0 && iteration < MAX_LAYOUT_ITERATIONS;
@@ -139,6 +164,7 @@ export async function runTactileLayout(
       design = candidate
       violations = candidateViolations
     }
+    mechanicalPass()
     iterations.push({ moves: moves.length, violations: violations.length })
   }
 

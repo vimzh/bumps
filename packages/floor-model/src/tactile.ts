@@ -78,6 +78,14 @@ export const tactileElementSchema = z.discriminatedUnion('kind', [
 export const tactileDesignSchema = z.object({
   schemaVersion: z.literal(1),
   plate: plateSchema,
+  // Large floors print as a grid of plates assembled edge-to-edge
+  // (2x2 max in v1). Coordinates span the composite area.
+  grid: z
+    .object({
+      rows: z.number().int().min(1).max(2),
+      cols: z.number().int().min(1).max(2),
+    })
+    .default({ cols: 1, rows: 1 }),
   // Scale actually applied: plate millimeters per plan pixel.
   mmPerPx: z.number().positive(),
   title: z.string().nullable().default(null),
@@ -96,6 +104,19 @@ export const validationViolationSchema = z.object({
 })
 
 export type Plate = z.infer<typeof plateSchema>
+export type PlateGrid = { cols: number; rows: number }
+
+// Overall assembled dimensions of a (possibly multi-plate) design.
+export function compositeSize(design: {
+  grid?: PlateGrid
+  plate: { heightMm: number; widthMm: number }
+}): { heightMm: number; widthMm: number } {
+  const grid = design.grid ?? { cols: 1, rows: 1 }
+  return {
+    heightMm: design.plate.heightMm * grid.rows,
+    widthMm: design.plate.widthMm * grid.cols,
+  }
+}
 export type TactileLine = z.infer<typeof tactileLineSchema>
 export type TactileArea = z.infer<typeof tactileAreaSchema>
 export type TactileSymbol = z.infer<typeof tactileSymbolSchema>

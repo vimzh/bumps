@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { STLLoader } from "three/addons/loaders/STLLoader.js";
-import type { Point, TactileDesign } from "@bumps/floor-model";
+import { compositeSize, type Point, type TactileDesign } from "@bumps/floor-model";
 
 // "Better view" palette: semantic colors per element type so a sighted
 // reviewer can read the plate at a glance. The print itself is monochrome.
@@ -51,7 +51,7 @@ function buildReviewColors(
 ): THREE.BufferAttribute {
   const positions = geometry.getAttribute("position");
   const colors = new Float32Array(positions.count * 3);
-  const plateH = design.plate.heightMm;
+  const plateH = compositeSize(design).heightMm;
   const baseTop = design.plate.baseMm + 0.02;
 
   const lines = design.elements.filter((e) => e.kind === "line");

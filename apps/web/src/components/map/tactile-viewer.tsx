@@ -1,5 +1,6 @@
 import {
   BRAILLE_MM,
+  compositeSize,
   textDotCenters,
   type TactileDesign,
   type TactileSymbol,
@@ -87,7 +88,9 @@ type TactileViewerProps = {
 };
 
 export function TactileViewer({ design }: TactileViewerProps) {
-  const { heightMm, marginMm, widthMm } = design.plate;
+  const { marginMm } = design.plate;
+  const grid = design.grid ?? { cols: 1, rows: 1 };
+  const { heightMm, widthMm } = compositeSize(design);
   return (
     <svg
       className="h-full w-full"
@@ -104,6 +107,28 @@ export function TactileViewer({ design }: TactileViewerProps) {
         x={marginMm}
         y={marginMm}
       />
+      {grid.cols > 1 && (
+        <line
+          className="stroke-(--color-brand)/50"
+          strokeDasharray="4 3"
+          strokeWidth={0.4}
+          x1={design.plate.widthMm}
+          x2={design.plate.widthMm}
+          y1={0}
+          y2={heightMm}
+        />
+      )}
+      {grid.rows > 1 && (
+        <line
+          className="stroke-(--color-brand)/50"
+          strokeDasharray="4 3"
+          strokeWidth={0.4}
+          x1={0}
+          x2={widthMm}
+          y1={design.plate.heightMm}
+          y2={design.plate.heightMm}
+        />
+      )}
       {design.elements.map((element) => {
         if (element.kind === "line") {
           return (

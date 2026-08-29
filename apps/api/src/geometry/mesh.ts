@@ -5,6 +5,7 @@ import Module, {
 } from 'manifold-3d'
 import {
   BRAILLE_MM,
+  compositeSize,
   RELIEF_MM,
   textDotCenters,
   textToBrailleCells,
@@ -192,8 +193,12 @@ function pointInPolygon(point: Point, polygon: Point[]): boolean {
   return inside
 }
 
+// Builds the ASSEMBLED map as one solid: a continuous base slab spanning
+// the whole plate grid (no seams), with all relief on top. This is what the
+// 3D preview shows; per-plate print files are sliced from it.
 export function buildMapMesh(design: TactileDesign): ManifoldT {
-  const { baseMm, heightMm, widthMm } = design.plate
+  const { baseMm } = design.plate
+  const { heightMm, widthMm } = compositeSize(design)
   const yUp = (p: Point): Point => ({ x: p.x, y: heightMm - p.y })
   const parts: ManifoldT[] = [Manifold.cube([widthMm, heightMm, baseMm])]
   const areaElements = design.elements.filter((e) => e.kind === 'area')
@@ -235,9 +240,41 @@ export function buildMapMesh(design: TactileDesign): ManifoldT {
   return Manifold.union(parts.filter((part) => !part.isEmpty()))
 }
 
+// Slices the composite into per-plate print files. Each plate is the
+// composite intersected with that plate's volume, moved to its own origin —
+// cut from the same solid, so assembled plates align exactly at the seams.
+export function buildPlateMeshes(
+  design: TactileDesign,
+  composite: ManifoldT,
+): { col: number; manifold: ManifoldT; row: number }[] {
+  const grid = design.grid ?? { cols: 1, rows: 1 }
+  if (grid.rows * grid.cols <= 1) return []
+  const { heightMm, widthMm } = design.plate
+  const total = compositeSize(design)
+  const plates: { col: number; manifold: ManifoldT; row: number }[] = []
+  for (let row = 0; row < grid.rows; row++) {
+    for (let col = 0; col < grid.cols; col++) {
+      // Design row 0 is the TOP row; mesh y is flipped (y-up).
+      const y0 = total.heightMm - (row + 1) * heightMm
+      const box = Manifold.cube([widthMm, heightMm, 60]).translate([
+        col * widthMm,
+        y0,
+        -10,
+      ])
+      plates.push({
+        col,
+        manifold: composite.intersect(box).translate([-col * widthMm, -y0, 10 - 10]),
+        row,
+      })
+    }
+  }
+  return plates
+}
+
 // Legend plate: title row, then key -> text rows, all Grade 1 braille.
 export function buildLegendMesh(design: TactileDesign): ManifoldT | null {
   if (design.legend.length === 0) return null
+  // The legend is always a single plate regardless of the map grid.
   const { baseMm, heightMm, marginMm, widthMm } = design.plate
   const yUp = (p: Point): Point => ({ x: p.x, y: heightMm - p.y })
   const maxCells = Math.floor((widthMm - 2 * marginMm) / BRAILLE_MM.cellPitch)

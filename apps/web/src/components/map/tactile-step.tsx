@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import {
+  compositeSize,
   textToBrailleCells,
   type ConversionNote,
   type TactileDesign,
@@ -34,6 +35,15 @@ type State =
 
 export function TactileStep({ onBack, onNext, projectId }: TactileStepProps) {
   const [state, setState] = useState<State>({ kind: "loading" });
+  const grid =
+    state.kind === "ready"
+      ? (state.design.grid ?? { cols: 1, rows: 1 })
+      : { cols: 1, rows: 1 };
+  const multiPlate = grid.cols * grid.rows > 1;
+  const plateLabel =
+    state.kind === "ready" && multiPlate
+      ? `${grid.cols} × ${grid.rows} · ${compositeSize(state.design).widthMm} × ${compositeSize(state.design).heightMm} mm ${mapContent.tactile.assembledSuffix}`
+      : mapContent.tactile.plateLabel;
 
   const convert = useCallback(async () => {
     setState({ kind: "loading" });
@@ -128,7 +138,7 @@ export function TactileStep({ onBack, onNext, projectId }: TactileStepProps) {
         info={
           <>
             <span className="truncate">
-              {mapContent.tactile.title} · {mapContent.tactile.plateLabel}
+              {mapContent.tactile.title} · {plateLabel}
               {state.kind === "ready" && state.design.title
                 ? ` · ${state.design.title}`
                 : null}
@@ -171,13 +181,23 @@ export function TactileStep({ onBack, onNext, projectId }: TactileStepProps) {
         <div className="flex min-h-0 flex-1">
           <div className="min-w-0 flex-1">
             <CanvasViewport
-              contentHeight={state.design.plate.heightMm}
-              contentWidth={state.design.plate.widthMm}
+              contentHeight={compositeSize(state.design).heightMm}
+              contentWidth={compositeSize(state.design).widthMm}
             >
               <TactileViewer design={state.design} />
             </CanvasViewport>
           </div>
           <aside className="flex w-80 min-h-0 shrink-0 flex-col gap-3 overflow-y-auto border-l bg-card p-3">
+            {state.notes
+              .filter((note) => note.kind === "multi-plate")
+              .map((note) => (
+                <div
+                  className="rounded-sm border border-(--color-brand)/50 bg-(--color-brand)/5 p-3 text-xs"
+                  key={note.elementId}
+                >
+                  {note.message}
+                </div>
+              ))}
             {state.iterations.length > 1 && (
               <p className="font-mono text-xs text-muted-foreground">
                 {mapContent.tactile.iterationsLead}:{" "}

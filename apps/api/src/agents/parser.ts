@@ -24,8 +24,9 @@ const parsedOutputSchema = z.object({
   walls: z.array(
     z.object({
       id: z.string(),
-      a: llmPoint,
-      b: llmPoint,
+      // Dialects: a/b points, or the whole segment as a=[x0,y0,x1,y1].
+      a: z.union([llmPoint, z.tuple([z.number(), z.number(), z.number(), z.number()])]),
+      b: llmPoint.optional(),
       thickness: z.number().optional(),
       confidence: llmConfidence,
     }),
@@ -186,11 +187,23 @@ async function runParserOnce(
       pixelsPerMeter: null,
       north: null,
     },
-    walls: parsed.walls.map((wall) => ({
-      ...wall,
-      kind: 'wall' as const,
-      thickness: wall.thickness ?? 8,
-    })),
+    walls: parsed.walls.map((wall) => {
+      const seg = Array.isArray(wall.a)
+        ? {
+            a: { x: wall.a[0], y: wall.a[1] },
+            b: { x: wall.a[2], y: wall.a[3] },
+          }
+        : wall.b !== undefined
+          ? { a: wall.a, b: wall.b }
+          : { a: wall.a, b: wall.a }
+      return {
+        confidence: wall.confidence,
+        id: wall.id,
+        kind: 'wall' as const,
+        thickness: wall.thickness ?? 8,
+        ...seg,
+      }
+    }),
     openings: parsed.openings.map((opening) => ({
       ...opening,
       wallId: opening.wallId ?? null,

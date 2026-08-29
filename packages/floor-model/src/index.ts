@@ -12,6 +12,7 @@ export {
 } from './schema'
 export {
   brailleLabelSchema,
+  compositeSize,
   legendEntrySchema,
   plateSchema,
   RELIEF_MM,
@@ -26,6 +27,7 @@ export type {
   BrailleLabel,
   LegendEntry,
   Plate,
+  PlateGrid,
   TactileArea,
   TactileDesign,
   TactileElement,
@@ -73,6 +75,12 @@ export {
   PLATE,
 } from './tactile-convert'
 export type { ConversionNote, ConversionResult } from './tactile-convert'
+export { resolveMechanicalViolations } from './mechanical-fixes'
+export {
+  adjacentRectPosition,
+  fitRectInPolygon,
+  pointInPolygon,
+} from './fit'
 export {
   buildValidationContext,
   CLEARANCE_MM,

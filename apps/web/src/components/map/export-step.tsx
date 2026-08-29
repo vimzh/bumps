@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import type { TactileDesign } from "@bumps/floor-model";
+import { compositeSize, type TactileDesign } from "@bumps/floor-model";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { MapTopBar } from "@/components/map/map-top-bar";
@@ -11,7 +11,7 @@ import { API_URL } from "@/lib/api";
 
 type ExportFile = {
   bbox: { max: [number, number, number]; min: [number, number, number] };
-  kind: "legend" | "map";
+  kind: string;
   triangles: number;
 };
 
@@ -19,6 +19,16 @@ type State =
   | { files: ExportFile[]; generatedAt: number; kind: "ready" }
   | { kind: "error"; message: string }
   | { kind: "loading" };
+
+function downloadLabel(kind: string): string {
+  const plate = /^plate-(\d+)of(\d+)$/.exec(kind);
+  if (plate) {
+    return `${mapContent.export.downloadPlatePrefix} ${plate[1]} / ${plate[2]}`;
+  }
+  return kind === "map"
+    ? mapContent.export.downloadMap
+    : mapContent.export.downloadLegend;
+}
 
 type ExportStepProps = {
   onBack: () => void;
@@ -29,6 +39,12 @@ export function ExportStep({ onBack, projectId }: ExportStepProps) {
   const [state, setState] = useState<State>({ kind: "loading" });
   const [betterView, setBetterView] = useState(true);
   const [design, setDesign] = useState<TactileDesign | null>(null);
+  const grid = design?.grid ?? { cols: 1, rows: 1 };
+  const multiPlate = grid.cols * grid.rows > 1;
+  const plateLabel =
+    design && multiPlate
+      ? `${grid.cols} × ${grid.rows} · ${compositeSize(design).widthMm} × ${compositeSize(design).heightMm} mm ${mapContent.tactile.assembledSuffix}`
+      : mapContent.tactile.plateLabel;
 
   // The design powers the review coloring of the STL preview.
   useEffect(() => {
@@ -95,7 +111,7 @@ export function ExportStep({ onBack, projectId }: ExportStepProps) {
         current="export"
         info={
           <span className="truncate">
-            {mapContent.export.title} · {mapContent.tactile.plateLabel}
+            {mapContent.export.title} · {plateLabel}
           </span>
         }
       />
@@ -140,30 +156,37 @@ export function ExportStep({ onBack, projectId }: ExportStepProps) {
                 {mapContent.export.betterViewHint}
               </p>
             </div>
-            {state.files.map((file) => (
-              <div className="rounded-sm border bg-card p-3" key={file.kind}>
-                <p className="font-mono text-xs text-muted-foreground">
-                  {file.kind}.stl · {file.triangles.toLocaleString()}{" "}
-                  {mapContent.export.trianglesSuffix} ·{" "}
-                  {file.bbox.max[0] - file.bbox.min[0]} ×{" "}
-                  {file.bbox.max[1] - file.bbox.min[1]} ×{" "}
-                  {(file.bbox.max[2] - file.bbox.min[2]).toFixed(1)} mm
-                </p>
-                <Button
-                  asChild
-                  className="mt-2 h-8 w-full cursor-pointer rounded-sm text-xs"
-                  size="sm"
-                >
-                  <a
-                    href={`${API_URL}/projects/${projectId}/export/${file.kind}.stl`}
-                  >
-                    {file.kind === "map"
-                      ? mapContent.export.downloadMap
-                      : mapContent.export.downloadLegend}
-                  </a>
-                </Button>
+            {multiPlate && (
+              <div className="rounded-sm border border-(--color-brand)/50 bg-(--color-brand)/5 p-3 text-xs">
+                {mapContent.export.multiPlateNote}
               </div>
-            ))}
+            )}
+            {state.files
+              // On a multi-plate grid the composite map.stl is the seamless
+              // 3D preview; the printable downloads are the plates.
+              .filter((file) => !(multiPlate && file.kind === "map"))
+              .map((file) => (
+                <div className="rounded-sm border bg-card p-3" key={file.kind}>
+                  <p className="font-mono text-xs text-muted-foreground">
+                    {file.kind}.stl · {file.triangles.toLocaleString()}{" "}
+                    {mapContent.export.trianglesSuffix} ·{" "}
+                    {file.bbox.max[0] - file.bbox.min[0]} ×{" "}
+                    {file.bbox.max[1] - file.bbox.min[1]} ×{" "}
+                    {(file.bbox.max[2] - file.bbox.min[2]).toFixed(1)} mm
+                  </p>
+                  <Button
+                    asChild
+                    className="mt-2 h-8 w-full cursor-pointer rounded-sm text-xs"
+                    size="sm"
+                  >
+                    <a
+                      href={`${API_URL}/projects/${projectId}/export/${file.kind}.stl`}
+                    >
+                      {downloadLabel(file.kind)}
+                    </a>
+                  </Button>
+                </div>
+              ))}
             <p className="text-xs text-muted-foreground">
               {mapContent.export.printHint}
             </p>

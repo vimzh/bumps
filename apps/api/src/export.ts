@@ -6,6 +6,7 @@ import type { TactileDesign } from '@bumps/floor-model'
 import {
   buildLegendMesh,
   buildMapMesh,
+  buildPlateMeshes,
   meshInfo,
   meshToBinaryStl,
   type MeshInfo,
@@ -38,14 +39,28 @@ exportRoutes.post('/:id/export', async (c) => {
   }
 
   const design = row.design as TactileDesign
+  const grid = design.grid ?? { cols: 1, rows: 1 }
   const dir = path.join(UPLOADS_DIR, projectId, 'export')
   await mkdir(dir, { recursive: true })
 
   const files: { info: MeshInfo; kind: string; path: string }[] = []
+  // 'map' is the assembled composite: the only file for a single plate,
+  // and the seamless 3D preview for a multi-plate grid.
   const map = buildMapMesh(design)
   const mapPath = path.join(dir, 'map.stl')
   await Bun.write(mapPath, meshToBinaryStl(map.getMesh()))
   files.push({ info: meshInfo(map), kind: 'map', path: mapPath })
+
+  // Multi-plate grids also get one print file per plate, sliced from the
+  // same solid so assembled seams align exactly.
+  const total = grid.rows * grid.cols
+  for (const plate of buildPlateMeshes(design, map)) {
+    const n = plate.row * grid.cols + plate.col + 1
+    const kind = `plate-${n}of${total}`
+    const platePath = path.join(dir, `${kind}.stl`)
+    await Bun.write(platePath, meshToBinaryStl(plate.manifold.getMesh()))
+    files.push({ info: meshInfo(plate.manifold), kind, path: platePath })
+  }
 
   const legend = buildLegendMesh(design)
   if (legend) {
@@ -69,6 +84,7 @@ exportRoutes.post('/:id/export', async (c) => {
         kind: file.kind,
         triangles: file.info.triangles,
       })),
+      grid,
     },
     201,
   )
@@ -76,7 +92,7 @@ exportRoutes.post('/:id/export', async (c) => {
 
 exportRoutes.get('/:id/export/:file', async (c) => {
   const projectId = c.req.param('id')
-  const match = /^(map|legend)\.stl$/.exec(c.req.param('file'))
+  const match = /^(map|legend|plate-[1-4]of[1-4])\.stl$/.exec(c.req.param('file'))
   if (!match) {
     return c.json({ error: 'Unknown export file' }, 404)
   }
