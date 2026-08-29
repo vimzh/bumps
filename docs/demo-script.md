@@ -21,10 +21,10 @@ Record at the deployed Cloud Run URL. One continuous flow, one project, real flo
 ## 2:20–3:10 — Tactile conversion + the validator loop (Taskmaster moment #2)
 - Click Next. Show "Converting & validating against tactile standards…", then the plate: braille dots, symbols, legend.
 - Point at "Layout passes: 2 → 0" and the badge "Zero violations — ready to print".
-- VO: "Deterministic code converts to a 200-millimeter plate under BANA and ADA rules — exact braille dot geometry, minimum fingertip clearances. A third agent nudges labels until the validator measures zero violations. Not zero? It cannot be exported. If the building is too big to print readably, it refuses loudly instead of printing an unreadable map."
+- VO: "Deterministic code converts to a 200-millimeter plate under BANA and ADA rules — exact braille dot geometry, minimum fingertip clearances. Too big for one plate? It decides for you: a two-by-one or two-by-two grid, because a smaller map physically cannot be read by a finger. Geometry fixes what geometry can — labels are placed by search, seam conflicts by arithmetic — and an agent nudges only the judgment calls until the validator measures zero violations. Not zero? It cannot be exported."
 
 ## 3:10–3:40 — Export
-- Click Next. Orbit the three.js STL. Download map.stl + legend.stl.
+- Click Next. Orbit the three.js STL — for a large venue this is the assembled multi-plate map as one seamless solid. Download one STL per plate + the legend.
 - If a print exists, show the physical plate here and run a finger over it.
 - VO: "A watertight STL — walls at one millimeter, symbols at one and a half, braille as spherical domes to ADA spec — plus a legend plate. Print it flat, no supports."
 

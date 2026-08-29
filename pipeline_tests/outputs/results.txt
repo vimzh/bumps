@@ -1,0 +1,36 @@
+19:27:34 === cch-2f: upload cch-2f-plan.jpg
+19:32:16 cch-2f PARSED v2 it=2 rooms=8 walls=6 doors=3 furn=3 feats=['stairs', 'stairs', 'stairs'] labels=['MAIN FOYER HALL 1', 'HALL 1', 'HALL D', 'HALL E', 'HALL F', 'HALL G', 'HALL Y 1-12', 'ROOFTOP GARDEN']
+19:32:24 cch-2f TACTILE done valid=False passes=[22] elements={'line': 9, 'symbol': 3, 'braille': 11, 'area': 3} legend=['mf=main foyer hall 1', 'h1=hall 1', 'hd=hall d', 'he=hall e', 'hf=hall f', 'hg=hall g', 'hy=hall y 112', 'rg=rooftop garden', 'ch=chairs']
+rendered ../../pipeline_tests/outputs/cch-2f-ours.png | valid=false | legend=mf=main foyer hall 1,h1=hall 1,hd=hall d,he=hall e,hf=hall f,hg=hall g,hy=hall y 112,rg=rooftop garden,ch=chairs
+19:32:25 === queenmary: upload queenmary-plan.jpg
+19:35:36 queenmary PARSE failed: Parser returned schema-invalid output: walls.0.a: Invalid input; walls.0.b: Invalid input; walls.1.a: Invalid input
+19:35:36 === met-historic: upload met-plan-historic.jpg
+19:36:27 met-historic PARSE failed: Interrupted by a server restart — try again
+19:36:27 === queenscollege: upload queenscollege-plan.jpg
+19:37:38 queenscollege PARSED v3 it=3 rooms=28 walls=0 doors=0 furn=3 feats=['entrance'] labels=['Queens Hall', 'Science Building', 'Powdermaker Hall', 'Klapper Hall', 'Colden Auditorium', 'Student Union', 'Rosenthal Library', 'FitzGerald Gym', 'Music Building', 'Kiely Hall', 'Townsend Harris High School', 'PS 219', 'Remsen Hall', 'Honors Hall', 'Razran Hall', 'Colwin Hall', 'Frese Hall', 'Tech Incubator', 'Delany Hall', 'Jeff
+19:38:10 queenscollege TACTILE done valid=False passes=[1, 1, 1, 1, 1] elements={'symbol': 1, 'braille': 28, 'area': 3} legend=['qh=queens hall', 'sb=science building', 'ph=powdermaker hall', 'kh=klapper hall', 'ca=colden auditorium', 'su=student union', 'rl=rosenthal library', 'fg=fitzgerald gym', 'mb=music building', 'ki=kiely hall']
+rendered ../../pipeline_tests/outputs/queenscollege-ours.png | valid=false | legend=qh=queens hall,sb=science building,ph=powdermaker hall,kh=klapper hall,ca=colden auditorium,su=student union,rl=rosenthal library,fg=fitzgerald gym,mb=music building,ki=kiely hall,th=townsend harris high school,p2=ps 219,rh=remsen hall,hh=honors hall,ra=razran hall,ch=colwin hall,fh=frese hall,ti=tech incubator,dh=delany hall,jh=jefferson hall,ah=alumni hall,cd=campbell dome,di=dining hall,r=rathaus hall,gb=g building,gc=gertz center,k=king hall,st=student union parking garage
+19:38:11 === getty: upload getty-plan.pdf
+19:42:02 getty PARSED v1 it=1 rooms=1 walls=4 doors=1 furn=1 feats=['elevator', 'restroom'] labels=['Museum Entrance Hall']
+19:42:26 getty TACTILE done valid=True passes=[3, 3, 3, 1, 0] elements={'line': 5, 'symbol': 2, 'braille': 2, 'area': 1} legend=['me=museum entrance hall', 'co=counter']
+rendered ../../pipeline_tests/outputs/getty-ours.png | valid=true | legend=me=museum entrance hall,co=counter
+19:42:28 === psu: upload psu-plan.pdf
+19:45:49 psu PARSED v1 it=1 rooms=11 walls=0 doors=0 furn=0 feats=[] labels=['HELEN GORDON', 'PARKING STRUCTURE THREE', 'LINCOLN HALL', 'CRAMER HALL', 'SMITH MEMORIAL STUDENT UNION', 'KARL MILLER CENTER', 'PARKING STRUCTURE ONE', 'FARIBORZ MASEEH HALL', 'FOURTH AVENUE BUILDING', 'ENGINEERING BUILDING', 'UNIVERSITY PLACE HOTEL AND CONFERENCE CENTER']
+19:46:21 psu TACTILE done valid=False passes=[10, 10, 10, 10, 10] elements={'braille': 11} legend=['hg=helen gordon', 'ps=parking structure three', 'lh=lincoln hall', 'ch=cramer hall', 'sm=smith memorial student union', 'km=karl miller center', 'pa=parking structure one', 'fm=fariborz maseeh hall', 'fa=fourth avenue building', 'eb=engineering building']
+rendered ../../pipeline_tests/outputs/psu-ours.png | valid=false | legend=hg=helen gordon,ps=parking structure three,lh=lincoln hall,ch=cramer hall,sm=smith memorial student union,km=karl miller center,pa=parking structure one,fm=fariborz maseeh hall,fa=fourth avenue building,eb=engineering building,up=university place hotel and conference center
+19:46:23 === nationalmall: upload nationalmall-plan.png
+19:47:03 nationalmall PARSED v1 it=1 rooms=0 walls=0 doors=0 furn=0 feats=['entrance', 'entrance', 'entrance', 'entrance', 'entrance', 'entrance', 'entrance', 'entrance', 'entrance', 'entrance', 'entrance', 'entrance', 'entrance', 'entrance', 'entrance', 'entrance', 'entrance', 'entrance', 'entrance', 'entrance', 'entrance', 'entrance', 'entrance', 'entrance', 'entrance', 'entrance', 'entrance', 'entrance'] labels=[]
+19:50:08 nationalmall TACTILE failed Layout agent returned schema-invalid output: moves.0.dxMm: Invalid input: expected number, received 
+design not done: failed
+19:50:08 === bart: upload bart-plan.pdf
+19:50:59 bart PARSED v2 it=2 rooms=0 walls=0 doors=0 furn=0 feats=['entrance', 'entrance', 'entrance', 'entrance', 'entrance', 'entrance', 'entrance', 'entrance', 'entrance', 'entrance', 'entrance', 'entrance', 'entrance', 'entrance', 'entrance', 'entrance', 'entrance', 'entrance', 'entrance', 'entrance', 'entrance', 'entrance', 'entrance', 'entrance', 'entrance', 'entrance', 'entrance', 'entrance', 'entrance', 'entra
+19:51:39 bart TACTILE done valid=False passes=[181, 81, 56, 56, 32] elements={'symbol': 49} legend=[]
+rendered ../../pipeline_tests/outputs/bart-ours.png | valid=false | legend=
+19:51:40 STUDY BATCH COMPLETE
+20:13:50 === queenmary: upload queenmary-plan.jpg
+20:17:22 queenmary PARSED v1 it=1 rooms=1 walls=4 doors=4 furn=1 feats=['stairs', 'stairs', 'stairs', 'stairs', 'entrance'] labels=['corridor']
+20:17:54 queenmary TACTILE done valid=False passes=[5, 2, 2, 2, 2] elements={'line': 7, 'symbol': 5, 'braille': 2, 'area': 1} legend=['co=corridor', 'c=counter']
+rendered ../../pipeline_tests/outputs/queenmary-ours.png | valid=false | grid=2x1 | legend=co=corridor,c=counter
+20:17:55 === met-historic: upload met-plan-historic.jpg
+20:20:37 met-historic PARSE failed: Interrupted by a server restart — try again
+20:20:37 RERUN COMPLETE

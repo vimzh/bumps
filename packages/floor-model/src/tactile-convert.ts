@@ -25,8 +25,8 @@ export type ConversionNote = {
   kind:
     | 'dropped-wall'
     | 'dropped-window'
-    | 'label-skipped'
     | 'multi-plate'
+    | 'room-block'
     | 'short-label'
   elementId: string
   message: string
@@ -290,6 +290,28 @@ export function convertToTactile(model: FloorModel): ConversionResult {
     ...labeledRooms.map((room) => room.label),
     ...furnitureLabels,
   ])
+  // A plan with no walls (campus/site block-plans) would otherwise emit
+  // nothing but floating keys; real tactile campus maps render buildings
+  // as raised blocks, so we do too.
+  const roomsAsBlocks = model.walls.length === 0 && labeledRooms.length > 0
+  if (roomsAsBlocks) {
+    for (const room of labeledRooms) {
+      elements.push({
+        heightMm: RELIEF_MM.areaTexture,
+        id: `t-room-${room.id}`,
+        kind: 'area',
+        polygon: room.polygon.map(toMm),
+        sourceId: room.id,
+        texture: 'solid',
+      })
+    }
+    notes.push({
+      elementId: labeledRooms[0]!.id,
+      kind: 'room-block',
+      message: `No walls in this plan: rendering ${labeledRooms.length} building footprints as raised blocks`,
+    })
+  }
+
   for (const room of labeledRooms) {
     const key = keyByLabel.get(room.label)!
     const size = textBrailleSize(key)
@@ -330,20 +352,16 @@ export function convertToTactile(model: FloorModel): ConversionResult {
     const label = sanitizeLabel(item.label)
     const key = keyByLabel.get(label)
     if (!key) continue
-    const xs = polygonMm.map((p) => p.x)
-    const ys = polygonMm.map((p) => p.y)
-    const blockW = Math.max(...xs) - Math.min(...xs)
-    const blockH = Math.max(...ys) - Math.min(...ys)
     const size = textBrailleSize(key)
-    if (size.widthMm + 2 > blockW || size.heightMm + 2 > blockH) {
-      notes.push({
-        elementId: item.id,
-        kind: 'label-skipped',
-        message: `Block ${item.id} ("${label}") is too small for its braille key`,
-      })
-      continue
-    }
-    const center = centroid(polygonMm)
+    // On the block when it fits; beside it when the block is too small —
+    // the key must always exist for the legend to mean anything.
+    const center =
+      fitRectInPolygon(
+        size.widthMm,
+        size.heightMm,
+        polygonMm,
+        centroid(polygonMm),
+      ) ?? adjacentRectPosition(size.widthMm, size.heightMm, polygonMm, 2)
     elements.push({
       at: { x: center.x - size.widthMm / 2, y: center.y - size.heightMm / 2 },
       id: `t-label-${item.id}`,

@@ -34,4 +34,4 @@ Upload → printable STL in under five minutes with a human review in the middle
 
 ## What's next
 
-Tactile maps of outdoor public spaces — parks, campuses — via Google Maps: search an area, mark four corners, same pipeline (phase 11 in the repo). Multi-plate output for large buildings. Contracted braille and more languages.
+Tactile maps of outdoor public spaces — parks, campuses — via Google Maps: search an area, mark four corners, same pipeline (phase 11 in the repo). Contracted braille and more languages. (Multi-plate output for large buildings already shipped: automatic 2×1/1×2/2×2 grids with exact-seam slicing.)

@@ -1,5 +1,5 @@
 import { textBrailleSize } from './braille'
-import { fitRectInPolygon, pointInPolygon } from './fit'
+import { fitPositionsInPolygon, pointInPolygon } from './fit'
 import type { FloorModel, Point } from './schema'
 import { planToPlateTransform } from './tactile-convert'
 import {
@@ -373,16 +373,32 @@ export function validateTactileDesign(
       minX: Math.min(...xs),
       minY: Math.min(...ys),
     }
-    const canEverFit =
-      fitRectInPolygon(
-        rect.maxX - rect.minX + 1,
-        rect.maxY - rect.minY + 1,
-        polygon,
-        {
-          x: (bounds.minX + bounds.maxX) / 2,
-          y: (bounds.minY + bounds.maxY) / 2,
-        },
-      ) !== null
+    const keyW = rect.maxX - rect.minX
+    const keyH = rect.maxY - rect.minY
+    const canEverFit = fitPositionsInPolygon(
+      keyW + 1,
+      keyH + 1,
+      polygon,
+      { x: (bounds.minX + bounds.maxX) / 2, y: (bounds.minY + bounds.maxY) / 2 },
+      40,
+    ).some((center) => {
+      const candidate: Rect = {
+        maxX: center.x + keyW / 2,
+        maxY: center.y + keyH / 2,
+        minX: center.x - keyW / 2,
+        minY: center.y - keyH / 2,
+      }
+      return lines.every(
+        (line) =>
+          Math.min(
+            ...lineSegments(line).map(([a, b]) =>
+              rectSegmentDistance(candidate, a, b),
+            ),
+          ) -
+            line.widthMm / 2 >=
+          CLEARANCE_MM - MEASURE_EPS_MM,
+      )
+    })
     if (!canEverFit) {
       const gap = rectRectDistance(rect, bounds)
       if (gap <= ADJACENT_LABEL_MM + MEASURE_EPS_MM) continue

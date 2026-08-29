@@ -92,6 +92,57 @@ export function fitRectInPolygon(
 }
 
 /**
+ * Up to `count` spatially diverse center positions where the rect fits
+ * inside the polygon, nearest-to-`prefer` first. Used to relocate a
+ * label anywhere legal in its room/block when its current spot conflicts.
+ */
+export function fitPositionsInPolygon(
+  width: number,
+  height: number,
+  polygon: Point[],
+  prefer: Point,
+  count: number,
+): Point[] {
+  const xs = polygon.map((p) => p.x)
+  const ys = polygon.map((p) => p.y)
+  const minX = Math.min(...xs) + width / 2
+  const maxX = Math.max(...xs) - width / 2
+  const minY = Math.min(...ys) + height / 2
+  const maxY = Math.max(...ys) - height / 2
+  if (minX > maxX || minY > maxY) return []
+  const fitting: Point[] = []
+  for (let i = 0; i <= SAMPLES_PER_AXIS; i++) {
+    for (let j = 0; j <= SAMPLES_PER_AXIS; j++) {
+      const candidate = {
+        x: minX + ((maxX - minX) * i) / SAMPLES_PER_AXIS,
+        y: minY + ((maxY - minY) * j) / SAMPLES_PER_AXIS,
+      }
+      if (rectInsidePolygon(candidate.x, candidate.y, width, height, polygon)) {
+        fitting.push(candidate)
+      }
+    }
+  }
+  fitting.sort(
+    (a, b) =>
+      Math.hypot(a.x - prefer.x, a.y - prefer.y) -
+      Math.hypot(b.x - prefer.x, b.y - prefer.y),
+  )
+  const picked: Point[] = []
+  const minSpread = Math.max(2, width / 2)
+  for (const candidate of fitting) {
+    if (picked.length >= count) break
+    if (
+      picked.every(
+        (p) => Math.hypot(p.x - candidate.x, p.y - candidate.y) >= minSpread,
+      )
+    ) {
+      picked.push(candidate)
+    }
+  }
+  return picked
+}
+
+/**
  * Center position for a label placed just outside a polygon that cannot
  * hold it — the adjacent-label convention on real tactile maps. Placed
  * below the polygon's bbox center, `gap` mm away.

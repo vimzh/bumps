@@ -211,6 +211,23 @@ describe('sliver-room labels', () => {
   })
 })
 
+describe('wall-less block plans', () => {
+  test('labeled rooms render as raised blocks when the plan has no walls', () => {
+    const model = floorModelSchema.parse({
+      ...sampleFloorModel,
+      furniture: [],
+      openings: [],
+      walls: [],
+    })
+    const { design, notes } = convertToTactile(model)
+    const blocks = design.elements.filter(
+      (e) => e.kind === 'area' && e.id.startsWith('t-room-'),
+    )
+    expect(blocks.length).toBeGreaterThan(0)
+    expect(notes.some((n) => n.kind === 'room-block')).toBe(true)
+  })
+})
+
 describe('mechanical seam fixes', () => {
   test('a braille label straddling a seam is nudged clear deterministically', () => {
     const model = floorModelSchema.parse({ ...sampleFloorModel, furniture: [] })

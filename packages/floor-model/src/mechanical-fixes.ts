@@ -1,4 +1,5 @@
 import { textBrailleSize } from './braille'
+import { fitPositionsInPolygon } from './fit'
 import type { Point } from './schema'
 import type { TactileDesign, ValidationViolation } from './tactile'
 import {
@@ -113,8 +114,48 @@ function directionsAwayFrom(other: Point, center: Point): Point[] {
   ]
 }
 
+// A braille label tied to a room/block may relocate anywhere its key fits
+// inside that polygon — same search the converter uses for placement.
+function relocationCandidates(
+  design: TactileDesign,
+  context: ValidationContext,
+  id: string,
+): TactileDesign[] {
+  const element = design.elements.find((e) => e.id === id)
+  if (!element || element.kind !== 'braille' || !element.sourceId) return []
+  const area = design.elements.find(
+    (e) => e.kind === 'area' && e.sourceId === element.sourceId,
+  )
+  const polygon =
+    area?.kind === 'area'
+      ? area.polygon
+      : context.roomsMm.find((room) => room.id === element.sourceId)?.polygonMm
+  if (!polygon) return []
+  const size = textBrailleSize(element.key)
+  const current = {
+    x: element.at.x + size.widthMm / 2,
+    y: element.at.y + size.heightMm / 2,
+  }
+  const movable = movableOf(design, id)
+  if (!movable) return []
+  const xs = polygon.map((p) => p.x)
+  const ys = polygon.map((p) => p.y)
+  const gap = 2
+  const adjacent: Point[] = [
+    { x: (Math.min(...xs) + Math.max(...xs)) / 2, y: Math.max(...ys) + gap + size.heightMm / 2 },
+    { x: (Math.min(...xs) + Math.max(...xs)) / 2, y: Math.min(...ys) - gap - size.heightMm / 2 },
+    { x: Math.max(...xs) + gap + size.widthMm / 2, y: (Math.min(...ys) + Math.max(...ys)) / 2 },
+    { x: Math.min(...xs) - gap - size.widthMm / 2, y: (Math.min(...ys) + Math.max(...ys)) / 2 },
+  ]
+  return [
+    ...fitPositionsInPolygon(size.widthMm, size.heightMm, polygon, current, 6),
+    ...adjacent,
+  ].map((center) => movable.apply(center.x - current.x, center.y - current.y))
+}
+
 function candidateMoves(
   design: TactileDesign,
+  context: ValidationContext,
   violation: ValidationViolation,
 ): TactileDesign[] {
   const candidates: TactileDesign[] = []
@@ -170,6 +211,7 @@ function candidateMoves(
           )
         }
       }
+      candidates.push(...relocationCandidates(design, context, id))
     }
     return candidates
   }
@@ -201,7 +243,7 @@ export function resolveMechanicalViolations(
 
     let best: { design: TactileDesign; violations: ValidationViolation[] } | null =
       null
-    for (const candidate of candidateMoves(design, target)) {
+    for (const candidate of candidateMoves(design, context, target)) {
       const candidateViolations = validateTactileDesign(candidate, context)
       if (!best || candidateViolations.length < best.violations.length) {
         best = { design: candidate, violations: candidateViolations }

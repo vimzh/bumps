@@ -150,6 +150,11 @@ export async function runTactileLayout(
     }
   }
   mechanicalPass()
+  if (violations.length !== iterations[0]!.violations) {
+    // Record the deterministic repair as its own pass so the UI shows
+    // e.g. 5 -> 0 even when the agent never runs.
+    iterations.push({ moves: 0, violations: violations.length })
+  }
 
   for (
     let iteration = 0;
