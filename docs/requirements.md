@@ -46,11 +46,11 @@ Auth, multi-floor, embosser/swell outputs, print-service integration, non-Englis
 
 ## Submission checklist
 
-- [ ] Deployed on Cloud Run, hosted URL live
-- [ ] Public repo with spin-up instructions (`bun run setup`)
-- [ ] Architecture diagram (web / agents / geometry / Cloud Run boundaries)
-- [ ] ~4-min demo video: full flow upload → parse → edit (incl. one prompt-based edit) → tactile convert → STL download, plus proof of Cloud Run deployment
-- [ ] Text description: features, tech used, learnings
+- [ ] Deployed on Cloud Run, hosted URL live — Dockerfiles validated, commands in [deploy.md](deploy.md); run when ready
+- [x] Repo with spin-up instructions — README run-locally section (repo currently private; make public or grant judge access before submitting)
+- [x] Architecture diagram — mermaid in the root README
+- [ ] ~4-min demo video — script ready in [demo-script.md](demo-script.md); record against the deployed URL
+- [x] Text description — [submission.md](submission.md), ready to paste into Devpost
 
 ## Judging alignment (build priorities in order)
 
