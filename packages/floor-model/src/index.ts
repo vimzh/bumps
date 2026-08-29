@@ -56,3 +56,17 @@ export {
   NEEDS_REVIEW_THRESHOLD,
   PARSE_TARGET_CONFIDENCE,
 } from './confidence'
+export {
+  BRAILLE_MM,
+  cellDotCenters,
+  textBrailleSize,
+  textDotCenters,
+  textToBrailleCells,
+} from './braille'
+export type { BrailleCell } from './braille'
+export {
+  assignKeys,
+  convertToTactile,
+  PLATE,
+} from './tactile-convert'
+export type { ConversionNote, ConversionResult } from './tactile-convert'

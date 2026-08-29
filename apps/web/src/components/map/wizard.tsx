@@ -2,10 +2,9 @@
 
 import { useState } from "react";
 import type { FloorModel } from "@bumps/floor-model";
-import { Button } from "@/components/ui/button";
 import { EditStep } from "@/components/map/edit-step";
+import { TactileStep } from "@/components/map/tactile-step";
 import { WizardStepper, type WizardStep } from "@/components/map/wizard-stepper";
-import { mapContent } from "@/data/map";
 
 type WizardProps = {
   initialModel: FloorModel;
@@ -27,20 +26,7 @@ export function Wizard({ initialModel, initialVersion, projectId }: WizardProps)
           projectId={projectId}
         />
       ) : (
-        <div className="flex flex-1 flex-col items-center justify-center gap-4">
-          <p className="text-sm text-muted-foreground">
-            {mapContent.tactilePlaceholder}
-          </p>
-          <Button
-            className="cursor-pointer rounded-sm"
-            onClick={() => setStep("edit")}
-            size="sm"
-            type="button"
-            variant="outline"
-          >
-            {mapContent.edit.backLabel}
-          </Button>
-        </div>
+        <TactileStep onBack={() => setStep("edit")} projectId={projectId} />
       )}
     </section>
   );

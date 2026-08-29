@@ -45,3 +45,17 @@ export const exports = sqliteTable('exports', {
     .notNull()
     .$defaultFn(() => new Date()),
 })
+
+export const tactileDesigns = sqliteTable('tactile_designs', {
+  id: text('id').primaryKey(),
+  projectId: text('project_id')
+    .notNull()
+    .references(() => projects.id),
+  // Which floor model version this design was converted from.
+  floorModelVersion: integer('floor_model_version').notNull(),
+  design: text('design', { mode: 'json' }).notNull(),
+  notes: text('notes', { mode: 'json' }).notNull(),
+  createdAt: integer('created_at', { mode: 'timestamp_ms' })
+    .notNull()
+    .$defaultFn(() => new Date()),
+})

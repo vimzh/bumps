@@ -26,17 +26,21 @@ export function CanvasViewport({
   const containerRef = useRef<HTMLDivElement>(null);
   const [transform, setTransform] = useState<Transform | null>(null);
   const minScaleRef = useRef(0.05);
+  const userAdjustedRef = useRef(false);
 
   const fit = useCallback(() => {
     const container = containerRef.current;
     if (!container || contentWidth <= 0 || contentHeight <= 0) return;
     const rect = container.getBoundingClientRect();
     const margin = 24;
+    // Container not laid out yet — the ResizeObserver will call again.
+    if (rect.width < margin * 3 || rect.height < margin * 3) return;
     const scale = Math.min(
       (rect.width - margin * 2) / contentWidth,
       (rect.height - margin * 2) / contentHeight
     );
     minScaleRef.current = scale * 0.4;
+    userAdjustedRef.current = false;
     setTransform({
       scale,
       tx: (rect.width - contentWidth * scale) / 2,
@@ -49,11 +53,8 @@ export function CanvasViewport({
     const container = containerRef.current;
     if (!container) return;
     const observer = new ResizeObserver(() => {
-      // Re-fit only if never fitted; otherwise keep the user's view.
-      setTransform((current) => {
-        if (current === null) fit();
-        return current;
-      });
+      // Follow layout changes until the user takes over the view.
+      if (!userAdjustedRef.current) fit();
     });
     observer.observe(container);
     return () => observer.disconnect();
@@ -65,6 +66,7 @@ export function CanvasViewport({
     const rect = container.getBoundingClientRect();
     const cx = clientX - rect.left;
     const cy = clientY - rect.top;
+    userAdjustedRef.current = true;
     setTransform((current) => {
       if (!current) return current;
       const scale = Math.min(
@@ -95,6 +97,7 @@ export function CanvasViewport({
         if (event.ctrlKey || event.metaKey) {
           zoomAt(event.clientX, event.clientY, Math.exp(-event.deltaY * 0.01));
         } else {
+          userAdjustedRef.current = true;
           setTransform((current) =>
             current
               ? {

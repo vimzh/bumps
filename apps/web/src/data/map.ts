@@ -68,8 +68,18 @@ export const mapContent = {
     parse: "Parse",
     tactile: "Tactile",
   },
-  tactilePlaceholder:
-    "Tactile conversion is the next build step — it isn't wired up yet.",
+  tactile: {
+    converting: "Converting to tactile design…",
+    exportHint: "Validation and STL export are the next build steps.",
+    failed: "Conversion failed.",
+    legendTitle: "Legend",
+    notesTitle: "Conversion notes",
+    plateLabel: "200 × 200 mm plate",
+    reconvertLabel: "Reconvert",
+    retryLabel: "Try again",
+    separatePlate: "Legend prints as a second plate.",
+    title: "Tactile design",
+  },
   uploadedLabel: "Uploaded plan",
   versionPrefix: "v",
   viewport: {

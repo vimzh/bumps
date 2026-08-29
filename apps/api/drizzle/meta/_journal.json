@@ -22,6 +22,13 @@
       "when": 1787951760225,
       "tag": "0002_bouncy_leader",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1787990113088,
+      "tag": "0003_previous_lady_deathstrike",
+      "breakpoints": true
     }
   ]
 }
