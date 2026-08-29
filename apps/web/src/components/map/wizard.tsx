@@ -3,6 +3,7 @@
 import { useState } from "react";
 import type { FloorModel } from "@bumps/floor-model";
 import { EditStep } from "@/components/map/edit-step";
+import { ExportStep } from "@/components/map/export-step";
 import { TactileStep } from "@/components/map/tactile-step";
 import { WizardStepper, type WizardStep } from "@/components/map/wizard-stepper";
 
@@ -25,8 +26,14 @@ export function Wizard({ initialModel, initialVersion, projectId }: WizardProps)
           onNext={() => setStep("tactile")}
           projectId={projectId}
         />
+      ) : step === "tactile" ? (
+        <TactileStep
+          onBack={() => setStep("edit")}
+          onNext={() => setStep("export")}
+          projectId={projectId}
+        />
       ) : (
-        <TactileStep onBack={() => setStep("edit")} projectId={projectId} />
+        <ExportStep onBack={() => setStep("tactile")} projectId={projectId} />
       )}
     </section>
   );

@@ -68,6 +68,18 @@ export const mapContent = {
     parse: "Parse",
     tactile: "Tactile",
   },
+  export: {
+    blocked: "Export blocked — the design still has violations.",
+    downloadLegend: "Download legend STL",
+    downloadMap: "Download map STL",
+    failed: "Export failed. Try again.",
+    generating: "Generating printable STL…",
+    printHint:
+      "Print flat on the bed · 0.4 mm nozzle · ≤ 0.2 mm layers · no supports",
+    retryLabel: "Try again",
+    title: "Export",
+    trianglesSuffix: "triangles",
+  },
   tactile: {
     converting: "Converting & validating against tactile standards…",
     exportHint: "STL export is the next build step.",

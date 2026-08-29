@@ -15,6 +15,7 @@ import { API_URL } from "@/lib/api";
 
 type TactileStepProps = {
   onBack: () => void;
+  onNext: () => void;
   projectId: string;
 };
 
@@ -30,7 +31,7 @@ type State =
       violations: ValidationViolation[];
     };
 
-export function TactileStep({ onBack, projectId }: TactileStepProps) {
+export function TactileStep({ onBack, onNext, projectId }: TactileStepProps) {
   const [state, setState] = useState<State>({ kind: "loading" });
 
   const convert = useCallback(async () => {
@@ -130,6 +131,15 @@ export function TactileStep({ onBack, projectId }: TactileStepProps) {
             variant="outline"
           >
             {mapContent.tactile.reconvertLabel}
+          </Button>
+          <Button
+            className="h-8 cursor-pointer rounded-sm px-4 text-xs"
+            disabled={state.kind !== "ready" || !state.valid}
+            onClick={onNext}
+            size="sm"
+            type="button"
+          >
+            {mapContent.edit.nextLabel}
           </Button>
         </div>
       </div>
