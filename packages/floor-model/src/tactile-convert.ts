@@ -82,8 +82,9 @@ export function assignKeys(labels: string[]): Map<string, string> {
   return keys
 }
 
-export function convertToTactile(model: FloorModel): ConversionResult {
-  const notes: ConversionNote[] = []
+// The plan-pixel -> plate-mm transform, shared by conversion and the
+// validation-context builder so both always agree.
+export function planToPlateTransform(model: FloorModel) {
   const bounds = contentBounds(model)
   const contentW = Math.max(1, bounds.maxX - bounds.minX)
   const contentH = Math.max(1, bounds.maxY - bounds.minY)
@@ -91,11 +92,16 @@ export function convertToTactile(model: FloorModel): ConversionResult {
   const mmPerPx = Math.min(inner / contentW, inner / contentH)
   const offsetX = PLATE.marginMm + (inner - contentW * mmPerPx) / 2
   const offsetY = PLATE.marginMm + (inner - contentH * mmPerPx) / 2
-
   const toMm = (p: Point): Point => ({
     x: (p.x - bounds.minX) * mmPerPx + offsetX,
     y: (p.y - bounds.minY) * mmPerPx + offsetY,
   })
+  return { bounds, mmPerPx, offsetX, offsetY, toMm }
+}
+
+export function convertToTactile(model: FloorModel): ConversionResult {
+  const notes: ConversionNote[] = []
+  const { mmPerPx, toMm } = planToPlateTransform(model)
 
   const elements: TactileElement[] = []
   const legend: LegendEntry[] = []

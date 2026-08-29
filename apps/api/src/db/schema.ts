@@ -55,6 +55,14 @@ export const tactileDesigns = sqliteTable('tactile_designs', {
   floorModelVersion: integer('floor_model_version').notNull(),
   design: text('design', { mode: 'json' }).notNull(),
   notes: text('notes', { mode: 'json' }).notNull(),
+  // Standards validation outcome: zero violations is the export gate.
+  valid: integer('valid', { mode: 'boolean' }).notNull().default(false),
+  violations: text('violations', { mode: 'json' }).notNull().default('[]'),
+  iterations: text('iterations', { mode: 'json' }).notNull().default('[]'),
+  status: text('status', { enum: ['running', 'done', 'failed'] })
+    .notNull()
+    .default('done'),
+  error: text('error'),
   createdAt: integer('created_at', { mode: 'timestamp_ms' })
     .notNull()
     .$defaultFn(() => new Date()),

@@ -6,9 +6,13 @@ const TRANSIENT_PATTERNS = [
   'UNAVAILABLE',
   '429',
   '503',
+  // Free-tier RPM limits recover within a minute; daily caps still fail
+  // after the last delay, which is the right outcome.
+  'quota',
+  'rate limit',
 ]
 
-const DELAYS_MS = [3000, 10000, 25000]
+const DELAYS_MS = [5000, 20000, 45000]
 
 export async function withModelRetry<T>(fn: () => Promise<T>): Promise<T> {
   let lastError: unknown

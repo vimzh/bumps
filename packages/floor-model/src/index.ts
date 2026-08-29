@@ -67,6 +67,17 @@ export type { BrailleCell } from './braille'
 export {
   assignKeys,
   convertToTactile,
+  planToPlateTransform,
   PLATE,
 } from './tactile-convert'
 export type { ConversionNote, ConversionResult } from './tactile-convert'
+export {
+  buildValidationContext,
+  CLEARANCE_MM,
+  MIN_DOOR_OPENING_MM,
+  MIN_SYMBOL_MM,
+  MOVABLE_RULES,
+  SIMILAR_SYMBOL_CLEARANCE_MM,
+  validateTactileDesign,
+} from './validate'
+export type { ValidationContext } from './validate'

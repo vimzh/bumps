@@ -29,6 +29,20 @@
       "when": 1787990113088,
       "tag": "0003_previous_lady_deathstrike",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1787990994677,
+      "tag": "0004_petite_wrecker",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "6",
+      "when": 1787991170041,
+      "tag": "0005_silky_iceman",
+      "breakpoints": true
     }
   ]
 }
