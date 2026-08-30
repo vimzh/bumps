@@ -9,8 +9,8 @@ import {
 } from './validate'
 
 // Deterministic repairs for violations that never need judgment — the
-// layout agent (LLM) is reserved for trade-offs. Seam-clearance and
-// pairwise clearance are pure arithmetic: shift the movable element the
+// layout agent (LLM) is reserved for trade-offs. Margins, seam clearance,
+// label fit, and pairwise clearance are pure arithmetic: shift the movable element the
 // measured shortfall along the obvious axis and keep whichever candidate
 // validates best.
 
@@ -122,7 +122,24 @@ function relocationCandidates(
   id: string,
 ): TactileDesign[] {
   const element = design.elements.find((e) => e.id === id)
-  if (!element || element.kind !== 'braille' || !element.sourceId) return []
+  if (!element) return []
+  const movable = movableOf(design, id)
+  if (!movable) return []
+  if (element.kind === 'symbol') {
+    const directions = [
+      [1, 0], [-1, 0], [0, 1], [0, -1],
+      [1, 1], [1, -1], [-1, 1], [-1, -1],
+      [1, 0.5], [1, -0.5], [-1, 0.5], [-1, -0.5],
+      [0.5, 1], [0.5, -1], [-0.5, 1], [-0.5, -1],
+    ]
+    return [8, 16, 24, 32].flatMap((distance) =>
+      directions.map(([x, y]) => {
+        const length = Math.hypot(x!, y!)
+        return movable.apply((x! / length) * distance, (y! / length) * distance)
+      }),
+    )
+  }
+  if (element.kind !== 'braille' || !element.sourceId) return []
   const area = design.elements.find(
     (e) => e.kind === 'area' && e.sourceId === element.sourceId,
   )
@@ -136,20 +153,29 @@ function relocationCandidates(
     x: element.at.x + size.widthMm / 2,
     y: element.at.y + size.heightMm / 2,
   }
-  const movable = movableOf(design, id)
-  if (!movable) return []
   const xs = polygon.map((p) => p.x)
   const ys = polygon.map((p) => p.y)
   // Clear of any wall line running along the polygon edge.
-  const gap = 4.5
-  const adjacent: Point[] = [
+  const adjacent: Point[] = [4.5, 8, 12].flatMap((gap) => [
     { x: (Math.min(...xs) + Math.max(...xs)) / 2, y: Math.max(...ys) + gap + size.heightMm / 2 },
     { x: (Math.min(...xs) + Math.max(...xs)) / 2, y: Math.min(...ys) - gap - size.heightMm / 2 },
     { x: Math.max(...xs) + gap + size.widthMm / 2, y: (Math.min(...ys) + Math.max(...ys)) / 2 },
     { x: Math.min(...xs) - gap - size.widthMm / 2, y: (Math.min(...ys) + Math.max(...ys)) / 2 },
-  ]
+  ])
+  for (
+    let x = Math.min(...xs) - size.widthMm;
+    x <= Math.max(...xs) + size.widthMm;
+    x += size.widthMm / 4
+  ) {
+    for (const gap of [4.5, 8, 12]) {
+      adjacent.push(
+        { x: x + size.widthMm / 2, y: Math.min(...ys) - gap - size.heightMm / 2 },
+        { x: x + size.widthMm / 2, y: Math.max(...ys) + gap + size.heightMm / 2 },
+      )
+    }
+  }
   return [
-    ...fitPositionsInPolygon(size.widthMm, size.heightMm, polygon, current, 6),
+    ...fitPositionsInPolygon(size.widthMm, size.heightMm, polygon, current, 24),
     ...adjacent,
   ].map((center) => movable.apply(center.x - current.x, center.y - current.y))
 }
@@ -161,21 +187,44 @@ function candidateMoves(
 ): TactileDesign[] {
   const candidates: TactileDesign[] = []
 
+  if (violation.rule === 'margin') {
+    const id = violation.elementIds[0]
+    const movable = id ? movableOf(design, id) : null
+    if (!id || !movable) return []
+    const grid = design.grid ?? { cols: 1, rows: 1 }
+    const width = design.plate.widthMm * grid.cols
+    const height = design.plate.heightMm * grid.rows
+    const margin = design.plate.marginMm
+    const dx =
+      movable.x.min < margin
+        ? margin - movable.x.min
+        : movable.x.max > width - margin
+          ? width - margin - movable.x.max
+          : 0
+    const dy =
+      movable.y.min < margin
+        ? margin - movable.y.min
+        : movable.y.max > height - margin
+          ? height - margin - movable.y.max
+          : 0
+    return [movable.apply(dx, dy), ...relocationCandidates(design, context, id)]
+  }
+
   if (violation.rule === 'seam-clearance') {
     const grid = design.grid ?? { cols: 1, rows: 1 }
     const id = violation.elementIds[0]
     const movable = id ? movableOf(design, id) : null
     if (!movable) return []
     const clear = SEAM_CLEARANCE_MM + EXTRA_CLEAR_MM
-    if (grid.cols > 1) {
-      const seam = design.plate.widthMm
+    for (let i = 1; i < grid.cols; i++) {
+      const seam = design.plate.widthMm * i
       if (movable.x.min < seam + SEAM_CLEARANCE_MM && movable.x.max > seam - SEAM_CLEARANCE_MM) {
         candidates.push(movable.apply(seam - clear - movable.x.max, 0))
         candidates.push(movable.apply(seam + clear - movable.x.min, 0))
       }
     }
-    if (grid.rows > 1) {
-      const seam = design.plate.heightMm
+    for (let i = 1; i < grid.rows; i++) {
+      const seam = design.plate.heightMm * i
       if (movable.y.min < seam + SEAM_CLEARANCE_MM && movable.y.max > seam - SEAM_CLEARANCE_MM) {
         candidates.push(movable.apply(0, seam - clear - movable.y.max))
         candidates.push(movable.apply(0, seam + clear - movable.y.min))
@@ -190,7 +239,7 @@ function candidateMoves(
     // Several magnitudes per direction: the exact shortfall can land in a
     // fresh conflict (a parallel wall, another label) that a slightly
     // longer hop clears.
-    const magnitudes = [shortfall, shortfall + 2, shortfall + 5]
+    const magnitudes = [shortfall, shortfall + 2, shortfall + 5, shortfall + 10]
     for (const id of violation.elementIds) {
       const movable = movableOf(design, id)
       if (!movable) continue
@@ -217,11 +266,16 @@ function candidateMoves(
     return candidates
   }
 
+  if (violation.rule === 'label-fit') {
+    const id = violation.elementIds[0]
+    return id ? relocationCandidates(design, context, id) : []
+  }
+
   return []
 }
 
 /**
- * Greedily repairs seam-clearance and pairwise-clearance violations with
+ * Greedily repairs margin, seam-clearance, label-fit, and pairwise-clearance violations with
  * exact arithmetic nudges, keeping only steps that lower the total
  * violation count. Anything it cannot improve is left for the layout
  * agent.
@@ -233,24 +287,45 @@ export function resolveMechanicalViolations(
   let design = initial
   let violations = validateTactileDesign(design, context)
   const attempted = new Set<string>()
-  for (let step = 0; step < 12; step++) {
+  for (let step = 0; step < initial.elements.length; step++) {
     const target = violations.find(
       (v) =>
-        (v.rule === 'seam-clearance' || v.rule === 'clearance') &&
+        (v.rule === 'margin' ||
+          v.rule === 'seam-clearance' ||
+          v.rule === 'clearance' ||
+          v.rule === 'label-fit') &&
         !attempted.has(v.elementIds.join('|') + v.rule),
     )
     if (!target) break
     attempted.add(target.elementIds.join('|') + target.rule)
 
-    let best: { design: TactileDesign; violations: ValidationViolation[] } | null =
-      null
+    let best: {
+      design: TactileDesign
+      targetResolved: boolean
+      violations: ValidationViolation[]
+    } | null = null
     for (const candidate of candidateMoves(design, context, target)) {
       const candidateViolations = validateTactileDesign(candidate, context)
-      if (!best || candidateViolations.length < best.violations.length) {
-        best = { design: candidate, violations: candidateViolations }
+      const targetResolved = !candidateViolations.some(
+        (violation) =>
+          violation.rule === target.rule &&
+          violation.elementIds.join('|') === target.elementIds.join('|'),
+      )
+      if (
+        !best ||
+        candidateViolations.length < best.violations.length ||
+        (candidateViolations.length === best.violations.length &&
+          targetResolved &&
+          !best.targetResolved)
+      ) {
+        best = { design: candidate, targetResolved, violations: candidateViolations }
       }
     }
-    if (best && best.violations.length < violations.length) {
+    if (
+      best &&
+      (best.violations.length < violations.length ||
+        (best.violations.length === violations.length && best.targetResolved))
+    ) {
       design = best.design
       violations = best.violations
     }

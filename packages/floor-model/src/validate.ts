@@ -1,7 +1,7 @@
 import { textBrailleSize } from './braille'
 import { fitPositionsInPolygon, pointInPolygon } from './fit'
 import type { FloorModel, Point } from './schema'
-import { planToPlateTransform } from './tactile-convert'
+import { planToPlateTransform, scaleRequirements } from './tactile-convert'
 import {
   compositeSize,
   type BrailleLabel,
@@ -39,6 +39,12 @@ export type ValidationContext = {
   roomsMm: { id: string; polygonMm: Point[] }[]
   // Scaled door opening widths (mm), for the legibility gate.
   doorOpeningsMm: { id: string; widthMm: number }[]
+  scaleFeaturesMm: {
+    id: string
+    label: string
+    requiredMm: number
+    widthMm: number
+  }[]
 }
 
 export function buildValidationContext(model: FloorModel): ValidationContext {
@@ -47,6 +53,12 @@ export function buildValidationContext(model: FloorModel): ValidationContext {
     doorOpeningsMm: model.openings
       .filter((o) => o.kind === 'door')
       .map((o) => ({ id: o.id, widthMm: o.width * mmPerPx })),
+    scaleFeaturesMm: scaleRequirements(model).map((feature) => ({
+      id: feature.id,
+      label: feature.label,
+      requiredMm: feature.requiredMm,
+      widthMm: feature.widthPx * mmPerPx,
+    })),
     roomsMm: model.rooms.map((room) => ({
       id: room.id,
       polygonMm: room.polygon.map(toMm),
@@ -156,13 +168,13 @@ export function validateTactileDesign(
   )
 
   // Legibility gate: unfixable by layout — the floor is too big for the plate.
-  for (const door of context.doorOpeningsMm) {
-    if (door.widthMm < MIN_DOOR_OPENING_MM) {
+  for (const feature of context.scaleFeaturesMm) {
+    if (feature.widthMm < feature.requiredMm) {
       violations.push({
-        elementIds: [door.id],
-        measuredMm: door.widthMm,
-        message: `Door ${door.id} prints at ${door.widthMm.toFixed(1)} mm — floor too large for one plate; split it or simplify`,
-        requiredMm: MIN_DOOR_OPENING_MM,
+        elementIds: [feature.id],
+        measuredMm: feature.widthMm,
+        message: `${feature.label} ${feature.id} prints at ${feature.widthMm.toFixed(1)} mm — map too large even for the selected grid; split it or simplify`,
+        requiredMm: feature.requiredMm,
         rule: 'scale',
       })
     }
@@ -323,8 +335,8 @@ export function validateTactileDesign(
   // Seam clearance: braille and point symbols must never straddle (or
   // crowd) the joints between plates — a split braille cell is gibberish.
   // Walls and areas may cross seams; they slice cleanly.
-  const seamsX = grid.cols > 1 ? [design.plate.widthMm] : []
-  const seamsY = grid.rows > 1 ? [design.plate.heightMm] : []
+  const seamsX = Array.from({ length: grid.cols - 1 }, (_, i) => design.plate.widthMm * (i + 1))
+  const seamsY = Array.from({ length: grid.rows - 1 }, (_, i) => design.plate.heightMm * (i + 1))
   const seamViolation = (id: string, measured: number) => {
     violations.push({
       elementIds: [id],
@@ -360,59 +372,86 @@ export function validateTactileDesign(
   // block's key inside its block. (Note: braille on a block is exempt from
   // block clearance by construction — height differentiation separates them.)
   const roomById = new Map(context.roomsMm.map((room) => [room.id, room]))
-  const areaBySource = new Map(
-    areas.filter((a) => a.sourceId).map((a) => [a.sourceId!, a]),
-  )
+  const areasBySource = new Map<string, TactileArea[]>()
+  for (const area of areas) {
+    if (!area.sourceId) continue
+    const sourceAreas = areasBySource.get(area.sourceId) ?? []
+    sourceAreas.push(area)
+    areasBySource.set(area.sourceId, sourceAreas)
+  }
   for (const label of labels) {
     if (!label.sourceId) continue
     const rect = brailleRect(label)
     const room = roomById.get(label.sourceId)
-    const area = areaBySource.get(label.sourceId)
-    const polygon = area?.polygon ?? room?.polygonMm
-    if (!polygon) continue
-    const fits = rectCorners(rect).every((corner) =>
-      pointInPolygon(corner, polygon),
+    const sourceAreas = areasBySource.get(label.sourceId) ?? []
+    const polygons =
+      sourceAreas.length > 0
+        ? sourceAreas.map((area) => area.polygon)
+        : room
+          ? [room.polygonMm]
+          : []
+    if (polygons.length === 0) continue
+    const fits = polygons.some((polygon) =>
+      rectCorners(rect).every((corner) => pointInPolygon(corner, polygon)),
     )
     if (fits) continue
     // A feature that can never hold its key (too small, or a thin
     // diagonal sliver whose bbox is deceptively large) takes an adjacent
     // label instead — the convention on real tactile maps.
-    const xs = polygon.map((p) => p.x)
-    const ys = polygon.map((p) => p.y)
-    const bounds = {
-      maxX: Math.max(...xs),
-      maxY: Math.max(...ys),
-      minX: Math.min(...xs),
-      minY: Math.min(...ys),
-    }
     const keyW = rect.maxX - rect.minX
     const keyH = rect.maxY - rect.minY
-    const canEverFit = fitPositionsInPolygon(
-      keyW + 1,
-      keyH + 1,
-      polygon,
-      { x: (bounds.minX + bounds.maxX) / 2, y: (bounds.minY + bounds.maxY) / 2 },
-      40,
-    ).some((center) => {
-      const candidate: Rect = {
-        maxX: center.x + keyW / 2,
-        maxY: center.y + keyH / 2,
-        minX: center.x - keyW / 2,
-        minY: center.y - keyH / 2,
+    const bounds = polygons.map((polygon) => {
+      const xs = polygon.map((p) => p.x)
+      const ys = polygon.map((p) => p.y)
+      return {
+        maxX: Math.max(...xs),
+        maxY: Math.max(...ys),
+        minX: Math.min(...xs),
+        minY: Math.min(...ys),
       }
-      return lines.every(
-        (line) =>
-          Math.min(
-            ...lineSegments(line).map(([a, b]) =>
-              rectSegmentDistance(candidate, a, b),
-            ),
-          ) -
-            line.widthMm / 2 >=
-          CLEARANCE_MM - MEASURE_EPS_MM,
-      )
     })
+    const canEverFit = polygons.some((polygon, index) =>
+      fitPositionsInPolygon(
+        keyW + 1,
+        keyH + 1,
+        polygon,
+        {
+          x: (bounds[index]!.minX + bounds[index]!.maxX) / 2,
+          y: (bounds[index]!.minY + bounds[index]!.maxY) / 2,
+        },
+        40,
+      ).some((center) => {
+        const candidate: Rect = {
+          maxX: center.x + keyW / 2,
+          maxY: center.y + keyH / 2,
+          minX: center.x - keyW / 2,
+          minY: center.y - keyH / 2,
+        }
+        const clearsSeams =
+          seamsX.every(
+            (seam) =>
+              candidate.maxX <= seam - SEAM_CLEARANCE_MM ||
+              candidate.minX >= seam + SEAM_CLEARANCE_MM,
+          ) &&
+          seamsY.every(
+            (seam) =>
+              candidate.maxY <= seam - SEAM_CLEARANCE_MM ||
+              candidate.minY >= seam + SEAM_CLEARANCE_MM,
+          )
+        return inMargin(candidate) && clearsSeams && lines.every(
+          (line) =>
+            Math.min(
+              ...lineSegments(line).map(([a, b]) =>
+                rectSegmentDistance(candidate, a, b),
+              ),
+            ) -
+              line.widthMm / 2 >=
+            CLEARANCE_MM - MEASURE_EPS_MM,
+        )
+      }),
+    )
     if (!canEverFit) {
-      const gap = rectRectDistance(rect, bounds)
+      const gap = Math.min(...bounds.map((areaBounds) => rectRectDistance(rect, areaBounds)))
       if (gap <= ADJACENT_LABEL_MM + MEASURE_EPS_MM) continue
       violations.push({
         elementIds: [label.id],
@@ -426,7 +465,7 @@ export function validateTactileDesign(
     violations.push({
       elementIds: [label.id],
       measuredMm: null,
-      message: area
+      message: sourceAreas.length > 0
         ? `Braille key for block ${label.sourceId} does not fit inside the block`
         : `Braille key for room ${label.sourceId} does not fit inside the room`,
       requiredMm: null,

@@ -91,3 +91,32 @@ export function textBrailleSize(text: string): { widthMm: number; heightMm: numb
       BRAILLE_MM.dotDiameter,
   }
 }
+
+export function paginateBrailleRows(
+  rows: string[],
+  plate: { heightMm: number; marginMm: number; widthMm: number },
+): string[][] {
+  const maxCells = Math.floor(
+    (plate.widthMm - 2 * plate.marginMm) / BRAILLE_MM.cellPitch,
+  )
+  const rowHeight = textBrailleSize('a').heightMm
+  const maxRows =
+    Math.floor(
+      (plate.heightMm - 2 * plate.marginMm - rowHeight) /
+        BRAILLE_MM.linePitch,
+    ) + 1
+  if (maxCells < 1 || maxRows < 1) {
+    throw new Error('Legend plate is too small for one braille cell')
+  }
+  const fitted = rows.map((row) => {
+    let text = row
+    while (text.length > 0 && textToBrailleCells(text).length > maxCells) {
+      text = text.slice(0, -1)
+    }
+    return text
+  })
+  return Array.from(
+    { length: Math.ceil(fitted.length / maxRows) },
+    (_, index) => fitted.slice(index * maxRows, (index + 1) * maxRows),
+  )
+}

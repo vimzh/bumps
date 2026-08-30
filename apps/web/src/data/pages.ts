@@ -28,6 +28,35 @@ export const pagesContent = {
     ],
     title: "How it works",
   },
+  inputGuide: {
+    bad: {
+      alt: "Perspective 3D render of a convention center with angled walls, shadows, and overlapping spaces",
+      image: "/gallery/study-cch-2f-plan.jpg",
+      label: "Bad input",
+      points: [
+        "Angled perspective distorts distances and wall geometry.",
+        "Roofs, shadows, and objects hide room boundaries.",
+        "Several halls or levels are shown at once.",
+      ],
+      title: "Perspective or 3D render",
+    },
+    good: {
+      alt: "Clear black-and-white top-down library floor plan with visible walls, doors, rooms, and furniture",
+      image: "/gallery/test-library-floor-plan-source.png",
+      label: "Good input",
+      points: [
+        "Straight-on, top-down view of one floor.",
+        "Sharp, high-contrast walls and door openings.",
+        "A readable room layout with little decorative clutter.",
+      ],
+      title: "Flat 2D floor plan",
+    },
+    intro:
+      "The parser works best when it can trace walls, doors, and room boundaries directly from the image.",
+    rule:
+      "Rule of thumb: if you can trace every wall and doorway from directly above, it is likely a good input.",
+    title: "Choose a clear floor plan",
+  },
   theNeed: {
     paragraphs: [
       "Walking into an unfamiliar building without sight means arriving without the one thing every other visitor gets for free: a picture of the layout. A sighted person glances at the lobby directory. A blind person has to ask, memorize spoken directions, or learn the space by trial and error.",

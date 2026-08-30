@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4400 2400" width="4400" height="2400">
+<rect width="4400" height="2400" fill="white"/>
+<polygon data-id="r-1" points="485,520 550,580 620,520 550,460" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="551.25" y="520" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">Museum Entrance Hall</text>
+<polygon data-id="fur-1" points="500,480 530,480 530,510 500,510" fill="#d6d3d1" stroke="#a8a29e" stroke-width="2"/>
+<text x="515" y="495" font-family="monospace" font-size="16" fill="#44403c" text-anchor="middle" dominant-baseline="middle">counter</text>
+<line data-id="w-1" x1="485" y1="520" x2="550" y2="580" stroke="#1c1917" stroke-width="15" stroke-linecap="square"/>
+<line data-id="w-2" x1="550" y1="580" x2="620" y2="520" stroke="#1c1917" stroke-width="15" stroke-linecap="square"/>
+<line data-id="w-3" x1="620" y1="520" x2="550" y2="460" stroke="#1c1917" stroke-width="15" stroke-linecap="square"/>
+<line data-id="w-4" x1="550" y1="460" x2="485" y2="520" stroke="#1c1917" stroke-width="15" stroke-linecap="square"/>
+<circle data-id="d-1" cx="515" cy="550" r="15" fill="none" stroke="#0d9488" stroke-width="3"/>
+<g data-id="f-1" transform="translate(550 520) rotate(0)">
+<rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
+<text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">E</text>
+</g>
+<g data-id="f-2" transform="translate(580 550) rotate(0)">
+<rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
+<text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">WC</text>
+</g>
+</svg>

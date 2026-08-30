@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2200 1700" width="2200" height="1700">
+<rect width="2200" height="1700" fill="white"/>
+<polygon data-id="r-1" points="16,62 88,62 88,102 16,102" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="52" y="82" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">HELEN GORDON</text>
+<polygon data-id="r-2" points="31,131 91,131 91,232 31,232" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="61" y="181.5" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">PARKING STRUCTURE THREE</text>
+<polygon data-id="r-3" points="115,65 175,65 175,115 115,115" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="145" y="90" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">U. HONORS</text>
+<polygon data-id="r-4" points="115,165 175,215 175,255 115,255" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="145" y="222.5" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">BLUMEL</text>
+<polygon data-id="r-5" points="205,75 275,75 275,145 205,145" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="240" y="110" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">VERNIER SCIENCE CENTER</text>
+<polygon data-id="r-6" points="215,165 275,255 275,255 215,255" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="245" y="232.5" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">SCIENCE RESEARCH AND TEACHING CENTER</text>
+<polygon data-id="r-7" points="415,65 485,125 485,125 415,125" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="450" y="110" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">LINCOLN HALL</text>
+<polygon data-id="r-8" points="415,185 485,255 485,255 415,255" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="450" y="237.5" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">CRAMER HALL</text>
+<polygon data-id="r-9" points="415,285 485,365 485,365 415,365" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="450" y="345" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">SMITH MEMORIAL STUDENT UNION</text>
+<polygon data-id="r-10" points="505,185 565,245 565,245 505,245" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="535" y="230" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">PARKING STRUCTURE TWO</text>
+<polygon data-id="r-11" points="505,285 565,365 565,365 505,365" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="535" y="345" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">KARL MILLER CENTER</text>
+<polygon data-id="r-12" points="585,165 655,225 655,225 585,225" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="620" y="210" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">URBAN CENTER BUILDING</text>
+<polygon data-id="r-13" points="585,285 655,365 655,365 585,365" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="620" y="345" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">ACADEMIC AND STUDENT RECREATION CENTER</text>
+<polygon data-id="r-14" points="775,65 835,125 835,125 775,125" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="805" y="110" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">RICHARD AND MAURINE NEUBERGER CENTER</text>
+<polygon data-id="r-15" points="775,395 835,475 835,475 775,475" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="805" y="455" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">FOURTH AVENUE BUILDING</text>
+<polyline data-id="p-1" points="280,165 400,165 600,165 800,165" fill="none" stroke="#b45309" stroke-width="5" stroke-dasharray="14 10" stroke-linecap="round"/>
+<polyline data-id="p-2" points="660,100 660,300 660,600 660,800" fill="none" stroke="#b45309" stroke-width="5" stroke-dasharray="14 10" stroke-linecap="round"/>
+</svg>

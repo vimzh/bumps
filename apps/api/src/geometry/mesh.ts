@@ -6,9 +6,9 @@ import Module, {
 import {
   BRAILLE_MM,
   compositeSize,
+  paginateBrailleRows,
   RELIEF_MM,
   textDotCenters,
-  textToBrailleCells,
   type Point,
   type TactileDesign,
   type TactileSymbol,
@@ -317,13 +317,11 @@ export function buildPlateMeshes(
   return plates
 }
 
-// Legend plate: title row, then key -> text rows, all Grade 1 braille.
-export function buildLegendMesh(design: TactileDesign): ManifoldT | null {
-  if (design.legend.length === 0) return null
-  // The legend is always a single plate regardless of the map grid.
+// Legend plates: title row, then key -> text rows, all Grade 1 braille.
+export function buildLegendMeshes(design: TactileDesign): ManifoldT[] {
+  if (design.legend.length === 0) return []
   const { baseMm, heightMm, marginMm, widthMm } = design.plate
   const yUp = (p: Point): Point => ({ x: p.x, y: heightMm - p.y })
-  const maxCells = Math.floor((widthMm - 2 * marginMm) / BRAILLE_MM.cellPitch)
   const rows: string[] = []
   if (design.title) {
     rows.push(design.title.toLowerCase().replace(/[^a-z0-9 ]/g, '').trim())
@@ -331,19 +329,17 @@ export function buildLegendMesh(design: TactileDesign): ManifoldT | null {
   for (const entry of design.legend) {
     rows.push(`${entry.key}  ${entry.text}`)
   }
-  const parts: ManifoldT[] = [Manifold.cube([widthMm, heightMm, baseMm])]
-  rows.forEach((row, index) => {
-    let text = row
-    while (text.length > 0 && textToBrailleCells(text).length > maxCells) {
-      text = text.slice(0, -1)
-    }
-    const origin = {
-      x: marginMm,
-      y: marginMm + index * BRAILLE_MM.linePitch,
-    }
-    parts.push(...brailleDomes(textDotCenters(text, origin), baseMm, yUp))
+  return paginateBrailleRows(rows, design.plate).map((page) => {
+    const parts: ManifoldT[] = [Manifold.cube([widthMm, heightMm, baseMm])]
+    page.forEach((text, index) => {
+      const origin = {
+        x: marginMm,
+        y: marginMm + index * BRAILLE_MM.linePitch,
+      }
+      parts.push(...brailleDomes(textDotCenters(text, origin), baseMm, yUp))
+    })
+    return Manifold.union(parts.filter((part) => !part.isEmpty()))
   })
-  return Manifold.union(parts.filter((part) => !part.isEmpty()))
 }
 
 export function meshToBinaryStl(mesh: Mesh): Uint8Array {

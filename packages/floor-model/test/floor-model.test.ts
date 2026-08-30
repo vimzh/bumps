@@ -7,6 +7,7 @@ import {
   findElement,
   floorModelSchema,
   renderFloorModelSvg,
+  renderFloorTopologyOverlaySvg,
   sampleFloorModel,
 } from '../src'
 
@@ -19,6 +20,8 @@ describe('schema', () => {
     expect(parsed.walls).toHaveLength(8)
     expect(parsed.openings).toHaveLength(6)
     expect(parsed.features).toHaveLength(4)
+    expect(parsed.paths).toHaveLength(1)
+    expect(parsed.roads).toHaveLength(1)
   })
 
   test('rejects out-of-range confidence and degenerate polygons', () => {
@@ -29,6 +32,31 @@ describe('schema', () => {
     const twoPoints = structuredClone(sampleFloorModel)
     twoPoints.rooms[0]!.polygon = twoPoints.rooms[0]!.polygon.slice(0, 2)
     expect(floorModelSchema.safeParse(twoPoints).success).toBe(false)
+  })
+
+  test('rejects malformed or ambiguous model data', () => {
+    const unknownField = structuredClone(sampleFloorModel) as Record<string, unknown>
+    ;(unknownField.rooms as Record<string, unknown>[])[0]!.unexpected = true
+    expect(floorModelSchema.safeParse(unknownField).success).toBe(false)
+
+    const duplicateId = structuredClone(sampleFloorModel)
+    duplicateId.rooms[0]!.id = duplicateId.walls[0]!.id
+    expect(floorModelSchema.safeParse(duplicateId).success).toBe(false)
+
+    const missingWall = structuredClone(sampleFloorModel)
+    missingWall.openings[0]!.wallId = 'missing-wall'
+    expect(floorModelSchema.safeParse(missingWall).success).toBe(false)
+
+    const degenerateWall = structuredClone(sampleFloorModel)
+    degenerateWall.walls[0]!.b = degenerateWall.walls[0]!.a
+    expect(floorModelSchema.safeParse(degenerateWall).success).toBe(false)
+
+    const oversizedPolygon = structuredClone(sampleFloorModel)
+    oversizedPolygon.rooms[0]!.polygon = Array.from({ length: 2_001 }, (_, x) => ({
+      x,
+      y: 0,
+    }))
+    expect(floorModelSchema.safeParse(oversizedPolygon).success).toBe(false)
   })
 })
 
@@ -82,6 +110,19 @@ describe('edit operations', () => {
     ).toThrow(EditOperationError)
   })
 
+  test('deleting a wall clears opening references to it', () => {
+    const result = applyOperation(sampleFloorModel, {
+      op: 'delete',
+      id: 'w-corridor-n',
+    })
+    expect(
+      result.openings
+        .filter((opening) => ['d-nw', 'd-ne'].includes(opening.id))
+        .every((opening) => opening.wallId === null),
+    ).toBe(true)
+    expect(floorModelSchema.safeParse(result).success).toBe(true)
+  })
+
   test('operation payloads validate', () => {
     expect(
       editOperationSchema.safeParse({ op: 'move', id: 'x', dx: 1, dy: 2 }).success,
@@ -103,7 +144,19 @@ describe('renderer', () => {
     expect(svg).toContain('>Corridor</text>')
     expect(svg).toContain('>chairs</text>')
     const dataIds = svg.match(/data-id="/g) ?? []
-    // walls + openings + rooms + features + furniture
-    expect(dataIds).toHaveLength(8 + 6 + 5 + 4 + 2)
+    // walls + openings + rooms + features + furniture + paths + roads
+    expect(dataIds).toHaveLength(8 + 6 + 5 + 4 + 2 + 1 + 1)
+  })
+
+  test('renders an aligned source topology overlay', () => {
+    const svg = renderFloorTopologyOverlaySvg(
+      sampleFloorModel,
+      'data:image/png;base64,aW1hZ2U=',
+    )
+    expect(svg).toContain('href="data:image/png;base64,aW1hZ2U="')
+    expect(svg).toContain('stroke="#dc2626"')
+    expect(svg).toContain('stroke="#0891b2"')
+    expect(svg).toContain('data-id="w-top"')
+    expect(svg).toContain('data-id="d-entry"')
   })
 })

@@ -52,7 +52,7 @@ export {
   editOperationSchema,
 } from './operations'
 export type { EditOperation } from './operations'
-export { renderFloorModelSvg } from './render'
+export { renderFloorModelSvg, renderFloorTopologyOverlaySvg } from './render'
 export { sampleFloorModel } from './fixture'
 export {
   aggregateConfidence,
@@ -63,6 +63,7 @@ export {
 export {
   BRAILLE_MM,
   cellDotCenters,
+  paginateBrailleRows,
   textBrailleSize,
   textDotCenters,
   textToBrailleCells,

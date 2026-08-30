@@ -1,6 +1,13 @@
 import { z } from 'zod'
-import { LlmAgent, InMemorySessionService, Runner } from '@google/adk'
-import { JSON_ONLY, makeModel, MODEL_CRITICAL, parseAgentJson } from './llm'
+import { LlmAgent } from '@google/adk'
+import {
+  JSON_ONLY,
+  makeModel,
+  MODEL_CRITICAL,
+  parseAgentJson,
+  runAgentTurn,
+  type MessagePart,
+} from './llm'
 import { withModelRetry } from './retry'
 
 // Kept to Gemini's response-schema subset (no string length constraints).
@@ -66,7 +73,12 @@ export const critiqueSchema = z
       description: f.description,
       elementId: f.elementId ?? null,
       kind: f.kind ?? f.type ?? 'misplaced',
-      severity: f.severity ?? 'major',
+      severity:
+        ['missing', 'extra', 'misplaced'].includes(
+          f.kind ?? f.type ?? 'misplaced',
+        ) && /\b(?:door|opening|wall|partition|entrance|exit)\b/i.test(f.description)
+          ? ('major' as const)
+          : (f.severity ?? 'major'),
     }))
     const verdict =
       raw.verdict === 'pass' && findings.length === 0
@@ -87,11 +99,11 @@ export const critiqueSchema = z
 
 export type Critique = z.infer<typeof critiqueSchema>
 
-const INSTRUCTION = `You review machine extractions of architectural floor plans.
+export const CRITIQUE_INSTRUCTION = `You review machine extractions of architectural floor plans.
 
-You receive two images:
-- IMAGE 1: the original floor plan.
-- IMAGE 2: a rendering of the extracted model. Legend: light gray filled polygons = rooms (label text at center), darker gray blocks with labels = furniture blocks, black lines = walls, colored circles = doors/windows, small squares with letters = features (S stairs, E elevator, WC restroom, arrow entrance, X exit, R ramp).
+You receive a full original floor plan, optional overlapping zoomed detail views whose annotations map them to full-plan coordinates, an aligned topology overlay, and then a rendering of the extracted model. The render legend is: light gray filled polygons = rooms/buildings (label text at center), darker gray blocks with labels = furniture blocks, black lines = walls, wide translucent gray bands = roads/streets (name above), orange dashed lines = walkway paths, colored circles = doors/windows, small squares with letters = features (S stairs, E elevator, WC restroom, arrow entrance, X exit, R ramp).
+
+The aligned topology overlay places the extracted geometry directly over the source plan: RED lines and endpoint dots are extracted walls, CYAN circles are extracted doors, and BLUE circles are extracted windows. A visible source wall without red coverage is missing. Red geometry with no source wall beneath it is extra. A cyan door circle without direct door/opening evidence beneath it is a fake door. Inspect endpoint dots closely: separated endpoints at an L, U, or T junction mean the wall network is disconnected.
 
 You also receive the extracted model as JSON (ids included).
 
@@ -103,9 +115,15 @@ Report structural discrepancies between the images:
 
 Rules:
 - Only report real structural issues. Ignore rendering style, colors, line weights, dimensions, and hatching.
+- On campus/site plans: missing drawn streets or the main walkway network are MAJOR findings — they are how the map connects. A building footprint collapsed to a triangle or sliver when the drawing shows a full building is a misplaced MAJOR finding.
 - Furniture is expected as coarse clubbed blocks (a row of chairs = one "chairs" block), not per-item outlines. Report furniture when a substantial piece is missing entirely (chair clusters count), a block is badly oversized versus what is drawn, badly misplaced, or invented — always severity "minor".
-- Check EVERY enclosed room has at least one doorway (a door in the model). A sealed room almost always means a missed door arc — report it as missing, severity "major".
-- Check for missed SHORT wall stubs and partial partitions; a missing stub wall is severity "major" when it changes how a person would navigate.
+- Fixed navigation landmarks retain their source outline. A round fountain, circular planter, circular desk, or curved counter rendered as a square/rectangle is a misplaced MAJOR finding; compare the landmark polygon against the source curve.
+- The tactile-oriented model must omit operational and technology markers that do not help blind navigation. Report Wi-Fi hotspots, CCTV, fire equipment, vending machines, and electrical fixtures as extra when they were emitted as features. An info-point must be a staffed visitor information or reception point.
+- Audit every emitted door for direct visible evidence: a leaf and rooted swing arc, sliding panels at a wall gap, or an unmistakable open passage. A door inferred only because a room seems sealed is an extra MAJOR finding because it cuts a false gap into the tactile wall.
+- Audit source openings in every detail view as well as emitted doors. Two aligned wall strokes that visibly terminate around a plausible doorway-width gap are direct evidence of an open passage even without a swing arc. Report that opening as missing when the model has no door there. Do not promote an arbitrary missing boundary or large unbounded area to a door.
+- A sealed room is not evidence of a missing door. Report a missing door only when the source visibly shows the opening.
+- Trace L-, U-, and T-shaped wall networks junction by junction. Check every short leg and stub; missing or disconnected segments are MAJOR when they change how a person would navigate.
+- Check every curved wall and curved room boundary. A curve omitted or flattened to a single chord is a "misplaced" finding (or "missing" when absent) and severity "major" when it changes the navigable shape.
 - severity "major" = would mislead a blind reader navigating (missing room, wall, door, or feature; badly wrong geometry). "minor" = cosmetic or small offsets.
 - Use element ids from the JSON for extra/misplaced/mislabeled findings; elementId null for missing ones.
 - confidenceAdjustments: for elements you verified match the plan well, raise confidence; for dubious ones, lower it. Only include elements you actually assessed.
@@ -115,7 +133,7 @@ export const critiqueAgent = new LlmAgent({
   name: 'floor_plan_critic',
   description: 'Compares a floor plan against a rendering of its extracted model',
   model: makeModel(MODEL_CRITICAL),
-  instruction: INSTRUCTION,
+  instruction: CRITIQUE_INSTRUCTION,
   outputSchema: critiqueOutputSchema,
   generateContentConfig: {
     temperature: 0.1,
@@ -124,8 +142,8 @@ export const critiqueAgent = new LlmAgent({
 })
 
 export async function runCritique(params: {
-  planPngBase64: string
-  planMime: string
+  planParts: MessagePart[]
+  overlayParts: MessagePart[]
   renderPngBase64: string
   modelJson: string
 }): Promise<Critique> {
@@ -133,41 +151,26 @@ export async function runCritique(params: {
 }
 
 async function runCritiqueOnce(params: {
-  planPngBase64: string
-  planMime: string
+  planParts: MessagePart[]
+  overlayParts: MessagePart[]
   renderPngBase64: string
   modelJson: string
 }): Promise<Critique> {
-  const runner = new Runner({
-    appName: 'bumps',
-    agent: critiqueAgent,
-    sessionService: new InMemorySessionService(),
+  const finalText = await runAgentTurn({
+    adkAgent: critiqueAgent,
+    agentName: 'Critique',
+    instruction: CRITIQUE_INSTRUCTION,
+    parts: [
+      { text: 'SOURCE FLOOR PLAN — full image followed by detail views:' },
+      ...params.planParts,
+      {
+        text: 'ALIGNED TOPOLOGY OVERLAY — full image followed by matching zoomed detail views:',
+      },
+      ...params.overlayParts,
+      { text: 'EXTRACTED MODEL RENDER:' },
+      { inlineData: { data: params.renderPngBase64, mimeType: 'image/png' } },
+      { text: `Extracted model JSON:\n${params.modelJson}` },
+    ],
   })
-
-  let finalText = ''
-  for await (const event of runner.runEphemeral({
-    userId: 'bumps',
-    newMessage: {
-      parts: [
-        { text: 'IMAGE 1 — the original floor plan:' },
-        { inlineData: { data: params.planPngBase64, mimeType: params.planMime } },
-        { text: 'IMAGE 2 — rendering of the extracted model:' },
-        { inlineData: { data: params.renderPngBase64, mimeType: 'image/png' } },
-        { text: `Extracted model JSON:\n${params.modelJson}` },
-      ],
-    },
-  })) {
-    if (event.errorMessage) {
-      throw new Error(`Critique model error: ${event.errorMessage}`)
-    }
-    const text = event.content?.parts?.map((part) => part.text ?? '').join('')
-    if (text) {
-      finalText = text
-    }
-  }
-
-  if (!finalText) {
-    throw new Error('Critique returned no output')
-  }
   return parseAgentJson(critiqueSchema, finalText, 'Critique')
 }

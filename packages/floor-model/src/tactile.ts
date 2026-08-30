@@ -82,11 +82,11 @@ export const tactileDesignSchema = z.object({
   schemaVersion: z.literal(1),
   plate: plateSchema,
   // Large floors print as a grid of plates assembled edge-to-edge
-  // (2x2 max in v1). Coordinates span the composite area.
+  // (up to 4x4 = 16 plates). Coordinates span the composite area.
   grid: z
     .object({
-      rows: z.number().int().min(1).max(2),
-      cols: z.number().int().min(1).max(2),
+      rows: z.number().int().min(1).max(4),
+      cols: z.number().int().min(1).max(4),
     })
     .default({ cols: 1, rows: 1 }),
   // Scale actually applied: plate millimeters per plan pixel.

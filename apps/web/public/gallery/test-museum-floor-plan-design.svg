@@ -1,0 +1,139 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 568 797" width="568" height="797">
+<rect width="568" height="797" fill="white"/>
+<polygon data-id="r-1" points="82,128 216,128 216,218 80,218" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="148.5" y="173" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">Life Long Learning Centre</text>
+<polygon data-id="r-2" points="144,218 216,218 216,337 144,337" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="180" y="277.5" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">Anglo-Saxon Gallery</text>
+<polygon data-id="r-3" points="241,250 300,250 300,314 233,314 233,250" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="261.4" y="275.6" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">Triclinium Dining Room</text>
+<polygon data-id="r-4" points="216,138 334,138 334,424 216,424" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="275" y="281" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">Roman Main Gallery</text>
+<polygon data-id="r-5" points="115,339 215,339 215,430 115,430" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="165" y="384.5" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">Medieval Galleries</text>
+<polygon data-id="r-6" points="107,434 205,434 202,492 104,488" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="154.5" y="462" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">Civil war / C 18th C 19th</text>
+<polygon data-id="r-7" points="205,434 334,424 363,500 328,502 267,502 257,486 245,471 228,471 212,480 202,492" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="264.1" y="476.2" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">Hare Gallery</text>
+<polygon data-id="r-8" points="334,424 390,396 438,513 363,532 363,424" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="377.6" y="457.8" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">Roman Garden</text>
+<polygon data-id="r-9" points="63,552 94,488 156,514 118,601" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="107.75" y="538.75" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">Exhibitions Gallery</text>
+<polygon data-id="r-10" points="156,514 195,520 177,617 118,601" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="161.5" y="563" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">Shop &amp; V.I.C</text>
+<polygon data-id="r-11" points="195,520 246,532 215,626 177,617" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="208.25" y="573.75" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">Entrance</text>
+<polygon data-id="r-12" points="246,532 342,567 322,658 241,638" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="287.75" y="598.75" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">Prehistory</text>
+<polygon data-id="r-13" points="342,567 404,584 388,676 322,658" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="364" y="621.25" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">Roman Military</text>
+<polygon data-id="r-14" points="328,502 363,532 404,584 342,567" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="359.25" y="546.25" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">Roman Military</text>
+<polygon data-id="r-15" points="404,584 527,690 446,694 388,676" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="441.25" y="661" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">Jack's cafe</text>
+<polygon data-id="r-16" points="378,150 500,150 500,363 378,363" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="439" y="256.5" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">Roman Upper Gallery</text>
+<polygon data-id="r-17" points="378,78 500,78 500,150 378,150" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="439" y="114" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">Mezzanine Viewpoint</text>
+<line data-id="w-1" x1="82" y1="128" x2="216" y2="128" stroke="#1c1917" stroke-width="3" stroke-linecap="square"/>
+<line data-id="w-2" x1="216" y1="128" x2="216" y2="218" stroke="#1c1917" stroke-width="3" stroke-linecap="square"/>
+<line data-id="w-3" x1="216" y1="218" x2="80" y2="218" stroke="#1c1917" stroke-width="3" stroke-linecap="square"/>
+<line data-id="w-4" x1="80" y1="218" x2="82" y2="128" stroke="#1c1917" stroke-width="3" stroke-linecap="square"/>
+<line data-id="w-5" x1="216" y1="138" x2="334" y2="138" stroke="#1c1917" stroke-width="3" stroke-linecap="square"/>
+<line data-id="w-6" x1="334" y1="138" x2="334" y2="424" stroke="#1c1917" stroke-width="3" stroke-linecap="square"/>
+<line data-id="w-7" x1="334" y1="424" x2="216" y2="424" stroke="#1c1917" stroke-width="3" stroke-linecap="square"/>
+<line data-id="w-8" x1="216" y1="424" x2="216" y2="218" stroke="#1c1917" stroke-width="3" stroke-linecap="square"/>
+<line data-id="w-9" x1="241" y1="250" x2="300" y2="250" stroke="#1c1917" stroke-width="2" stroke-linecap="square"/>
+<line data-id="w-10" x1="300" y1="250" x2="300" y2="314" stroke="#1c1917" stroke-width="2" stroke-linecap="square"/>
+<line data-id="w-11" x1="300" y1="314" x2="233" y2="314" stroke="#1c1917" stroke-width="2" stroke-linecap="square"/>
+<line data-id="w-12" x1="80" y1="218" x2="40" y2="574" stroke="#1c1917" stroke-width="2" stroke-linecap="square"/>
+<line data-id="w-12b" x1="40" y1="574" x2="63" y2="552" stroke="#1c1917" stroke-width="2" stroke-linecap="square"/>
+<line data-id="w-13" x1="144" y1="218" x2="144" y2="337" stroke="#1c1917" stroke-width="2" stroke-linecap="square"/>
+<line data-id="w-14" x1="144" y1="337" x2="216" y2="337" stroke="#1c1917" stroke-width="2" stroke-linecap="square"/>
+<line data-id="w-15" x1="115" y1="339" x2="215" y2="339" stroke="#1c1917" stroke-width="2" stroke-linecap="square"/>
+<line data-id="w-16" x1="215" y1="339" x2="215" y2="430" stroke="#1c1917" stroke-width="2" stroke-linecap="square"/>
+<line data-id="w-17" x1="215" y1="430" x2="115" y2="430" stroke="#1c1917" stroke-width="2" stroke-linecap="square"/>
+<line data-id="w-18" x1="115" y1="430" x2="115" y2="339" stroke="#1c1917" stroke-width="2" stroke-linecap="square"/>
+<line data-id="w-19" x1="107" y1="434" x2="205" y2="434" stroke="#1c1917" stroke-width="2" stroke-linecap="square"/>
+<line data-id="w-20" x1="205" y1="434" x2="202" y2="492" stroke="#1c1917" stroke-width="2" stroke-linecap="square"/>
+<line data-id="w-21" x1="202" y1="492" x2="212" y2="480" stroke="#1c1917" stroke-width="2" stroke-linecap="square"/>
+<line data-id="w-22" x1="212" y1="480" x2="228" y2="471" stroke="#1c1917" stroke-width="2" stroke-linecap="square"/>
+<line data-id="w-23" x1="228" y1="471" x2="245" y2="471" stroke="#1c1917" stroke-width="2" stroke-linecap="square"/>
+<line data-id="w-24" x1="245" y1="471" x2="257" y2="486" stroke="#1c1917" stroke-width="2" stroke-linecap="square"/>
+<line data-id="w-25" x1="257" y1="486" x2="267" y2="502" stroke="#1c1917" stroke-width="2" stroke-linecap="square"/>
+<line data-id="w-26" x1="267" y1="502" x2="328" y2="502" stroke="#1c1917" stroke-width="2" stroke-linecap="square"/>
+<line data-id="w-27" x1="334" y1="424" x2="390" y2="396" stroke="#1c1917" stroke-width="2" stroke-linecap="square"/>
+<line data-id="w-28" x1="363" y1="424" x2="363" y2="532" stroke="#1c1917" stroke-width="2" stroke-linecap="square"/>
+<line data-id="w-29" x1="390" y1="396" x2="438" y2="513" stroke="#1c1917" stroke-width="2" stroke-linecap="square"/>
+<line data-id="w-30" x1="438" y1="513" x2="527" y2="690" stroke="#1c1917" stroke-width="2" stroke-linecap="square"/>
+<line data-id="w-31" x1="527" y1="690" x2="446" y2="694" stroke="#1c1917" stroke-width="2" stroke-linecap="square"/>
+<line data-id="w-32" x1="446" y1="694" x2="322" y2="676" stroke="#1c1917" stroke-width="2" stroke-linecap="square"/>
+<line data-id="w-33" x1="322" y1="676" x2="241" y2="638" stroke="#1c1917" stroke-width="2" stroke-linecap="square"/>
+<line data-id="w-34" x1="241" y1="638" x2="177" y2="608" stroke="#1c1917" stroke-width="2" stroke-linecap="square"/>
+<line data-id="w-35" x1="177" y1="608" x2="118" y2="577" stroke="#1c1917" stroke-width="2" stroke-linecap="square"/>
+<line data-id="w-36" x1="118" y1="577" x2="63" y2="552" stroke="#1c1917" stroke-width="2" stroke-linecap="square"/>
+<line data-id="w-37" x1="63" y1="552" x2="94" y2="488" stroke="#1c1917" stroke-width="2" stroke-linecap="square"/>
+<line data-id="w-38" x1="94" y1="488" x2="156" y2="514" stroke="#1c1917" stroke-width="2" stroke-linecap="square"/>
+<line data-id="w-39" x1="156" y1="514" x2="118" y2="601" stroke="#1c1917" stroke-width="2" stroke-linecap="square"/>
+<line data-id="w-40" x1="156" y1="514" x2="195" y2="520" stroke="#1c1917" stroke-width="2" stroke-linecap="square"/>
+<line data-id="w-41" x1="195" y1="520" x2="177" y2="617" stroke="#1c1917" stroke-width="2" stroke-linecap="square"/>
+<line data-id="w-42" x1="195" y1="520" x2="246" y2="532" stroke="#1c1917" stroke-width="2" stroke-linecap="square"/>
+<line data-id="w-43" x1="246" y1="532" x2="215" y2="626" stroke="#1c1917" stroke-width="2" stroke-linecap="square"/>
+<line data-id="w-44" x1="246" y1="532" x2="302" y2="555" stroke="#1c1917" stroke-width="2" stroke-linecap="square"/>
+<line data-id="w-45" x1="302" y1="555" x2="342" y2="567" stroke="#1c1917" stroke-width="2" stroke-linecap="square"/>
+<line data-id="w-46" x1="342" y1="567" x2="322" y2="658" stroke="#1c1917" stroke-width="2" stroke-linecap="square"/>
+<line data-id="w-47" x1="322" y1="658" x2="241" y2="638" stroke="#1c1917" stroke-width="2" stroke-linecap="square"/>
+<line data-id="w-48" x1="342" y1="567" x2="404" y2="584" stroke="#1c1917" stroke-width="2" stroke-linecap="square"/>
+<line data-id="w-49" x1="404" y1="584" x2="388" y2="676" stroke="#1c1917" stroke-width="2" stroke-linecap="square"/>
+<line data-id="w-50" x1="388" y1="676" x2="322" y2="658" stroke="#1c1917" stroke-width="2" stroke-linecap="square"/>
+<line data-id="w-51" x1="378" y1="78" x2="500" y2="78" stroke="#1c1917" stroke-width="3" stroke-linecap="square"/>
+<line data-id="w-52" x1="500" y1="78" x2="500" y2="363" stroke="#1c1917" stroke-width="3" stroke-linecap="square"/>
+<line data-id="w-53" x1="500" y1="363" x2="378" y2="363" stroke="#1c1917" stroke-width="3" stroke-linecap="square"/>
+<line data-id="w-54" x1="378" y1="363" x2="378" y2="78" stroke="#1c1917" stroke-width="3" stroke-linecap="square"/>
+<line data-id="w-55" x1="378" y1="150" x2="500" y2="150" stroke="#1c1917" stroke-width="2" stroke-linecap="square"/>
+<circle data-id="d-1" cx="144" cy="218" r="12" fill="none" stroke="#0d9488" stroke-width="3"/>
+<circle data-id="d-2" cx="208" cy="430" r="9" fill="none" stroke="#0d9488" stroke-width="3"/>
+<circle data-id="d-3" cx="342" cy="502" r="10" fill="none" stroke="#0d9488" stroke-width="3"/>
+<circle data-id="d-4" cx="458" cy="693" r="10" fill="none" stroke="#0d9488" stroke-width="3"/>
+<circle data-id="d-5" cx="245" cy="424" r="12" fill="none" stroke="#0d9488" stroke-width="3"/>
+<circle data-id="d-6" cx="305" cy="424" r="12" fill="none" stroke="#0d9488" stroke-width="3"/>
+<circle data-id="d-7" cx="128" cy="502" r="9" fill="none" stroke="#0d9488" stroke-width="3"/>
+<circle data-id="d-8" cx="175" cy="517" r="9" fill="none" stroke="#0d9488" stroke-width="3"/>
+<circle data-id="d-9" cx="274" cy="543" r="9" fill="none" stroke="#0d9488" stroke-width="3"/>
+<circle data-id="d-10" cx="373" cy="575" r="9" fill="none" stroke="#0d9488" stroke-width="3"/>
+<g data-id="f-1" transform="translate(100 180) rotate(0)">
+<rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
+<text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">WC</text>
+</g>
+<g data-id="f-2" transform="translate(133 332) rotate(0)">
+<rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
+<text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">WC</text>
+</g>
+<g data-id="f-3" transform="translate(217 205) rotate(0)">
+<rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
+<text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">WC</text>
+</g>
+<g data-id="f-4" transform="translate(152 470) rotate(0)">
+<rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
+<text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">WC</text>
+</g>
+<g data-id="f-5" transform="translate(224 290) rotate(0)">
+<rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
+<text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">S</text>
+</g>
+<g data-id="f-6" transform="translate(323 339) rotate(0)">
+<rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
+<text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">E</text>
+</g>
+<g data-id="f-7" transform="translate(388 237) rotate(0)">
+<rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
+<text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">S</text>
+</g>
+<g data-id="f-8" transform="translate(486 273) rotate(0)">
+<rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
+<text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">E</text>
+</g>
+<g data-id="f-9" transform="translate(201 622) rotate(340)">
+<rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
+<text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">→</text>
+</g>
+</svg>

@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1195" width="1600" height="1195">
+<rect width="1600" height="1195" fill="white"/>
+<polygon data-id="r-1" points="345,255 445,255 445,585 345,585" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="395" y="420" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">West Gallery</text>
+<polygon data-id="r-2" points="445,255 555,255 555,585 445,585" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="500" y="420" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">Central Hall</text>
+<polygon data-id="r-3" points="555,255 655,255 655,585 555,585" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="605" y="420" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">East Gallery</text>
+<polygon data-id="r-4" points="215,255 345,255 345,585 215,585 215,750" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="267" y="486" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">Sculpture Wing</text>
+<polygon data-id="r-5" points="655,255 785,255 785,750 655,750 655,585" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="707" y="519" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">English Wing</text>
+<polygon data-id="fur-1" points="720,300 750,300 750,420 720,420" fill="#d6d3d1" stroke="#a8a29e" stroke-width="2"/>
+<text x="735" y="360" font-family="monospace" font-size="16" fill="#44403c" text-anchor="middle" dominant-baseline="middle">chairs</text>
+<polygon data-id="fur-2" points="100,450 200,450 200,650 100,650" fill="#d6d3d1" stroke="#a8a29e" stroke-width="2"/>
+<text x="150" y="550" font-family="monospace" font-size="16" fill="#44403c" text-anchor="middle" dominant-baseline="middle">table</text>
+<polygon data-id="fur-3" points="460,270 540,270 540,320 460,320" fill="#d6d3d1" stroke="#a8a29e" stroke-width="2"/>
+<text x="500" y="295" font-family="monospace" font-size="16" fill="#44403c" text-anchor="middle" dominant-baseline="middle">desks</text>
+<line data-id="w-1" x1="345" y1="255" x2="655" y2="255" stroke="#1c1917" stroke-width="8" stroke-linecap="square"/>
+<line data-id="w-2" x1="345" y1="255" x2="345" y2="585" stroke="#1c1917" stroke-width="8" stroke-linecap="square"/>
+<line data-id="w-3" x1="655" y1="255" x2="655" y2="585" stroke="#1c1917" stroke-width="8" stroke-linecap="square"/>
+<line data-id="w-4" x1="345" y1="585" x2="655" y2="585" stroke="#1c1917" stroke-width="8" stroke-linecap="square"/>
+<line data-id="w-5" x1="445" y1="255" x2="445" y2="585" stroke="#1c1917" stroke-width="6" stroke-linecap="square"/>
+<line data-id="w-6" x1="555" y1="255" x2="555" y2="585" stroke="#1c1917" stroke-width="6" stroke-linecap="square"/>
+<line data-id="w-7" x1="215" y1="255" x2="345" y2="255" stroke="#1c1917" stroke-width="8" stroke-linecap="square"/>
+<line data-id="w-8" x1="655" y1="255" x2="785" y2="255" stroke="#1c1917" stroke-width="8" stroke-linecap="square"/>
+<line data-id="w-9" x1="215" y1="255" x2="215" y2="750" stroke="#1c1917" stroke-width="8" stroke-linecap="square"/>
+<line data-id="w-10" x1="785" y1="255" x2="785" y2="750" stroke="#1c1917" stroke-width="8" stroke-linecap="square"/>
+<line data-id="w-11" x1="345" y1="585" x2="215" y2="585" stroke="#1c1917" stroke-width="8" stroke-linecap="square"/>
+<line data-id="w-12" x1="655" y1="585" x2="785" y2="585" stroke="#1c1917" stroke-width="8" stroke-linecap="square"/>
+<circle data-id="d-1" cx="445" cy="350" r="15" fill="none" stroke="#0d9488" stroke-width="3"/>
+<circle data-id="d-2" cx="555" cy="350" r="15" fill="none" stroke="#0d9488" stroke-width="3"/>
+<circle data-id="d-3" cx="345" cy="500" r="20" fill="none" stroke="#0d9488" stroke-width="3"/>
+<circle data-id="d-4" cx="655" cy="500" r="20" fill="none" stroke="#0d9488" stroke-width="3"/>
+<g data-id="f-1" transform="translate(500 1150) rotate(0)">
+<rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
+<text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">→</text>
+</g>
+<g data-id="f-2" transform="translate(500 650) rotate(0)">
+<rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
+<text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">S</text>
+</g>
+</svg>

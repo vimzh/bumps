@@ -25,6 +25,10 @@ function downloadLabel(kind: string): string {
   if (plate) {
     return `${mapContent.export.downloadPlatePrefix} ${plate[1]} / ${plate[2]}`;
   }
+  const legend = /^legend-(\d+)of(\d+)$/.exec(kind);
+  if (legend) {
+    return `${mapContent.export.downloadLegend} ${legend[1]} / ${legend[2]}`;
+  }
   return kind === "map"
     ? mapContent.export.downloadMap
     : mapContent.export.downloadLegend;

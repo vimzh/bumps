@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 628" width="500" height="628">
+<rect width="500" height="628" fill="white"/>
+<polygon data-id="r-1" points="47,18 146,18 146,88 47,88" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="96.5" y="53" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">KHORSABAD COURT</text>
+<polygon data-id="r-2" points="45,88 146,88 146,335 45,335" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="95.5" y="211.5" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">MESOPOTAMIA / PREHISTORY / VISITOR ORIENTATION</text>
+<polygon data-id="r-3" points="149,88 209,88 209,54 443,54 443,138 149,138" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="267" y="93.33333333333333" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">SYRIA &amp; ANATOLIA / ASSYRIA / MEGIDDO</text>
+<polygon data-id="r-4" points="338,138 438,138 438,331 338,331" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="388" y="234.5" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">EGYPT</text>
+<polygon data-id="r-5" points="150,138 338,138 338,290 150,290" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="244" y="214" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">COURTYARD</text>
+<polygon data-id="r-6" points="149,290 338,290 338,331 438,331 438,430 341,430 149,430" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="313" y="361.7142857142857" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">TEMPORARY EXHIBITS / NUBIA</text>
+<polygon data-id="r-7" points="47,341 122,341 122,412 47,412" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="84.5" y="376.5" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">MUSEUM STORE</text>
+<polygon data-id="r-8" points="47,412 146,412 146,549 47,549" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="96.5" y="480.5" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">LOBBY</text>
+<polygon data-id="r-9" points="146,430 341,430 341,537 146,537" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="243.5" y="483.5" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">BREASTED LECTURE HALL</text>
+<polygon data-id="r-10" points="341,430 455,430 455,536 341,536" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="398" y="483" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">PERSIA</text>
+<line data-id="w-1" x1="45" y1="17" x2="146" y2="17" stroke="#1c1917" stroke-width="4" stroke-linecap="square"/>
+<line data-id="w-2" x1="146" y1="17" x2="146" y2="88" stroke="#1c1917" stroke-width="4" stroke-linecap="square"/>
+<line data-id="w-3" x1="45" y1="17" x2="45" y2="335" stroke="#1c1917" stroke-width="4" stroke-linecap="square"/>
+<line data-id="w-4" x1="45" y1="335" x2="146" y2="335" stroke="#1c1917" stroke-width="4" stroke-linecap="square"/>
+<line data-id="w-5" x1="146" y1="107" x2="146" y2="283" stroke="#1c1917" stroke-width="3" stroke-linecap="square"/>
+<line data-id="w-6" x1="164" y1="107" x2="235" y2="107" stroke="#1c1917" stroke-width="3" stroke-linecap="square"/>
+<line data-id="w-7" x1="210" y1="53" x2="444" y2="53" stroke="#1c1917" stroke-width="4" stroke-linecap="square"/>
+<line data-id="w-8" x1="444" y1="53" x2="444" y2="140" stroke="#1c1917" stroke-width="4" stroke-linecap="square"/>
+<line data-id="w-9" x1="438" y1="140" x2="438" y2="331" stroke="#1c1917" stroke-width="4" stroke-linecap="square"/>
+<line data-id="w-10" x1="342" y1="137" x2="386" y2="137" stroke="#1c1917" stroke-width="3" stroke-linecap="square"/>
+<line data-id="w-11" x1="398" y1="137" x2="438" y2="137" stroke="#1c1917" stroke-width="3" stroke-linecap="square"/>
+<line data-id="w-12" x1="338" y1="331" x2="373" y2="331" stroke="#1c1917" stroke-width="4" stroke-linecap="square"/>
+<line data-id="w-13" x1="149" y1="137" x2="338" y2="137" stroke="#1c1917" stroke-width="3" stroke-linecap="square"/>
+<line data-id="w-14" x1="152" y1="140" x2="152" y2="290" stroke="#1c1917" stroke-width="3" stroke-linecap="square"/>
+<line data-id="w-15" x1="152" y1="290" x2="338" y2="290" stroke="#1c1917" stroke-width="3" stroke-linecap="square"/>
+<line data-id="w-16" x1="338" y1="137" x2="338" y2="290" stroke="#1c1917" stroke-width="3" stroke-linecap="square"/>
+<line data-id="w-17" x1="149" y1="290" x2="149" y2="430" stroke="#1c1917" stroke-width="3" stroke-linecap="square"/>
+<line data-id="w-18" x1="149" y1="430" x2="341" y2="430" stroke="#1c1917" stroke-width="4" stroke-linecap="square"/>
+<line data-id="w-19" x1="341" y1="430" x2="370" y2="430" stroke="#1c1917" stroke-width="4" stroke-linecap="square"/>
+<line data-id="w-20" x1="395" y1="430" x2="455" y2="430" stroke="#1c1917" stroke-width="4" stroke-linecap="square"/>
+<line data-id="w-22" x1="341" y1="430" x2="341" y2="536" stroke="#1c1917" stroke-width="4" stroke-linecap="square"/>
+<line data-id="w-23" x1="341" y1="536" x2="455" y2="536" stroke="#1c1917" stroke-width="4" stroke-linecap="square"/>
+<line data-id="w-24" x1="455" y1="536" x2="455" y2="430" stroke="#1c1917" stroke-width="4" stroke-linecap="square"/>
+<line data-id="w-26" x1="47" y1="341" x2="47" y2="412" stroke="#1c1917" stroke-width="3" stroke-linecap="square"/>
+<line data-id="w-27" x1="47" y1="412" x2="122" y2="412" stroke="#1c1917" stroke-width="3" stroke-linecap="square"/>
+<line data-id="w-28" x1="122" y1="412" x2="122" y2="549" stroke="#1c1917" stroke-width="3" stroke-linecap="square"/>
+<line data-id="w-29" x1="66" y1="549" x2="146" y2="549" stroke="#1c1917" stroke-width="4" stroke-linecap="square"/>
+<line data-id="w-30" x1="66" y1="515" x2="66" y2="549" stroke="#1c1917" stroke-width="3" stroke-linecap="square"/>
+<line data-id="w-31" x1="146" y1="430" x2="146" y2="537" stroke="#1c1917" stroke-width="4" stroke-linecap="square"/>
+<line data-id="w-32" x1="146" y1="537" x2="314" y2="537" stroke="#1c1917" stroke-width="4" stroke-linecap="square"/>
+<line data-id="w-33" x1="314" y1="537" x2="314" y2="430" stroke="#1c1917" stroke-width="3" stroke-linecap="square"/>
+<circle data-id="d-1" cx="100" cy="328" r="14" fill="none" stroke="#0d9488" stroke-width="3"/>
+<circle data-id="d-2" cx="146" cy="97" r="9" fill="none" stroke="#0d9488" stroke-width="3"/>
+<circle data-id="d-3" cx="392" cy="137" r="6" fill="none" stroke="#0d9488" stroke-width="3"/>
+<circle data-id="d-4" cx="356" cy="331" r="12.5" fill="none" stroke="#0d9488" stroke-width="3"/>
+<circle data-id="d-5" cx="149" cy="360" r="8" fill="none" stroke="#0d9488" stroke-width="3"/>
+<circle data-id="d-6" cx="128" cy="412" r="7" fill="none" stroke="#0d9488" stroke-width="3"/>
+<circle data-id="d-7" cx="318" cy="543" r="8" fill="none" stroke="#0d9488" stroke-width="3"/>
+<circle data-id="d-8" cx="382" cy="430" r="12.5" fill="none" stroke="#0d9488" stroke-width="3"/>
+<g data-id="f-1" transform="translate(94 517) rotate(0)">
+<rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
+<text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">S</text>
+</g>
+<g data-id="f-2" transform="translate(50 480) rotate(90)">
+<rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
+<text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">S</text>
+</g>
+<g data-id="f-3" transform="translate(193 73) rotate(180)">
+<rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
+<text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">S</text>
+</g>
+<g data-id="f-4" transform="translate(419 50) rotate(180)">
+<rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
+<text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">S</text>
+</g>
+<g data-id="f-5" transform="translate(192 338) rotate(90)">
+<rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
+<text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">S</text>
+</g>
+<g data-id="f-6" transform="translate(426 368) rotate(0)">
+<rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
+<text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">S</text>
+</g>
+<g data-id="f-7" transform="translate(165 76) rotate(0)">
+<rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
+<text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">E</text>
+</g>
+<g data-id="f-8" transform="translate(136 456) rotate(0)">
+<rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
+<text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">E</text>
+</g>
+<g data-id="f-9" transform="translate(323 563) rotate(90)">
+<rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
+<text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">R</text>
+</g>
+<g data-id="f-10" transform="translate(342 580) rotate(180)">
+<rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
+<text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">→</text>
+</g>
+</svg>

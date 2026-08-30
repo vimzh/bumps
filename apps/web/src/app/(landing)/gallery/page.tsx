@@ -15,6 +15,9 @@ export default function GalleryPage() {
       <h1 className="mt-6 font-pixel text-4xl tracking-tight sm:text-5xl">
         {galleryContent.title}
       </h1>
+      <p className="mt-3 max-w-3xl text-sm leading-6 text-muted-foreground">
+        {galleryContent.plateDimensions}
+      </p>
       {galleryContent.entries.length === 0 ? (
         <p className="mt-6 text-sm text-muted-foreground">
           {galleryContent.empty}

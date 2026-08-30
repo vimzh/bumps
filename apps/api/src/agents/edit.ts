@@ -1,11 +1,18 @@
 import { z } from 'zod'
-import { LlmAgent, InMemorySessionService, Runner } from '@google/adk'
+import { LlmAgent } from '@google/adk'
 import {
   featureKinds,
   type EditOperation,
   type FloorModel,
 } from '@bumps/floor-model'
-import { JSON_ONLY, llmPointSchema, makeModel, MODEL_FAST, parseAgentJson } from './llm'
+import {
+  JSON_ONLY,
+  llmPointSchema,
+  makeModel,
+  MODEL_FAST,
+  parseAgentJson,
+  runAgentTurn,
+} from './llm'
 import { withModelRetry } from './retry'
 
 // Flat operation shape for the LLM: Gemini's response-schema subset cannot
@@ -212,12 +219,6 @@ async function runEditAgentOnce(params: {
   prompt: string
   selectedId: string | null
 }): Promise<EditAgentResult> {
-  const runner = new Runner({
-    appName: 'bumps',
-    agent: editAgent,
-    sessionService: new InMemorySessionService(),
-  })
-
   const context = [
     `Model JSON:\n${JSON.stringify(params.model)}`,
     `Plan dimensions: ${params.model.plan.widthPx}x${params.model.plan.heightPx} pixels.`,
@@ -225,22 +226,12 @@ async function runEditAgentOnce(params: {
     `User request: ${params.prompt}`,
   ].join('\n\n')
 
-  let finalText = ''
-  for await (const event of runner.runEphemeral({
-    userId: 'bumps',
-    newMessage: { parts: [{ text: context }] },
-  })) {
-    if (event.errorMessage) {
-      throw new Error(`Edit model error: ${event.errorMessage}`)
-    }
-    const text = event.content?.parts?.map((part) => part.text ?? '').join('')
-    if (text) {
-      finalText = text
-    }
-  }
-  if (!finalText) {
-    throw new Error('Edit agent returned no output')
-  }
+  const finalText = await runAgentTurn({
+    adkAgent: editAgent,
+    agentName: 'Edit agent',
+    instruction: INSTRUCTION,
+    parts: [{ text: context }],
+  })
 
   const output = parseAgentJson(editAgentOutputSchema, finalText, 'Edit agent')
   if (output.action === 'clarify') {

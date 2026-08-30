@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1200" width="1600" height="1200">
+<rect width="1600" height="1200" fill="white"/>
+<polygon data-id="r-1" points="100,100 620,100 620,640 100,640" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="360" y="370" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">RECEPTION</text>
+<polygon data-id="r-2" points="620,100 1060,100 1060,550 620,550" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="840" y="325" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">OFFICE 101</text>
+<polygon data-id="r-3" points="1060,100 1500,100 1500,640 1060,640" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="1280" y="370" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">STAIRS</text>
+<polygon data-id="r-4" points="1100,640 1500,640 1500,1100 1100,1100" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="1300" y="870" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">Restroom</text>
+<polygon data-id="r-5" points="100,640 620,550 1060,550 1100,640 1100,1100 100,1100" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="680" y="763.3333333333334" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">Open Area</text>
+<line data-id="w-1" x1="100" y1="100" x2="1500" y2="100" stroke="#1c1917" stroke-width="15" stroke-linecap="square"/>
+<line data-id="w-2" x1="100" y1="100" x2="100" y2="1100" stroke="#1c1917" stroke-width="15" stroke-linecap="square"/>
+<line data-id="w-3" x1="1500" y1="100" x2="1500" y2="1100" stroke="#1c1917" stroke-width="15" stroke-linecap="square"/>
+<line data-id="w-4" x1="100" y1="1100" x2="700" y2="1100" stroke="#1c1917" stroke-width="15" stroke-linecap="square"/>
+<line data-id="w-5" x1="780" y1="1100" x2="1500" y2="1100" stroke="#1c1917" stroke-width="15" stroke-linecap="square"/>
+<line data-id="w-6" x1="100" y1="640" x2="620" y2="640" stroke="#1c1917" stroke-width="10" stroke-linecap="square"/>
+<line data-id="w-7" x1="620" y1="100" x2="620" y2="640" stroke="#1c1917" stroke-width="10" stroke-linecap="square"/>
+<line data-id="w-8" x1="700" y1="550" x2="1060" y2="550" stroke="#1c1917" stroke-width="10" stroke-linecap="square"/>
+<line data-id="w-9" x1="1060" y1="100" x2="1060" y2="640" stroke="#1c1917" stroke-width="10" stroke-linecap="square"/>
+<line data-id="w-10" x1="1100" y1="640" x2="1100" y2="1100" stroke="#1c1917" stroke-width="10" stroke-linecap="square"/>
+<line data-id="w-11" x1="1060" y1="640" x2="1500" y2="640" stroke="#1c1917" stroke-width="10" stroke-linecap="square"/>
+<circle data-id="d-2" cx="660" cy="550" r="40" fill="none" stroke="#0d9488" stroke-width="3"/>
+<circle data-id="d-3" cx="1060" cy="310" r="40" fill="none" stroke="#0d9488" stroke-width="3"/>
+<circle data-id="d-4" cx="1100" cy="860" r="40" fill="none" stroke="#0d9488" stroke-width="3"/>
+<circle data-id="d-5" cx="740" cy="1100" r="40" fill="none" stroke="#0d9488" stroke-width="3"/>
+<g data-id="f-1" transform="translate(1380 180) rotate(270)">
+<rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
+<text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">S</text>
+</g>
+<g data-id="f-2" transform="translate(740 1140) rotate(270)">
+<rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
+<text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">→</text>
+</g>
+<g data-id="a-reception-3c78" transform="translate(360 370) rotate(0)">
+<rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
+<text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">RC</text>
+</g>
+</svg>

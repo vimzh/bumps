@@ -10,6 +10,7 @@ import {
   Sofa,
   Square,
   type LucideIcon,
+  Milestone,
   Route,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -29,6 +30,7 @@ export type PlaceableKind =
   | "door"
   | "furniture"
   | "path"
+  | "road"
   | "room"
   | "wall"
   | "window";
@@ -36,7 +38,7 @@ export type PlaceableKind =
 // Rooms, furniture, and walls are drawn (drag); everything else is a click.
 export function placeModeFor(kind: PlaceableKind): PlaceMode {
   if (kind === "room" || kind === "furniture") return "rect";
-  if (kind === "wall" || kind === "path") return "line";
+  if (kind === "wall" || kind === "path" || kind === "road") return "line";
   return "point";
 }
 
@@ -45,6 +47,7 @@ const STRUCTURAL: { icon: LucideIcon; kind: PlaceableKind }[] = [
   { icon: RectangleHorizontal, kind: "window" },
   { icon: Minus, kind: "wall" },
   { icon: Route, kind: "path" },
+  { icon: Milestone, kind: "road" },
   { icon: Square, kind: "room" },
   { icon: Sofa, kind: "furniture" },
 ];

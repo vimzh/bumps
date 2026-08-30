@@ -112,12 +112,14 @@ modelRoutes.post('/:id/model/operations', async (c) => {
   }
   let next: FloorModel
   try {
-    next = applyOperations(normalizeModel(latest.model), parsed.data.operations)
+    next = floorModelSchema.parse(
+      applyOperations(normalizeModel(latest.model), parsed.data.operations),
+    )
   } catch (error) {
     if (error instanceof EditOperationError) {
       return c.json({ error: error.message }, 422)
     }
-    throw error
+    return c.json({ error: 'Operations produced an invalid model' }, 422)
   }
   const version = latest.version + 1
   await db.insert(floorModels).values({

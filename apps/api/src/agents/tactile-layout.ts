@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { LlmAgent, InMemorySessionService, Runner } from '@google/adk'
+import { LlmAgent } from '@google/adk'
 import {
   resolveMechanicalViolations,
   validateTactileDesign,
@@ -7,7 +7,13 @@ import {
   type ValidationContext,
   type ValidationViolation,
 } from '@bumps/floor-model'
-import { JSON_ONLY, makeModel, MODEL_CRITICAL, parseAgentJson } from './llm'
+import {
+  JSON_ONLY,
+  makeModel,
+  MODEL_LAYOUT,
+  parseAgentJson,
+  runAgentTurn,
+} from './llm'
 import { withModelRetry } from './retry'
 
 export const MAX_LAYOUT_ITERATIONS = 4
@@ -58,7 +64,7 @@ Guidance:
 export const tactileLayoutAgent = new LlmAgent({
   name: 'tactile_layout',
   description: 'Nudges braille labels and symbols to clear standards violations',
-  model: makeModel(MODEL_CRITICAL),
+  model: makeModel(MODEL_LAYOUT),
   instruction: INSTRUCTION,
   outputSchema: layoutOutputObject,
   generateContentConfig: {
@@ -73,29 +79,17 @@ async function proposeMoves(
   violations: ValidationViolation[],
 ): Promise<z.infer<typeof layoutOutputSchema>['moves']> {
   return withModelRetry(async () => {
-    const runner = new Runner({
-      appName: 'bumps',
-      agent: tactileLayoutAgent,
-      sessionService: new InMemorySessionService(),
-    })
     const message = [
       `Plate design JSON:\n${JSON.stringify(design)}`,
       `Room polygons (mm):\n${JSON.stringify(context.roomsMm)}`,
       `Violations:\n${JSON.stringify(violations)}`,
     ].join('\n\n')
-
-    let finalText = ''
-    for await (const event of runner.runEphemeral({
-      userId: 'bumps',
-      newMessage: { parts: [{ text: message }] },
-    })) {
-      if (event.errorMessage) {
-        throw new Error(`Layout model error: ${event.errorMessage}`)
-      }
-      const text = event.content?.parts?.map((p) => p.text ?? '').join('')
-      if (text) finalText = text
-    }
-    if (!finalText) throw new Error('Layout agent returned no output')
+    const finalText = await runAgentTurn({
+      adkAgent: tactileLayoutAgent,
+      agentName: 'Layout agent',
+      instruction: INSTRUCTION,
+      parts: [{ text: message }],
+    })
     return parseAgentJson(layoutOutputSchema, finalText, 'Layout agent').moves
   })
 }

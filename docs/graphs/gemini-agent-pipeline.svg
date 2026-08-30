@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title description" data-layout-version="cloudy-native-v2" data-spec-sha256="f3876648d3a588bda85031387a43fc964fc3f4aabf95ef893fb8d7942e1c6497">
+  <title id="title">Gemini-powered tactile map pipeline</title>
+  <desc id="description">A floor plan moves through Gemini parsing and critique, human-guided editing, tactile conversion, validation, and STL export.</desc>
+  <defs>
+    <marker id="arrow-blue" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L9,3 z" fill="#2563eb"/></marker>
+    <marker id="arrow-violet" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L9,3 z" fill="#7c3aed"/></marker>
+    <marker id="arrow-green" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L9,3 z" fill="#16a34a"/></marker>
+    <marker id="arrow-amber" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L9,3 z" fill="#d97706"/></marker>
+    <marker id="arrow-teal" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L9,3 z" fill="#0f766e"/></marker>
+    <marker id="arrow-rose" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L9,3 z" fill="#e11d48"/></marker>
+    <marker id="arrow-slate" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L9,3 z" fill="#57534e"/></marker>
+    <style>
+      text { font-family: "Comic Sans MS", "Segoe Print", cursive; }
+      .title { font-size: 36px; fill: #292524; }
+      .subtitle { font-size: 17px; fill: #78716c; }
+      .zone-label { font-size: 14px; letter-spacing: 1px; }
+      .node-title { font-size: 20px; fill: #292524; }
+      .node-body { font-size: 15px; fill: #44403c; }
+      .node-note { font-size: 13px; fill: #57534e; }
+      .edge-label { font-size: 13px; fill: #57534e; paint-order: stroke; stroke: #fffdf8; stroke-width: 4px; stroke-linejoin: round; }
+      .footer { font-size: 13px; fill: #57534e; }
+      .arrow { fill: none; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+    </style>
+  </defs>
+  <rect width="1600" height="900" fill="#fffdf8"/>
+  <text x="54" y="62" class="title">Gemini-powered tactile map pipeline</text>
+  <text x="54" y="94" class="subtitle">Specialized agents parse, critique, edit, and refine before deterministic code permits an STL export</text>
+  <rect data-zone-id="input" x="42.0" y="130" width="322.1" height="690" rx="28" fill="#eff6ff" stroke="#93c5fd" stroke-width="2" stroke-dasharray="8 8"/>
+  <text x="62.0" y="160" class="zone-label" fill="#1e40af">1 · WHAT ENTERS</text>
+  <rect data-zone-id="agents" x="392.1" y="130" width="644.1" height="690" rx="28" fill="#faf5ff" stroke="#c4b5fd" stroke-width="2" stroke-dasharray="8 8"/>
+  <text x="412.1" y="160" class="zone-label" fill="#5b21b6">2 · GEMINI AGENT TEAM</text>
+  <rect data-zone-id="physical" x="1064.2" y="130" width="493.8" height="690" rx="28" fill="#f0fdf4" stroke="#86efac" stroke-width="2" stroke-dasharray="8 8"/>
+  <text x="1084.2" y="160" class="zone-label" fill="#166534">3 · PHYSICAL OUTPUT</text>
+  <path class="arrow" data-edge="plan--parser" d="M334.1 258.0 C364.9 258.0 391.3 258.0 422.1 258.0" stroke="#7c3aed" marker-end="url(#arrow-violet)"/>
+  <path class="arrow" data-edge="parser--critic" d="M714.1 314.0 V340.0" stroke="#7c3aed" marker-end="url(#arrow-violet)"/>
+  <path class="arrow" data-edge="critic--editor" d="M714.1 476.0 V502.0" stroke="#7c3aed" marker-end="url(#arrow-violet)"/>
+  <path class="arrow" data-edge="critic--parser" d="M1006.2 408.0 H1546.0 V806.0 H404.1 V258.0 H422.1" stroke="#d97706" marker-end="url(#arrow-amber)"/>
+  <path class="arrow" data-edge="editor--convert" d="M1006.2 558.0 H1050.2 V258.0 H1094.2" stroke="#16a34a" marker-end="url(#arrow-green)"/>
+  <path class="arrow" data-edge="convert--layout" d="M1311.1 314.0 V340.0" stroke="#d97706" marker-end="url(#arrow-amber)"/>
+  <path class="arrow" data-edge="layout--stl" d="M1311.1 476.0 V501.0" stroke="#16a34a" marker-end="url(#arrow-green)"/>
+  <rect class="node" data-node-id="plan" data-status="external" x="72.0" y="180.5" width="262.1" height="155.0" rx="22" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+  <text x="203.0" y="215.5" text-anchor="middle" class="node-title">A real floor plan</text>
+  <text x="203.0" y="246.5" text-anchor="middle" class="node-body">PDF or image · one building</text>
+  <text x="203.0" y="268.5" text-anchor="middle" class="node-body">level</text>
+  <text x="203.0" y="298.5" text-anchor="middle" class="node-note">The original stays available</text>
+  <text x="203.0" y="317.5" text-anchor="middle" class="node-note">for visual review</text>
+  <rect class="node" data-node-id="parser" data-status="implemented" x="422.1" y="202.0" width="584.1" height="112.0" rx="22" fill="#ede9fe" stroke="#7c3aed" stroke-width="2"/>
+  <text x="714.1" y="237.0" text-anchor="middle" class="node-title">Gemini reads structure</text>
+  <text x="714.1" y="268.0" text-anchor="middle" class="node-body">walls · rooms · doors · features</text>
+  <text x="714.1" y="290.0" text-anchor="middle" class="node-body">confidence on every element</text>
+  <rect class="node" data-node-id="critic" data-status="implemented" x="422.1" y="340.0" width="584.1" height="136.0" rx="22" fill="#ede9fe" stroke="#7c3aed" stroke-width="2"/>
+  <text x="714.1" y="375.0" text-anchor="middle" class="node-title">Gemini reviews the extraction</text>
+  <text x="714.1" y="406.0" text-anchor="middle" class="node-body">original plan vs rendered model</text>
+  <text x="714.1" y="428.0" text-anchor="middle" class="node-body">missing · extra · misplaced · mislabeled</text>
+  <text x="714.1" y="458.0" text-anchor="middle" class="node-note">Major findings trigger another parse, up to 3 passes</text>
+  <rect class="node" data-node-id="editor" data-status="implemented" x="422.1" y="502.0" width="584.1" height="112.0" rx="22" fill="#ede9fe" stroke="#7c3aed" stroke-width="2"/>
+  <text x="714.1" y="537.0" text-anchor="middle" class="node-title">Gemini translates human edits</text>
+  <text x="714.1" y="568.0" text-anchor="middle" class="node-body">prompt → typed operations</text>
+  <text x="714.1" y="590.0" text-anchor="middle" class="node-body">real IDs only · ambiguity asks once</text>
+  <rect class="node" data-node-id="convert" data-status="implemented" x="1094.2" y="202.0" width="433.8" height="112.0" rx="22" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+  <text x="1311.1" y="237.0" text-anchor="middle" class="node-title">Code builds tactile geometry</text>
+  <text x="1311.1" y="268.0" text-anchor="middle" class="node-body">raised walls · braille keys · symbols</text>
+  <text x="1311.1" y="290.0" text-anchor="middle" class="node-body">smallest readable plate grid</text>
+  <rect class="node" data-node-id="layout" data-status="implemented" x="1094.2" y="340.0" width="433.8" height="136.0" rx="22" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+  <text x="1311.1" y="375.0" text-anchor="middle" class="node-title">Gemini resolves judgment calls</text>
+  <text x="1311.1" y="406.0" text-anchor="middle" class="node-body">nudges labels and point symbols only</text>
+  <text x="1311.1" y="428.0" text-anchor="middle" class="node-body">validator re-measures every move</text>
+  <text x="1311.1" y="458.0" text-anchor="middle" class="node-note">A worse candidate is never accepted</text>
+  <rect class="node" data-node-id="stl" data-status="implemented" x="1094.2" y="501.0" width="433.8" height="114.0" rx="22" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+  <text x="1311.1" y="536.0" text-anchor="middle" class="node-title">Zero violations unlock STL</text>
+  <text x="1311.1" y="567.0" text-anchor="middle" class="node-body">watertight map · print plates · legend</text>
+  <text x="1311.1" y="597.0" text-anchor="middle" class="node-note">Invalid designs receive HTTP 409 and cannot export</text>
+  <rect x="54" y="844" width="1492" height="36" rx="14" fill="#f5f5f4" stroke="#d6d3d1"/>
+  <text x="800" y="868" text-anchor="middle" class="footer">Gemini reasons across the workflow. Deterministic geometry decides what can print.</text>
+</svg>

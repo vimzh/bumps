@@ -1,0 +1,128 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1382" width="1600" height="1382">
+<rect width="1600" height="1382" fill="white"/>
+<polygon data-id="r-1" points="140,163 409,163 409,535 140,535" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="274.5" y="349" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">Back Of the House</text>
+<polygon data-id="r-2" points="409,163 882,163 882,377 874,377 874,425 930,425 930,500 874,500 874,620 930,620 930,695 874,695 874,815 930,815 930,890 874,890 874,1184 386,1184 386,510 409,510" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="796.3" y="617.9" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">Library Stack</text>
+<polygon data-id="r-3" points="874,377 1083,377 1083,1184 874,1184 874,890 930,890 930,815 874,815 874,695 930,695 930,620 874,620 874,500 930,500 930,425 874,425" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="921.125" y="688.25" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">Attrium</text>
+<polygon data-id="r-4" points="227,78 273,78 273,163 227,163" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="250" y="120.5" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">Reading Pod</text>
+<polygon data-id="r-5" points="565,78 613,78 613,163 565,163" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="589" y="120.5" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">Reading Pod</text>
+<polygon data-id="r-6" points="803,78 852,78 852,163 803,163" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="827.5" y="120.5" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">Reading Pod</text>
+<polygon data-id="r-7" points="945,78 994,78 994,163 945,163" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="969.5" y="120.5" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">Reading Pod</text>
+<polygon data-id="r-8" points="882,163 1055,163 1055,377 882,377" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<polygon data-id="fur-1" points="188,196 266,196 266,268 188,268" fill="#d6d3d1" stroke="#a8a29e" stroke-width="2"/>
+<text x="227" y="232" font-family="monospace" font-size="16" fill="#44403c" text-anchor="middle" dominant-baseline="middle">table</text>
+<polygon data-id="fur-2" points="190,280 260,280 260,430 190,430" fill="#d6d3d1" stroke="#a8a29e" stroke-width="2"/>
+<text x="225" y="355" font-family="monospace" font-size="16" fill="#44403c" text-anchor="middle" dominant-baseline="middle">desks</text>
+<polygon data-id="fur-3" points="155,195 178,195 178,440 155,440" fill="#d6d3d1" stroke="#a8a29e" stroke-width="2"/>
+<text x="166.5" y="317.5" font-family="monospace" font-size="16" fill="#44403c" text-anchor="middle" dominant-baseline="middle">counter</text>
+<polygon data-id="fur-4" points="447,560 560,560 560,730 447,730" fill="#d6d3d1" stroke="#a8a29e" stroke-width="2"/>
+<text x="503.5" y="645" font-family="monospace" font-size="16" fill="#44403c" text-anchor="middle" dominant-baseline="middle">desks</text>
+<polygon data-id="fur-5" points="447,885 765,885 765,990 447,990" fill="#d6d3d1" stroke="#a8a29e" stroke-width="2"/>
+<text x="606" y="937.5" font-family="monospace" font-size="16" fill="#44403c" text-anchor="middle" dominant-baseline="middle">desks</text>
+<polygon data-id="fur-6" points="470,190 775,190 775,520 470,520" fill="#d6d3d1" stroke="#a8a29e" stroke-width="2"/>
+<text x="622.5" y="355" font-family="monospace" font-size="16" fill="#44403c" text-anchor="middle" dominant-baseline="middle">chairs</text>
+<polygon data-id="fur-7" points="445,780 745,780 745,850 445,850" fill="#d6d3d1" stroke="#a8a29e" stroke-width="2"/>
+<text x="595" y="815" font-family="monospace" font-size="16" fill="#44403c" text-anchor="middle" dominant-baseline="middle">chairs</text>
+<line data-id="w-1" x1="140" y1="163" x2="227" y2="163" stroke="#1c1917" stroke-width="8" stroke-linecap="square"/>
+<line data-id="w-2" x1="227" y1="163" x2="227" y2="78" stroke="#1c1917" stroke-width="8" stroke-linecap="square"/>
+<line data-id="w-3" x1="227" y1="78" x2="273" y2="78" stroke="#1c1917" stroke-width="8" stroke-linecap="square"/>
+<line data-id="w-4" x1="273" y1="78" x2="273" y2="163" stroke="#1c1917" stroke-width="8" stroke-linecap="square"/>
+<line data-id="w-5" x1="273" y1="163" x2="565" y2="163" stroke="#1c1917" stroke-width="8" stroke-linecap="square"/>
+<line data-id="w-6" x1="565" y1="163" x2="565" y2="78" stroke="#1c1917" stroke-width="8" stroke-linecap="square"/>
+<line data-id="w-7" x1="565" y1="78" x2="613" y2="78" stroke="#1c1917" stroke-width="8" stroke-linecap="square"/>
+<line data-id="w-8" x1="613" y1="78" x2="613" y2="163" stroke="#1c1917" stroke-width="8" stroke-linecap="square"/>
+<line data-id="w-9" x1="613" y1="163" x2="803" y2="163" stroke="#1c1917" stroke-width="8" stroke-linecap="square"/>
+<line data-id="w-10" x1="803" y1="163" x2="803" y2="78" stroke="#1c1917" stroke-width="8" stroke-linecap="square"/>
+<line data-id="w-11" x1="803" y1="78" x2="852" y2="78" stroke="#1c1917" stroke-width="8" stroke-linecap="square"/>
+<line data-id="w-12" x1="852" y1="78" x2="852" y2="163" stroke="#1c1917" stroke-width="8" stroke-linecap="square"/>
+<line data-id="w-13" x1="852" y1="163" x2="945" y2="163" stroke="#1c1917" stroke-width="8" stroke-linecap="square"/>
+<line data-id="w-14" x1="945" y1="163" x2="945" y2="78" stroke="#1c1917" stroke-width="8" stroke-linecap="square"/>
+<line data-id="w-15" x1="945" y1="78" x2="994" y2="78" stroke="#1c1917" stroke-width="8" stroke-linecap="square"/>
+<line data-id="w-16" x1="994" y1="78" x2="994" y2="163" stroke="#1c1917" stroke-width="8" stroke-linecap="square"/>
+<line data-id="w-17" x1="994" y1="163" x2="1083" y2="163" stroke="#1c1917" stroke-width="8" stroke-linecap="square"/>
+<line data-id="w-18" x1="1083" y1="163" x2="1083" y2="1184" stroke="#1c1917" stroke-width="16" stroke-linecap="square"/>
+<line data-id="w-19" x1="1083" y1="1184" x2="912" y2="1184" stroke="#1c1917" stroke-width="16" stroke-linecap="square"/>
+<line data-id="w-20" x1="912" y1="1184" x2="140" y2="1184" stroke="#1c1917" stroke-width="6" stroke-linecap="square"/>
+<line data-id="w-21" x1="140" y1="1184" x2="140" y2="163" stroke="#1c1917" stroke-width="8" stroke-linecap="square"/>
+<line data-id="w-22" x1="140" y1="535" x2="239" y2="535" stroke="#1c1917" stroke-width="6" stroke-linecap="square"/>
+<line data-id="w-23" x1="239" y1="535" x2="239" y2="874" stroke="#1c1917" stroke-width="6" stroke-linecap="square"/>
+<line data-id="w-24" x1="140" y1="642" x2="239" y2="642" stroke="#1c1917" stroke-width="6" stroke-linecap="square"/>
+<line data-id="w-25" x1="140" y1="782" x2="239" y2="782" stroke="#1c1917" stroke-width="6" stroke-linecap="square"/>
+<line data-id="w-26" x1="140" y1="874" x2="239" y2="874" stroke="#1c1917" stroke-width="6" stroke-linecap="square"/>
+<line data-id="w-27" x1="140" y1="978" x2="239" y2="978" stroke="#1c1917" stroke-width="6" stroke-linecap="square"/>
+<line data-id="w-28" x1="280" y1="510" x2="280" y2="874" stroke="#1c1917" stroke-width="8" stroke-linecap="square"/>
+<line data-id="w-29" x1="280" y1="510" x2="396" y2="510" stroke="#1c1917" stroke-width="8" stroke-linecap="square"/>
+<line data-id="w-30" x1="396" y1="510" x2="396" y2="810" stroke="#1c1917" stroke-width="8" stroke-linecap="square"/>
+<line data-id="w-31" x1="280" y1="810" x2="396" y2="810" stroke="#1c1917" stroke-width="8" stroke-linecap="square"/>
+<line data-id="w-32" x1="326" y1="290" x2="409" y2="290" stroke="#1c1917" stroke-width="8" stroke-linecap="square"/>
+<line data-id="w-33" x1="326" y1="290" x2="326" y2="442" stroke="#1c1917" stroke-width="8" stroke-linecap="square"/>
+<line data-id="w-34" x1="409" y1="290" x2="409" y2="442" stroke="#1c1917" stroke-width="8" stroke-linecap="square"/>
+<line data-id="w-35" x1="326" y1="442" x2="409" y2="442" stroke="#1c1917" stroke-width="8" stroke-linecap="square"/>
+<line data-id="w-36" x1="280" y1="874" x2="386" y2="874" stroke="#1c1917" stroke-width="6" stroke-linecap="square"/>
+<line data-id="w-37" x1="386" y1="874" x2="386" y2="966" stroke="#1c1917" stroke-width="6" stroke-linecap="square"/>
+<line data-id="w-38" x1="280" y1="966" x2="386" y2="966" stroke="#1c1917" stroke-width="6" stroke-linecap="square"/>
+<line data-id="w-39" x1="239" y1="1070" x2="386" y2="1070" stroke="#1c1917" stroke-width="6" stroke-linecap="square"/>
+<line data-id="w-40" x1="386" y1="1070" x2="386" y2="1184" stroke="#1c1917" stroke-width="6" stroke-linecap="square"/>
+<line data-id="w-41" x1="882" y1="163" x2="882" y2="377" stroke="#1c1917" stroke-width="6" stroke-linecap="square"/>
+<line data-id="w-42" x1="882" y1="377" x2="1055" y2="377" stroke="#1c1917" stroke-width="6" stroke-linecap="square"/>
+<line data-id="w-43" x1="874" y1="377" x2="874" y2="425" stroke="#1c1917" stroke-width="4" stroke-linecap="square"/>
+<line data-id="w-44" x1="874" y1="425" x2="930" y2="425" stroke="#1c1917" stroke-width="4" stroke-linecap="square"/>
+<line data-id="w-45" x1="930" y1="425" x2="930" y2="500" stroke="#1c1917" stroke-width="4" stroke-linecap="square"/>
+<line data-id="w-46" x1="930" y1="500" x2="874" y2="500" stroke="#1c1917" stroke-width="4" stroke-linecap="square"/>
+<line data-id="w-47" x1="874" y1="500" x2="874" y2="620" stroke="#1c1917" stroke-width="4" stroke-linecap="square"/>
+<line data-id="w-48" x1="874" y1="620" x2="930" y2="620" stroke="#1c1917" stroke-width="4" stroke-linecap="square"/>
+<line data-id="w-49" x1="930" y1="620" x2="930" y2="695" stroke="#1c1917" stroke-width="4" stroke-linecap="square"/>
+<line data-id="w-50" x1="930" y1="695" x2="874" y2="695" stroke="#1c1917" stroke-width="4" stroke-linecap="square"/>
+<line data-id="w-51" x1="874" y1="695" x2="874" y2="815" stroke="#1c1917" stroke-width="4" stroke-linecap="square"/>
+<line data-id="w-52" x1="874" y1="815" x2="930" y2="815" stroke="#1c1917" stroke-width="4" stroke-linecap="square"/>
+<line data-id="w-53" x1="930" y1="815" x2="930" y2="890" stroke="#1c1917" stroke-width="4" stroke-linecap="square"/>
+<line data-id="w-54" x1="930" y1="890" x2="874" y2="890" stroke="#1c1917" stroke-width="4" stroke-linecap="square"/>
+<line data-id="w-55" x1="874" y1="890" x2="874" y2="1184" stroke="#1c1917" stroke-width="4" stroke-linecap="square"/>
+<line data-id="w-56" x1="409" y1="163" x2="409" y2="290" stroke="#1c1917" stroke-width="8" stroke-linecap="square"/>
+<circle data-id="d-2" cx="239" cy="570" r="15" fill="none" stroke="#0d9488" stroke-width="3"/>
+<circle data-id="d-3" cx="239" cy="690" r="15" fill="none" stroke="#0d9488" stroke-width="3"/>
+<circle data-id="d-4" cx="239" cy="820" r="15" fill="none" stroke="#0d9488" stroke-width="3"/>
+<circle data-id="d-5" cx="239" cy="930" r="15" fill="none" stroke="#0d9488" stroke-width="3"/>
+<circle data-id="d-7" cx="280" cy="915" r="15" fill="none" stroke="#0d9488" stroke-width="3"/>
+<circle data-id="d-8" cx="315" cy="810" r="15" fill="none" stroke="#0d9488" stroke-width="3"/>
+<circle data-id="d-9" cx="239" cy="1030" r="16" fill="none" stroke="#0d9488" stroke-width="3"/>
+<circle data-id="d-10" cx="250" cy="163" r="19" fill="none" stroke="#0d9488" stroke-width="3"/>
+<circle data-id="d-11" cx="589" cy="163" r="19" fill="none" stroke="#0d9488" stroke-width="3"/>
+<circle data-id="d-12" cx="827" cy="163" r="19" fill="none" stroke="#0d9488" stroke-width="3"/>
+<circle data-id="d-13" cx="969" cy="163" r="19" fill="none" stroke="#0d9488" stroke-width="3"/>
+<circle data-id="d-14" cx="945" cy="377" r="21" fill="none" stroke="#0d9488" stroke-width="3"/>
+<g data-id="f-1" transform="translate(340 660) rotate(0)">
+<rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
+<text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">S</text>
+</g>
+<g data-id="f-2" transform="translate(945 260) rotate(90)">
+<rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
+<text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">S</text>
+</g>
+<g data-id="f-3" transform="translate(368 332) rotate(0)">
+<rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
+<text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">E</text>
+</g>
+<g data-id="f-4" transform="translate(368 404) rotate(0)">
+<rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
+<text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">E</text>
+</g>
+<g data-id="f-5" transform="translate(180 590) rotate(0)">
+<rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
+<text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">WC</text>
+</g>
+<g data-id="f-6" transform="translate(180 712) rotate(0)">
+<rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
+<text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">WC</text>
+</g>
+<g data-id="f-7" transform="translate(330 920) rotate(0)">
+<rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
+<text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">WC</text>
+</g>
+</svg>

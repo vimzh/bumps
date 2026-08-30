@@ -42,6 +42,10 @@ export const sampleFloorModel: FloorModel = {
     { id: 'f-entrance', kind: 'entrance', at: { x: 500, y: 720 }, rotation: 270, confidence: 0.95 },
     { id: 'f-elevator', kind: 'elevator', at: { x: 90, y: 430 }, rotation: 0, confidence: 0.45 },
   ],
+  roads: [
+    // Service drive along the south edge of the site.
+    { id: 'road-1', kind: 'road', points: [{ x: 40, y: 790 }, { x: 960, y: 790 }], widthPx: 24, label: 'Main St', confidence: 0.9 },
+  ],
   paths: [
     // Guide path along the corridor from the entrance to the stairs.
     { id: 'path-1', kind: 'path', points: [{ x: 500, y: 740 }, { x: 500, y: 430 }, { x: 120, y: 430 }, { x: 120, y: 80 }], confidence: 0.85 },

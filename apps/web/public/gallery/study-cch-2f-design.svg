@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 9480 5333" width="9480" height="5333">
+<rect width="9480" height="5333" fill="white"/>
+<polygon data-id="r-1" points="2400,2500 6000,4500 7500,3500 3500,1500" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="4850" y="3000" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">MAIN FOYER HALL 1</text>
+<polygon data-id="r-2" points="3500,1500 7000,300 8500,1000 6000,2500" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="6250" y="1325" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">HALL 1</text>
+<polygon data-id="r-3" points="2400,2500 2800,2200 3800,1500 3500,1500" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="3125" y="1925" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">HALL D</text>
+<polygon data-id="r-4" points="2800,2200 3200,1900 4200,1200 3800,1500" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="3500" y="1700" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">HALL E</text>
+<polygon data-id="r-5" points="3200,1900 3600,1600 4600,900 4200,1200" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="3900" y="1400" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">HALL F</text>
+<polygon data-id="r-6" points="4600,900 5500,400 6500,1000 5600,1500" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="5550" y="950" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">HALL G</text>
+<polygon data-id="r-7" points="6500,1000 7500,1500 8500,1000 7500,500" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="7500" y="1000" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">HALL Y 1-12</text>
+<polygon data-id="r-8" points="1000,2500 2400,2500 3500,1500 2000,800" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="2225" y="1825" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">ROOFTOP GARDEN</text>
+<polygon data-id="fur-1" points="3800,1000 5500,1000 5500,1800 3800,1800" fill="#d6d3d1" stroke="#a8a29e" stroke-width="2"/>
+<text x="4650" y="1400" font-family="monospace" font-size="16" fill="#44403c" text-anchor="middle" dominant-baseline="middle">chairs</text>
+<polygon data-id="fur-2" points="6200,1200 7500,1200 7500,2200 6200,2200" fill="#d6d3d1" stroke="#a8a29e" stroke-width="2"/>
+<text x="6850" y="1700" font-family="monospace" font-size="16" fill="#44403c" text-anchor="middle" dominant-baseline="middle">chairs</text>
+<polygon data-id="fur-3" points="2500,1200 3200,1200 3200,1800 2500,1800" fill="#d6d3d1" stroke="#a8a29e" stroke-width="2"/>
+<text x="2850" y="1500" font-family="monospace" font-size="16" fill="#44403c" text-anchor="middle" dominant-baseline="middle">chairs</text>
+<line data-id="w-1" x1="2400" y1="2500" x2="6000" y2="4500" stroke="#1c1917" stroke-width="40" stroke-linecap="square"/>
+<line data-id="w-2" x1="6000" y1="4500" x2="7500" y2="3500" stroke="#1c1917" stroke-width="40" stroke-linecap="square"/>
+<line data-id="w-3" x1="2400" y1="2500" x2="3500" y2="1500" stroke="#1c1917" stroke-width="40" stroke-linecap="square"/>
+<line data-id="w-4" x1="3500" y1="1500" x2="7000" y2="300" stroke="#1c1917" stroke-width="40" stroke-linecap="square"/>
+<line data-id="w-5" x1="2400" y1="2500" x2="2800" y2="2200" stroke="#1c1917" stroke-width="40" stroke-linecap="square"/>
+<line data-id="w-6" x1="2800" y1="2200" x2="3800" y2="1500" stroke="#1c1917" stroke-width="40" stroke-linecap="square"/>
+<circle data-id="d-1" cx="4500" cy="3500" r="75" fill="none" stroke="#0d9488" stroke-width="3"/>
+<circle data-id="d-2" cx="6500" cy="4000" r="75" fill="none" stroke="#0d9488" stroke-width="3"/>
+<circle data-id="d-3" cx="3000" cy="2000" r="75" fill="none" stroke="#0d9488" stroke-width="3"/>
+<g data-id="f-1" transform="translate(5500 3800) rotate(45)">
+<rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
+<text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">S</text>
+</g>
+<g data-id="f-2" transform="translate(5800 650) rotate(225)">
+<rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
+<text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">S</text>
+</g>
+<g data-id="f-3" transform="translate(5200 3200) rotate(45)">
+<rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
+<text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">S</text>
+</g>
+</svg>

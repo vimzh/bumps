@@ -1,6 +1,7 @@
 import { eq } from 'drizzle-orm'
 import { Hono } from 'hono'
 import { cors } from 'hono/cors'
+import { modelConfiguration } from './agents/llm'
 import { db } from './db'
 import { projects, tactileDesigns } from './db/schema'
 import { exportRoutes } from './export'
@@ -29,7 +30,7 @@ const app = new Hono()
 app.use('*', cors())
 
 app.get('/', (c) => {
-  return c.json({ ok: true })
+  return c.json({ models: modelConfiguration(), ok: true })
 })
 
 app.route('/projects', projectRoutes)

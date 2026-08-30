@@ -2,8 +2,8 @@ const TRANSIENT_PATTERNS = [
   'high demand',
   'overloaded',
   'temporarily',
-  'RESOURCE_EXHAUSTED',
-  'UNAVAILABLE',
+  'resource_exhausted',
+  'unavailable',
   '429',
   '503',
   // Free-tier RPM limits recover within a minute; daily caps still fail
@@ -12,9 +12,11 @@ const TRANSIENT_PATTERNS = [
   'rate limit',
   // Schema/JSON misses on the Interactions path are nondeterministic;
   // a bounded re-ask usually lands.
-  'invalid JSON output',
+  'invalid json output',
   'schema-invalid output',
   'returned no output',
+  'unable to connect',
+  'typo in the url or port',
 ]
 
 const FALLBACK_DELAYS_MS = [5000, 20000, 45000, 60000]
@@ -36,7 +38,7 @@ export async function withModelRetry<T>(fn: () => Promise<T>): Promise<T> {
     } catch (error) {
       lastError = error
       const message = error instanceof Error ? error.message : String(error)
-      const transient = TRANSIENT_PATTERNS.some((p) => message.includes(p))
+      const transient = isTransientModelError(message)
       if (!transient || attempt === FALLBACK_DELAYS_MS.length) {
         throw error
       }
@@ -45,4 +47,9 @@ export async function withModelRetry<T>(fn: () => Promise<T>): Promise<T> {
     }
   }
   throw lastError
+}
+
+export function isTransientModelError(message: string): boolean {
+  const normalized = message.toLowerCase()
+  return TRANSIENT_PATTERNS.some((pattern) => normalized.includes(pattern))
 }

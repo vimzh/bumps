@@ -1,18 +1,20 @@
 # bumps compliance & validation report
 
-**Date:** 2026-08-30 · **Scope:** end-to-end validation of the bumps pipeline against real, in-use tactile maps and published standards. Assets and provenance: [SOURCES.md](SOURCES.md). Pipeline outputs: [outputs/](outputs/).
+**Current status (2026-08-30):** corpus v2 contains 30 unique real-plan/real-tactile-reference pairs and all 30 asset pairs are prepared. Seven venues have been attempted with Gemini only. Three produced a complete, self-consistent three-image comparison; four stopped at a named model/network failure. This is a meaningful baseline, not a completed 30-run study.
 
-Two metric families are evaluated separately, as they answer different questions:
+The three comparison scores are diagnostic rather than ground truth. V&A is the strongest exact-scope pair. The Harris judge inferred tactile texture from color, and Camille compares a sensory-tour source with a general orientation board, so those two scores are explicitly provisional. Kwun Chung's earlier comparison was removed because a tighter-crop rerun overwrote its result without preserving a matching input fingerprint; it is not counted as evidence.
 
-- **A. Physical specification conformance** — are the numbers (dot geometry, heights, clearances) correct per BANA/ADA? This is deterministic: it is enforced in code, so it is audited against the written standards, not against photos.
-- **B. Representational & symbol fidelity** — do our symbols, labels, and conventions match what real, deployed tactile maps actually do? This is empirical: audited against 11 real artifacts from 10 institutions (8 US).
-- **C. Live pipeline runs** — what the system actually produces from each venue's real visual plan, compared against the venue's real tactile map.
+Two metric families remain separate:
+
+- **A. Physical specification conformance** — deterministic geometry checked against written standards and the validator.
+- **B. Representational fidelity** — observed conventions from installed tactile maps.
+- **C. Corpus v2 live evidence** — actual plan → parse → critique → tactile layout → render → real-map comparison results.
 
 ---
 
 ## A. Physical specification conformance (deterministic audit)
 
-Every value below is a constant in `packages/floor-model` and enforced by the validator (`validate.ts`); export is blocked at any violation. Audit method: code inspection + the validator's own test suite (29 tests passing).
+Every value below is a constant in `packages/floor-model` and enforced by the validator (`validate.ts`); export is blocked at any violation. Audit method: code inspection + the validator's own test suite (30 tests passing).
 
 | Parameter | bumps value | Standard | Conforms |
 |---|---|---|---|
@@ -75,7 +77,55 @@ None of the remaining items violates a standard; they are adoption-level convent
 
 ---
 
-## C. Live pipeline runs
+## C. Current corpus v2 live evidence
+
+### C.1 Coverage and outcomes
+
+| Venue | Scope quality | End-to-end outcome | Comparison | Evidence-backed finding |
+|---|---|---|---|---|
+| V&A East Gallery 1 | Exact gallery plan and production tactile design | Valid 1×1; rerun improved deterministic convergence from 2→1→0 to 2→0 | 7.7/10, confidence 0.95, exploratory Flash Lite judge | Geometry is recognizable, but the real dashed guide route, YAH marker, and tactile-display symbols are absent. |
+| The Harris | Same building; installed board is rotated relative to the public plan | Valid 1×1; 18→4→1→0 | 7.3/10, confidence 0.9, provisional | Geometry is strong; orientation and YAH differ. The judge's claim that color proves tactile texture is unsupported, so the score is not acceptance evidence. |
+| Musée Camille Claudel | Same museum, but sensory-tour source versus general orientation board | Valid 2×1 plus two paginated legend plates; 36→0 deterministically after dropping seven sub-5 mm furniture blocks | 4.0/10, confidence 0.5, exploratory Flash Lite judge | Mechanical validity improved substantially, but omitted levels, the purpose mismatch, and sparse two-plate composition limit realism. |
+| Kwun Chung Sports Centre 5/F | Exact venue and floor | Tighter-crop rerun rejected at critique; stale earlier output removed | No current score | The failed critic returned schema-invalid JSON. A clean rerun is required. |
+| Osman Ramju Sadick Memorial Sports Centre G/F | Exact venue and floor | One run reached layout and timed out; the post-prompt rerun exhausted the 3.5 quota during parsing | No score | The first attempt exposed Wi-Fi hotspots being retained as info-points. Parser/critic prompts now reject that class, but no post-prompt output was accepted. |
+| Laing Art Gallery | Prepared | Parser connection wrapper failure | No score | Retry classification now recognizes the wrapper as transient. |
+| Woodhorn Museum | Prepared | Parser connection wrapper failure | No score | Retry classification now recognizes the wrapper as transient. |
+
+Prepared but not yet attempted: 23 cases. All 30 assets pass `bun scripts/run-corpus.ts validate`.
+
+### C.2 Gemini role observations
+
+| Configuration | Observed result | Decision |
+|---|---|---|
+| Gemini 3.6 Flash, Interactions API | Best critical parser/critic behavior seen; completed V&A and produced the now-superseded Kwun attempt | Keep as the default critical model, but its free 20-request daily quota is exhausted. |
+| Gemini 3.5 Flash, legacy endpoint | Parser works after removing unsupported `exclusiveMinimum`; layout can time out | Viable schema-enforced parser fallback, not a reliable layout default from this sample. |
+| Gemini 3.5 Flash Lite | Fast comparison, weaker schema/instruction adherence | Use only for exploratory scoring; never treat its score as a release gate. |
+| Gemini 3.7 Flash | Quota exhaustion and repeated structured-output retries | No demonstrated advantage in this run. |
+| Gemini 2.5 Flash | Hard 404: unavailable to new users | Not usable. |
+
+### C.3 Shared changes driven by the corpus
+
+1. Renderer and STL export now use one shared braille-row paginator and emit as many separate legend plates as required; dense legends can no longer be clipped or extend beyond the printable base.
+2. The runner clears prior generated stage artifacts before a non-resumed run, preventing a failed rerun from inheriting an older comparison or render.
+3. The runner persists project, model history, tactile design, comparison, failures, and per-stage model/endpoint provenance. Model provenance is read from the API process for parse/critique/layout and from the runner for comparison.
+4. Legacy Gemini response schemas no longer emit `exclusiveMinimum` for road widths.
+5. Transient Gemini connection wrappers and mixed-case invalid-JSON errors are classified correctly for retry.
+6. Mechanical repair now covers all initial elements instead of stopping after 12 attempts, samples more legal label positions, repairs plate margins, and can accept a same-count move when it removes the targeted conflict.
+7. Furniture smaller than the 5 mm tactile discrimination floor is removed with an observable conversion note.
+8. Parser and critic instructions now reject non-navigation technology/operations markers such as Wi-Fi hotspots and define info-points as staffed visitor information/reception only.
+9. Comparison gaps are schema-enforced as source-and-real, real-only, or source-only; the prompt also prohibits inferring tactile properties from color and caps confidence when scope is uncertain.
+
+### C.4 Remaining quality gaps
+
+- Texture metadata is currently inert: producers emit only solid areas and neither preview nor mesh implements dot/line textures. Adding patterns before semantic texture assignment exists would create decorative, ungrounded output, so it remains unshipped.
+- Numbered POI systems, raised print alongside braille, scale indication, and stronger YAH/orientation treatment remain below installed-map practice.
+- Semantic reduction is still primarily parser-guided. Osman shows why a separately evaluated accessibility-selection stage may be the next high-leverage architecture change once enough Gemini quota exists to test it.
+- Physical FDM validation of braille domes and relief separation has not been performed.
+- The remaining 23 prepared cases and all failed cases need clean reruns before the 30-case study can be called complete.
+
+---
+
+## Appendix A. Superseded v1 live runs
 
 Method: each venue's real **visual** plan (see SOURCES.md) was uploaded through the production pipeline (upload → parse loop → tactile conversion → validator/layout loop → render). Outputs in `outputs/<slug>-{input,ours}.png`, project ids in `outputs/<slug>.project`.
 
@@ -89,7 +139,7 @@ Four engine upgrades landed mid-study *because of* study results, and every affe
 4. **Campus block-plans.** A plan with no walls (or almost none relative to its building count) renders labeled building footprints as raised keyed blocks (the style of PSU's real printed campus tiles) instead of emitting floating braille.
 5. **Map fabric** — driven by a direct side-by-side against the ground-truth photos: guide paths as dashed raised lines end-to-end (schema → parser → editor → validator → mesh; CCH lists its guide path FIRST in its legend, and Queens College's real map is walkway channels between blocks), a braille title row in the plate's header band (word-trimmed so it never straddles a plate seam), a north arrow rotated to the parsed compass, the restroom glyph corrected to CCH's exact ⊙, stairs corrected to equal rungs, and boundary symbols (entrance/exit/ramp) allowed to touch the boundary line they mark — as every real map draws them.
 
-### C.1 Results table
+### Appendix A.1 Results table
 
 | Venue (real tactile map) | Parse | Tactile result | Compared with the real map |
 |---|---|---|---|
@@ -102,7 +152,7 @@ Four engine upgrades landed mid-study *because of* study results, and every affe
 | **National Mall** (NPS braille/tactile visitor map) | v1: 28 entrance-like POIs, no rooms/walls | Invalid — 15 residual violations (stacked same-kind symbols, margin) | Outdoor federal-park map: no building geometry to parse, so the model degenerates to a POI cloud. The real NPS product is a *street-grid* tactile map — an object our indoor floor-plan contract doesn't model. This is the phase-11 (outdoor/Google-Maps source) boundary, hit honestly rather than hallucinated around. |
 | **BART station concourse** (embossed system/station maps) | v2: 49 entrance/fare POIs, no geometry | Invalid — same-kind clearance at transit-diagram density | Same boundary as the Mall: BART's real embossed maps are schematic diagrams, not floor plans. The parse loop twice tried to impose rooms and correctly gave up (critique caught fabrications). |
 
-### C.2 What the runs demonstrate
+### Appendix A.2 What the runs demonstrate
 
 **Final score: 6 of 8 venues export a zero-violation tactile map — now carrying the fabric real maps have** (title rows, north arrows, guide paths where drawn, corrected glyphs). Four of the six final runs (CCH, Getty, Queen Mary, Queens College) converged **entirely mechanically — zero LLM layout calls**. The two that stay invalid — National Mall and BART — are outdoor street-grid / transit-diagram objects outside the indoor floor-plan contract, and they fail honestly with named, measured violations rather than crashes or hallucinated geometry.
 
@@ -114,7 +164,7 @@ Four engine upgrades landed mid-study *because of* study results, and every affe
 
 ---
 
-## D. Findings & recommendations
+## Appendix B. Superseded v1 findings & recommendations
 
 Ordered by leverage. "Shipped" = implemented during this study because the evidence demanded it.
 

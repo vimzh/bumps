@@ -1,11 +1,11 @@
 // Renders a project's latest tactile design to a PNG for the validation
 // study: bun scripts/render-design.ts <projectId> <outPath>
-// Mirrors the web TactileViewer's drawing (same braille module), so the
-// comparison images match what users see.
+// Mirrors the map and separate legend plates that users can export.
 import { Resvg } from '@resvg/resvg-js'
 import {
   BRAILLE_MM,
   compositeSize,
+  paginateBrailleRows,
   textDotCenters,
   type TactileDesign,
   type TactileSymbol,
@@ -56,19 +56,34 @@ function symbolSvg(s: TactileSymbol): string {
 const { marginMm } = design.plate
 const grid = design.grid ?? { cols: 1, rows: 1 }
 const { heightMm, widthMm } = compositeSize(design)
+const legendRows = [
+  ...(design.title
+    ? [design.title.toLowerCase().replace(/[^a-z0-9 ]/g, '').trim()]
+    : []),
+  ...design.legend.map((entry) => `${entry.key}  ${entry.text}`),
+]
+const legendPages =
+  design.legend.length > 0 ? paginateBrailleRows(legendRows, design.plate) : []
+const legendGapMm = legendPages.length > 0 ? 10 : 0
+const legendX = widthMm + legendGapMm
+const canvasWidth =
+  legendX +
+  legendPages.length * design.plate.widthMm +
+  Math.max(0, legendPages.length - 1) * legendGapMm
+const canvasHeight = Math.max(heightMm, design.plate.heightMm)
 const parts: string[] = [
-  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${widthMm} ${heightMm}">`,
+  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${canvasWidth} ${canvasHeight}">`,
   `<rect width="${widthMm}" height="${heightMm}" fill="#fbfaf7" stroke="#ccc" stroke-width="0.5"/>`,
   `<rect x="${marginMm}" y="${marginMm}" width="${widthMm - 2 * marginMm}" height="${heightMm - 2 * marginMm}" fill="none" stroke="#ddd" stroke-width="0.3" stroke-dasharray="2 2"/>`,
 ]
-if (grid.cols > 1) {
+for (let i = 1; i < grid.cols; i++) {
   parts.push(
-    `<line x1="${design.plate.widthMm}" y1="0" x2="${design.plate.widthMm}" y2="${heightMm}" stroke="#b5502a88" stroke-width="0.4" stroke-dasharray="4 3"/>`,
+    `<line x1="${design.plate.widthMm * i}" y1="0" x2="${design.plate.widthMm * i}" y2="${heightMm}" stroke="#b5502a88" stroke-width="0.4" stroke-dasharray="4 3"/>`,
   )
 }
-if (grid.rows > 1) {
+for (let i = 1; i < grid.rows; i++) {
   parts.push(
-    `<line x1="0" y1="${design.plate.heightMm}" x2="${widthMm}" y2="${design.plate.heightMm}" stroke="#b5502a88" stroke-width="0.4" stroke-dasharray="4 3"/>`,
+    `<line x1="0" y1="${design.plate.heightMm * i}" x2="${widthMm}" y2="${design.plate.heightMm * i}" stroke="#b5502a88" stroke-width="0.4" stroke-dasharray="4 3"/>`,
   )
 }
 for (const e of design.elements) {
@@ -96,9 +111,30 @@ for (const e of design.elements) {
     }
   }
 }
+if (legendPages.length > 0) {
+  const { heightMm: plateHeight, marginMm, widthMm: plateWidth } = design.plate
+  legendPages.forEach((page, pageIndex) => {
+    const pageX = legendX + pageIndex * (plateWidth + legendGapMm)
+    parts.push(
+      `<rect x="${pageX}" y="0" width="${plateWidth}" height="${plateHeight}" fill="#fbfaf7" stroke="#ccc" stroke-width="0.5"/>`,
+    )
+    page.forEach((text, index) => {
+      for (const dot of textDotCenters(text, {
+        x: pageX + marginMm,
+        y: marginMm + index * BRAILLE_MM.linePitch,
+      })) {
+        parts.push(
+          `<circle cx="${dot.x}" cy="${dot.y}" r="${BRAILLE_MM.dotDiameter / 2}" fill="#1d4ed8"/>`,
+        )
+      }
+    })
+  })
+}
 parts.push('</svg>')
 
-const png = new Resvg(parts.join('\n'), { fitTo: { mode: 'width', value: 1200 } })
+const png = new Resvg(parts.join('\n'), {
+  fitTo: { mode: 'width', value: design.legend.length > 0 ? 1800 : 1200 },
+})
   .render()
   .asPng()
 await Bun.write(outPath, png)

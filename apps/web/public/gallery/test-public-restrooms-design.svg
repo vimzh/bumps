@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 973 713" width="973" height="713">
+<rect width="973" height="713" fill="white"/>
+<polygon data-id="r-1" points="8,8 185,8 185,455 348,455 348,700 257,700 257,600 8,600" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="199.5" y="440.75" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">Women's Restroom</text>
+<polygon data-id="r-2" points="185,8 425,8 425,155 185,155" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="305" y="81.5" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">Stall</text>
+<polygon data-id="r-3" points="185,155 425,155 425,305 185,305" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="305" y="230" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">Stall</text>
+<polygon data-id="r-4" points="185,305 425,305 425,455 185,455" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="305" y="380" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">Stall</text>
+<polygon data-id="r-5" points="480,290 735,290 735,8 900,8 900,425 965,425 965,700 562,700 562,455 480,455" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="728.4" y="375.6" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">Men's Restroom</text>
+<polygon data-id="r-6" points="480,8 735,8 735,145 480,145" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="607.5" y="76.5" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">Stall</text>
+<polygon data-id="r-7" points="480,145 735,145 735,290 480,290" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="607.5" y="217.5" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">Stall</text>
+<polygon data-id="r-8" points="348,455 562,455 562,700 348,700" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="455" y="577.5" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">Entrance</text>
+<polygon data-id="r-9" points="8,600 257,600 257,700 8,700" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="132.5" y="650" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">Closet</text>
+<polygon data-id="fur-1" points="12,80 105,80 105,440 12,440" fill="#d6d3d1" stroke="#a8a29e" stroke-width="2"/>
+<text x="58.5" y="260" font-family="monospace" font-size="16" fill="#44403c" text-anchor="middle" dominant-baseline="middle">counter</text>
+<polygon data-id="fur-2" points="308,28 416,28 416,115 308,115" fill="#d6d3d1" stroke="#a8a29e" stroke-width="2"/>
+<text x="362" y="71.5" font-family="monospace" font-size="16" fill="#44403c" text-anchor="middle" dominant-baseline="middle">toilet</text>
+<polygon data-id="fur-3" points="308,175 416,175 416,265 308,265" fill="#d6d3d1" stroke="#a8a29e" stroke-width="2"/>
+<text x="362" y="220" font-family="monospace" font-size="16" fill="#44403c" text-anchor="middle" dominant-baseline="middle">toilet</text>
+<polygon data-id="fur-4" points="308,325 416,325 416,415 308,415" fill="#d6d3d1" stroke="#a8a29e" stroke-width="2"/>
+<text x="362" y="370" font-family="monospace" font-size="16" fill="#44403c" text-anchor="middle" dominant-baseline="middle">toilet</text>
+<polygon data-id="fur-5" points="490,30 598,30 598,118 490,118" fill="#d6d3d1" stroke="#a8a29e" stroke-width="2"/>
+<text x="544" y="74" font-family="monospace" font-size="16" fill="#44403c" text-anchor="middle" dominant-baseline="middle">toilet</text>
+<polygon data-id="fur-6" points="490,175 598,175 598,265 490,265" fill="#d6d3d1" stroke="#a8a29e" stroke-width="2"/>
+<text x="544" y="220" font-family="monospace" font-size="16" fill="#44403c" text-anchor="middle" dominant-baseline="middle">toilet</text>
+<polygon data-id="fur-7" points="795,35 892,35 892,390 795,390" fill="#d6d3d1" stroke="#a8a29e" stroke-width="2"/>
+<text x="843.5" y="212.5" font-family="monospace" font-size="16" fill="#44403c" text-anchor="middle" dominant-baseline="middle">counter</text>
+<polygon data-id="fur-8" points="485,305 532,305 532,365 485,365" fill="#d6d3d1" stroke="#a8a29e" stroke-width="2"/>
+<text x="508.5" y="335" font-family="monospace" font-size="16" fill="#44403c" text-anchor="middle" dominant-baseline="middle">urinal</text>
+<polygon data-id="fur-9" points="485,385 532,385 532,445 485,445" fill="#d6d3d1" stroke="#a8a29e" stroke-width="2"/>
+<text x="508.5" y="415" font-family="monospace" font-size="16" fill="#44403c" text-anchor="middle" dominant-baseline="middle">urinal</text>
+<polygon data-id="fur-10" points="270,620 330,620 330,680 270,680" fill="#d6d3d1" stroke="#a8a29e" stroke-width="2"/>
+<text x="300" y="650" font-family="monospace" font-size="16" fill="#44403c" text-anchor="middle" dominant-baseline="middle">plant</text>
+<line data-id="w-1" x1="8" y1="8" x2="425" y2="8" stroke="#1c1917" stroke-width="12" stroke-linecap="square"/>
+<line data-id="w-2" x1="425" y1="8" x2="425" y2="455" stroke="#1c1917" stroke-width="12" stroke-linecap="square"/>
+<line data-id="w-3" x1="185" y1="455" x2="425" y2="455" stroke="#1c1917" stroke-width="12" stroke-linecap="square"/>
+<line data-id="w-4" x1="185" y1="455" x2="348" y2="455" stroke="#1c1917" stroke-width="12" stroke-linecap="square"/>
+<line data-id="w-5" x1="348" y1="455" x2="348" y2="700" stroke="#1c1917" stroke-width="12" stroke-linecap="square"/>
+<line data-id="w-6" x1="257" y1="700" x2="348" y2="700" stroke="#1c1917" stroke-width="12" stroke-linecap="square"/>
+<line data-id="w-7" x1="257" y1="600" x2="257" y2="700" stroke="#1c1917" stroke-width="12" stroke-linecap="square"/>
+<line data-id="w-8" x1="8" y1="600" x2="257" y2="600" stroke="#1c1917" stroke-width="12" stroke-linecap="square"/>
+<line data-id="w-9" x1="8" y1="8" x2="8" y2="700" stroke="#1c1917" stroke-width="12" stroke-linecap="square"/>
+<line data-id="w-10" x1="8" y1="700" x2="257" y2="700" stroke="#1c1917" stroke-width="12" stroke-linecap="square"/>
+<line data-id="w-11" x1="185" y1="8" x2="185" y2="455" stroke="#1c1917" stroke-width="10" stroke-linecap="square"/>
+<line data-id="w-12" x1="185" y1="155" x2="425" y2="155" stroke="#1c1917" stroke-width="10" stroke-linecap="square"/>
+<line data-id="w-13" x1="185" y1="305" x2="425" y2="305" stroke="#1c1917" stroke-width="10" stroke-linecap="square"/>
+<line data-id="w-14" x1="480" y1="8" x2="900" y2="8" stroke="#1c1917" stroke-width="12" stroke-linecap="square"/>
+<line data-id="w-15" x1="480" y1="8" x2="480" y2="455" stroke="#1c1917" stroke-width="12" stroke-linecap="square"/>
+<line data-id="w-16" x1="480" y1="455" x2="562" y2="455" stroke="#1c1917" stroke-width="12" stroke-linecap="square"/>
+<line data-id="w-17" x1="562" y1="455" x2="562" y2="700" stroke="#1c1917" stroke-width="12" stroke-linecap="square"/>
+<line data-id="w-18" x1="562" y1="700" x2="965" y2="700" stroke="#1c1917" stroke-width="12" stroke-linecap="square"/>
+<line data-id="w-21" x1="900" y1="425" x2="965" y2="425" stroke="#1c1917" stroke-width="12" stroke-linecap="square"/>
+<line data-id="w-22" x1="965" y1="425" x2="965" y2="700" stroke="#1c1917" stroke-width="12" stroke-linecap="square"/>
+<line data-id="w-23" x1="900" y1="8" x2="900" y2="425" stroke="#1c1917" stroke-width="12" stroke-linecap="square"/>
+<line data-id="w-24" x1="480" y1="145" x2="735" y2="145" stroke="#1c1917" stroke-width="10" stroke-linecap="square"/>
+<line data-id="w-25" x1="480" y1="290" x2="735" y2="290" stroke="#1c1917" stroke-width="10" stroke-linecap="square"/>
+<line data-id="w-26" x1="735" y1="8" x2="735" y2="290" stroke="#1c1917" stroke-width="10" stroke-linecap="square"/>
+<line data-id="w-27" x1="480" y1="370" x2="575" y2="370" stroke="#1c1917" stroke-width="8" stroke-linecap="square"/>
+<circle data-id="d-1" cx="185" cy="80" r="40" fill="none" stroke="#0d9488" stroke-width="3"/>
+<circle data-id="d-2" cx="185" cy="230" r="40" fill="none" stroke="#0d9488" stroke-width="3"/>
+<circle data-id="d-3" cx="185" cy="380" r="40" fill="none" stroke="#0d9488" stroke-width="3"/>
+<circle data-id="d-4" cx="348" cy="550" r="40" fill="none" stroke="#0d9488" stroke-width="3"/>
+<circle data-id="d-5" cx="90" cy="600" r="40" fill="none" stroke="#0d9488" stroke-width="3"/>
+<circle data-id="d-6" cx="735" cy="65" r="40" fill="none" stroke="#0d9488" stroke-width="3"/>
+<circle data-id="d-7" cx="735" cy="210" r="40" fill="none" stroke="#0d9488" stroke-width="3"/>
+<circle data-id="d-8" cx="562" cy="550" r="40" fill="none" stroke="#0d9488" stroke-width="3"/>
+<circle data-id="d-9" cx="845" cy="700" r="40" fill="none" stroke="#0d9488" stroke-width="3"/>
+<g data-id="f-1" transform="translate(215 350) rotate(0)">
+<rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
+<text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">WC</text>
+</g>
+<g data-id="f-2" transform="translate(690 350) rotate(0)">
+<rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
+<text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">WC</text>
+</g>
+<g data-id="f-3" transform="translate(455 680) rotate(0)">
+<rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
+<text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">→</text>
+</g>
+</svg>

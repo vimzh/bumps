@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -63,7 +64,7 @@ export function UploadButton() {
         type="file"
       />
       <Button
-        className="h-11 cursor-pointer rounded-md px-6 text-base"
+        className="h-11 cursor-pointer rounded-full bg-blue text-blue-fg px-6 text-base hover:bg-blue-hover"
         disabled={uploading}
         onClick={() => inputRef.current?.click()}
         type="button"
@@ -83,6 +84,12 @@ export function UploadButton() {
           ? state.message
           : landingContent.hero.upload.hint}
       </p>
+      <Link
+        className="inline-flex min-h-11 items-center text-sm text-muted-foreground underline decoration-muted-foreground/50 underline-offset-4 transition-colors hover:text-foreground hover:decoration-foreground"
+        href={landingContent.hero.upload.guideHref}
+      >
+        {landingContent.hero.upload.guideLabel}
+      </Link>
     </div>
   );
 }

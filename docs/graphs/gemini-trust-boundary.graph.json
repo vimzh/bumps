@@ -1,0 +1,111 @@
+{
+  "title": "Why Gemini is powerful here",
+  "subtitle": "Gemini handles perception and judgment while typed boundaries protect the physical accessibility contract",
+  "description": "Gemini's multimodal and language capabilities feed schema validation, restricted operations, deterministic standards checks, and a hard export gate.",
+  "footer": "The model gets room to reason—not permission to violate the physical contract.",
+  "zones": [
+    {"id": "gemini", "label": "1 · GEMINI'S STRENGTHS", "tone": "violet", "width": 1.15},
+    {"id": "boundary", "label": "2 · TYPED BOUNDARIES", "tone": "amber", "width": 1.15},
+    {"id": "guarantee", "label": "3 · PRINT GUARANTEES", "tone": "green", "width": 1.3}
+  ],
+  "nodes": [
+    {
+      "id": "vision",
+      "zone": "gemini",
+      "title": "Multimodal plan understanding",
+      "body": ["pixels → navigable structure", "full thinking budget for critical roles"],
+      "status": "implemented",
+      "size": "wide",
+      "row": 1,
+      "span": 2,
+      "evidence": ["apps/api/src/agents/parser.ts", "apps/api/src/agents/llm.ts"]
+    },
+    {
+      "id": "review",
+      "zone": "gemini",
+      "title": "Visual self-critique",
+      "body": ["compares source with its own rendering", "major navigation errors become findings"],
+      "status": "implemented",
+      "size": "wide",
+      "row": 2,
+      "span": 2,
+      "evidence": ["apps/api/src/agents/critique.ts", "apps/api/src/agents/parse-loop.ts"]
+    },
+    {
+      "id": "language",
+      "zone": "gemini",
+      "title": "Natural-language control",
+      "body": ["rename · move · reshape · merge", "one clarification instead of a guess"],
+      "status": "implemented",
+      "size": "wide",
+      "row": 3,
+      "span": 2,
+      "evidence": ["apps/api/src/agents/edit.ts"]
+    },
+    {
+      "id": "schema",
+      "zone": "boundary",
+      "title": "Schema-checked JSON",
+      "body": ["bounded Zod shapes", "strict floor-model validation after output"],
+      "status": "implemented",
+      "size": "wide",
+      "row": 1,
+      "span": 2,
+      "evidence": ["apps/api/src/agents/parser.ts", "apps/api/src/agents/llm.ts", "packages/floor-model/src/schema.ts"]
+    },
+    {
+      "id": "permissions",
+      "zone": "boundary",
+      "title": "Agents receive narrow permissions",
+      "body": ["editor emits typed operations", "layout moves labels and symbols only"],
+      "note": "Agents cannot resize walls to erase violations",
+      "status": "implemented",
+      "size": "wide",
+      "row": 2,
+      "span": 2,
+      "evidence": ["apps/api/src/agents/edit.ts", "apps/api/src/agents/tactile-layout.ts"]
+    },
+    {
+      "id": "validator",
+      "zone": "guarantee",
+      "title": "Millimeter-level standards checks",
+      "body": ["encoded BANA 2022 + ADA §703 rules", "scale · margins · symbols · clearances · seams"],
+      "status": "implemented",
+      "size": "wide",
+      "row": 1,
+      "span": 2,
+      "evidence": ["packages/floor-model/src/validate.ts", "packages/floor-model/src/tactile-convert.ts"]
+    },
+    {
+      "id": "gate",
+      "zone": "guarantee",
+      "title": "Hard export gate",
+      "body": ["zero violations → STL", "any violation → blocked export"],
+      "status": "implemented",
+      "size": "wide",
+      "row": 2,
+      "span": 2,
+      "evidence": ["apps/api/src/tactile.ts", "apps/api/src/export.ts"]
+    },
+    {
+      "id": "mesh",
+      "zone": "guarantee",
+      "title": "Watertight physical output",
+      "body": ["spherical braille domes", "composite mesh sliced into exact plates"],
+      "status": "implemented",
+      "size": "wide",
+      "row": 3,
+      "span": 2,
+      "evidence": ["apps/api/src/geometry/mesh.ts", "apps/api/src/export.ts"]
+    }
+  ],
+  "edges": [
+    {"from": "vision", "to": "schema", "tone": "amber", "route": "horizontal"},
+    {"from": "review", "to": "permissions", "tone": "amber", "route": "horizontal"},
+    {"from": "language", "to": "permissions", "tone": "amber", "route": "orthogonal"},
+    {"from": "schema", "to": "validator", "tone": "green", "route": "horizontal"},
+    {"from": "permissions", "to": "gate", "tone": "green", "route": "horizontal"},
+    {"from": "validator", "to": "gate", "tone": "green", "route": "vertical"},
+    {"from": "gate", "to": "mesh", "tone": "green", "route": "vertical"}
+  ]
+}

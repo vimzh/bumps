@@ -1,0 +1,310 @@
+{
+  "version": 2,
+  "usage": "Evaluation only. Remote plan and tactile-map assets remain owned by their publishers and must not be committed or redistributed.",
+  "cases": [
+    {
+      "slug": "stamford-bridge",
+      "venue": "Stamford Bridge",
+      "type": "stadium",
+      "planUrl": "https://img.chelseafc.com/image/upload/v1757681873/editorial/supporter%20liaison/access%20guide/Stamford_Bridge_map_September_2025.jpg",
+      "tactileImageUrl": "https://directaccessgp.com/uk/wp-content/uploads/2026/06/Tactile_info_board.jpg",
+      "evidenceUrl": "https://directaccessgp.com/uk/case-studies/stamford-bridge-stadium-tactile-maps/",
+      "planPage": 1,
+      "scope": "stadium site"
+    },
+    {
+      "slug": "lam-tin-south-sports-centre",
+      "venue": "Lam Tin South Sports Centre",
+      "type": "sports centre",
+      "planUrl": "https://theme.gov.hk/en/theme/wifi/images/coverage/LCSD-KwunTong-4-LamTinSouthSportsCentre-GF.pdf",
+      "tactileImageUrl": "https://www.freeguider.com/upload/venues/1757/5698/big/d9afb4dd45723e9a2a7b739a6454f01a.jpg",
+      "evidenceUrl": "https://www.freeguider.com/en/venues/Lam-tin-south-sports-centre-disable-sports",
+      "planPage": 1,
+      "scope": "ground floor"
+    },
+    {
+      "slug": "malsovicka-arena",
+      "venue": "Malsovicka Arena",
+      "type": "stadium",
+      "planUrl": "https://fchk.esports.cz/foto/top_sezona_23-24/planareny.png",
+      "tactileImageUrl": "https://fchk.esports.cz/foto/2026_Prohlidka-pro-nevidome/DSC09391.jpg",
+      "evidenceUrl": "https://www.fchk.cz/article/8536-Prohlidky-Malsovicke-areny-pro-osoby-se-zrakovym-postizenim",
+      "planPage": 1,
+      "scope": "arena seating and circulation"
+    },
+    {
+      "slug": "tokyo-national-stadium",
+      "venue": "Japan National Stadium",
+      "type": "stadium",
+      "planUrl": "https://www.jfa.jp/samuraiblue/20260531/img/stadium_map01.png",
+      "tactileImageUrl": "https://imagedelivery.net/E-phh1i0yxFGQH-IJJZWuw/www.accessible-japan.com/2019/12/20191221_060506450_ios.jpg/w=9999",
+      "evidenceUrl": "https://www.accessible-japan.com/new-national-stadium-accessibility/",
+      "planPage": 1,
+      "planCrop": { "left": 0, "top": 0, "width": 1, "height": 0.49 },
+      "scope": "stadium site"
+    },
+    {
+      "slug": "osman-ramju-sadick-memorial-sports-centre",
+      "venue": "Osman Ramju Sadick Memorial Sports Centre",
+      "type": "sports centre",
+      "planUrl": "https://theme.gov.hk/en/theme/wifi/images/coverage/LCSD-KwaiTsing-3-OsmanRamjuSadickMemorialSportsCentre-GF.pdf",
+      "tactileImageUrl": "https://www.freeguider.com/upload/venues/1446/big/8320e41479caa81de33dc7f12f6914c4.jpg",
+      "evidenceUrl": "https://www.freeguider.com/en/venues/Osman-ramju-sadick-memorial-sports-centre-disable-sports",
+      "planPage": 1,
+      "scope": "ground floor"
+    },
+    {
+      "slug": "sai-wan-ho-sports-centre",
+      "venue": "Sai Wan Ho Sports Centre",
+      "type": "sports centre",
+      "planUrl": "https://theme.gov.hk/en/theme/wifi/images/coverage/LCSD-Eastern-22-SaiWanHoSportsCentre-2F.pdf",
+      "tactileImageUrl": "https://www.fitbuystore.com/upload/venues/564/big/1d748a0f9fe6b6f2be2038ee3ab3973c.JPG",
+      "evidenceUrl": "https://www.fitbuystore.com/en/venues/Sai-wan-ho-sports-centre-disable-sports",
+      "planPage": 1,
+      "scope": "second floor"
+    },
+    {
+      "slug": "hung-hom-sports-centre",
+      "venue": "Hung Hom Sports Centre",
+      "type": "sports centre",
+      "planUrl": "https://theme.gov.hk/en/theme/wifi/images/coverage/LCSD-KC-3-HungHomMunicipalServicesBuildingSportsCentre.pdf",
+      "tactileImageUrl": "https://www.fitbuystore.com/upload/venues/1646/big/3aff8c2aa0e9d798639d95b147da4d32.JPG",
+      "evidenceUrl": "https://www.fitbuystore.com/en/venues/Hung-hom-municipal-services-building-sports-centre-disable-sports",
+      "planPage": 1,
+      "scope": "sports centre floor"
+    },
+    {
+      "slug": "quarry-bay-sports-centre",
+      "venue": "Quarry Bay Sports Centre",
+      "type": "sports centre",
+      "planUrl": "https://theme.gov.hk/en/theme/wifi/images/coverage/LCSD-Eastern-23-QuarryBaySportsCentre.pdf",
+      "tactileImageUrl": "https://www.fitbuystore.com/upload/venues/1747/5653/big/d5207b1d3591f4bc985bf1e20510c1c5.jpg",
+      "evidenceUrl": "https://fitbuystore.com/en/venues/Quarry-bay-sports-centre-disable-sports",
+      "planPage": 1,
+      "scope": "sports centre floor"
+    },
+    {
+      "slug": "yuen-wo-road-sports-centre",
+      "venue": "Yuen Wo Road Sports Centre",
+      "type": "sports centre",
+      "planUrl": "https://theme.gov.hk/en/theme/wifi/images/coverage/LCSD-ShaTin-2-YuenWoRoadSportsCentre.pdf",
+      "tactileImageUrl": "https://www.fitbuystore.com/upload/venues/1939/big/76066de7336813126755d8e503283bba.JPG",
+      "evidenceUrl": "https://fitbuystore.com/en/venues/Yuanhe-road-stadium-disable-sport-accessible",
+      "planPage": 1,
+      "scope": "sports centre floor"
+    },
+    {
+      "slug": "fung-kam-street-sports-centre",
+      "venue": "Fung Kam Street Sports Centre",
+      "type": "sports centre",
+      "planUrl": "https://theme.gov.hk/en/theme/wifi/images/coverage/LCSD-YuenLong-2-FungKamStreetSportsCentre.pdf",
+      "tactileImageUrl": "https://www.fitbuystore.com/upload/venues/1549/big/bf91f1e3ee8cf4150d198a61acb99b2f.JPG",
+      "evidenceUrl": "https://fitbuystore.com/en/venues/Fung-kum-street-sports-centre-disable-sport",
+      "planPage": 1,
+      "scope": "sports centre floor"
+    },
+    {
+      "slug": "hong-kong-stadium",
+      "venue": "Hong Kong Stadium",
+      "type": "stadium",
+      "planUrl": "https://theme.gov.hk/en/theme/wifi/images/coverage/LCSD-HKStadium-3-HongKongStadium.pdf",
+      "tactileImageUrl": "https://www.fitbuystore.com/upload/venues/551/1674/big/294cd0addae7f74042cb85fe719d16db.JPG",
+      "evidenceUrl": "https://www.fitbuystore.com/en/venues/Hong-kong-stadium-disable-sports",
+      "planPage": 1,
+      "scope": "stadium floor"
+    },
+    {
+      "slug": "the-harris",
+      "venue": "The Harris",
+      "type": "museum",
+      "planUrl": "https://theharris.org.uk/wp-content/uploads/2025/11/Building-Map-NOV-2025.pdf",
+      "tactileImageUrl": "https://theharris.org.uk/wp-content/uploads/2026/04/20260423_092424-e1776934922602.jpg",
+      "evidenceUrl": "https://theharris.org.uk/press-news/tactile-maps/",
+      "planPage": 1,
+      "scope": "building visitor map"
+    },
+    {
+      "slug": "va-east-gallery-1",
+      "venue": "V&A East Museum, Gallery 1",
+      "type": "museum",
+      "planUrl": "https://vanda-production-assets.s3.amazonaws.com/2026/04/15/10/06/26/9ec3ecb7-6587-483e-894e-eb6d146a4f43/260330_V%26A_East_Large%20Print%20Guide_Gallery%201_LPR.pdf",
+      "tactileImageUrl": "https://tactilestudio.co/wp-content/uploads/sites/6/2026/04/plan.png",
+      "evidenceUrl": "https://tactilestudio.co/a-new-museum-in-london-showcasing-designs-power-to-drive-social-change/",
+      "planPage": 6,
+      "planCrop": { "left": 0.09, "top": 0.12, "width": 0.82, "height": 0.525 },
+      "scope": "Gallery 1"
+    },
+    {
+      "slug": "louvre-islamic-art",
+      "venue": "Louvre Islamic Art Department",
+      "type": "museum",
+      "planUrl": "https://api-www.louvre.fr/sites/default/files/2024-06/Web%20-%20EN%20%20LOUVRE_PlanG%20-%2004-2024.pdf",
+      "tactileImageUrl": "https://tactilestudio.co/wp-content/uploads/sites/6/2021/02/departement-arts-islam-musee-louvre-tactile-model-tactile-map-tactile-orientation-plan-museum-accessibility-universel-design-braille-for-visually-impaired-persons-8.jpg",
+      "evidenceUrl": "https://tactilestudio.co/achievements/departement-arts-islam-louvre-tactile-orientation-plan-tactile-map-station-museum-inclusion-accessibility-all-audiences/",
+      "planPage": 2,
+      "planCrop": { "left": 0, "top": 0.58, "width": 1, "height": 0.42 },
+      "scope": "Islamic Art Department on levels -1 and -2"
+    },
+    {
+      "slug": "smithsonian-american-history-building",
+      "venue": "Smithsonian National Museum of American History",
+      "type": "museum",
+      "planUrl": "https://americanhistory.si.edu/sites/default/files/file-uploader/nmah_venue_guide_03-2019.pdf",
+      "tactileImageUrl": "https://images.squarespace-cdn.com/content/v1/61bf875caa77aa7e4646e693/1655157717371-JSKVUGSCUJ2469KEQ08Q/nmahkioskfrontal.jpg",
+      "evidenceUrl": "https://www.touchgraphics.com/maps/ucdavis-blb7e",
+      "planPage": 11,
+      "scope": "public floors 3, 2, 1, and lower level"
+    },
+    {
+      "slug": "natur-park-suedgelaende",
+      "venue": "Natur-Park Schoeneberger Suedgelaende",
+      "type": "nature park",
+      "planUrl": "https://www.berlin.de/sen/uvk/_assets/natur-gruen/naturschutz/schutzgebiete/naturschutzgebiete/schoeneberger_suedgelaende_dt.pdf",
+      "tactileImageUrl": "https://tactilestudio.co/wp-content/uploads/sites/6/2021/01/schoneberger-park-berlin-germany-inclusion-in-nature-tactile-model-for-museum-tactile-map-accessibility-museum-braille-for-visually-impaired-persons-12-1-1000x1000.jpg",
+      "evidenceUrl": "https://tactilestudio.co/achievements/schoneberg-nature-park-berlin-inclusion-tactile-panels-mediation-trail-accessibility-nature/",
+      "planPage": 2,
+      "scope": "nature park visitor map"
+    },
+    {
+      "slug": "ciampino-airport",
+      "venue": "Ciampino Airport",
+      "type": "airport",
+      "planUrl": "https://www.enac.gov.it/sites/default/files/allegati/2023-Lug/1506_CDS_CIA.pdf",
+      "tactileImageUrl": "https://www.cjwalsh.ie/wp-content/uploads/2012/11/Accessible-Information_Rome_2011-10-26.jpg",
+      "evidenceUrl": "https://cjwalsh.ie/2012/11/",
+      "planPage": 30,
+      "scope": "arrivals area within the terminal"
+    },
+    {
+      "slug": "kwun-chung-sports-centre",
+      "venue": "Kwun Chung Sports Centre",
+      "type": "sports centre",
+      "planUrl": "https://theme.gov.hk/en/theme/wifi/images/coverage/LCSD-YTM-6-KwunChungSportsCentre-5F.pdf",
+      "tactileImageUrl": "https://www.freeguider.com/upload/venues/1517/big/127116b1005531d828c7184436032406.JPG",
+      "evidenceUrl": "https://www.freeguider.com/en/venues/Kwun-chung-sports-centre-disable-sport",
+      "planPage": 1,
+      "planCrop": { "left": 0.04, "top": 0.19, "width": 0.7, "height": 0.55 },
+      "scope": "fifth floor"
+    },
+    {
+      "slug": "jewish-museum-frankfurt",
+      "venue": "Jewish Museum Frankfurt",
+      "type": "museum",
+      "planUrl": "https://www.staab-architekten.com/images/JMF_EG_1_500.jpg?w=1600",
+      "tactileImageUrl": "https://tactilestudio.co/wp-content/uploads/sites/6/2020/12/judisches-museum-frankfurt-inclusion-tactile-model-for-museum-tactile-map-accessibility-museum-10-1000x1000.jpg",
+      "evidenceUrl": "https://tactilestudio.co/achievements/jewish-museum-frankfurt-tactile-model-accessibility-inclusion/",
+      "planPage": 1,
+      "scope": "ground floor"
+    },
+    {
+      "slug": "canterbury-cathedral",
+      "venue": "Canterbury Cathedral",
+      "type": "religious complex",
+      "planUrl": "https://www.canterbury-cathedral.org/media/s2qbklzb/disabled-visitors1.pdf",
+      "tactileImageUrl": "https://images.squarespace-cdn.com/content/v1/52d180eee4b083081e02d70b/1674564341838-6GV18PWS6VJVIX43GNFX/20230119_142637+%282%29.jpg?format=original",
+      "evidenceUrl": "https://topografik.co.uk/tactile-maps",
+      "planPage": 2,
+      "scope": "cathedral complex"
+    },
+    {
+      "slug": "queens-college",
+      "venue": "Queens College",
+      "type": "campus",
+      "planPath": "pipeline_tests/assets/queenscollege-plan.jpg",
+      "tactileImagePath": "pipeline_tests/assets/queenscollege-tactile.jpg",
+      "evidenceUrl": "https://nfb.org/images/nfb/publications/jbir/jbir16/jbir060205.html",
+      "planPage": 1,
+      "scope": "campus site; installed-map photo shows a detail"
+    },
+    {
+      "slug": "camille-claudel-museum",
+      "venue": "Musee Camille Claudel",
+      "type": "museum",
+      "planUrl": "https://www.museecamilleclaudel.fr/sites/default/files/accessibilite_3.pdf",
+      "tactileImageUrl": "https://tactilestudio.co/wp-content/uploads/sites/6/2021/01/musee-camille-claudel-sensorial-experience-educational-kit-tactile-work-tactile-reproduction-sculpture-accessibility-in-museum-tactile-model-16-1-1000x1000.jpg",
+      "evidenceUrl": "https://tactilestudio.co/achievements/musee-camille-claudel-sensory-experience-museum-pedagogical-kit-tactile-artwork-sculpture-accessibility/",
+      "planPage": 1,
+      "scope": "museum floor"
+    },
+    {
+      "slug": "woodhorn-museum",
+      "venue": "Woodhorn Museum",
+      "type": "museum",
+      "planUrl": "https://www.northeastmuseums.org.uk/woodhorn/files/700751-wm-map-a4-for-screen-colour.pdf",
+      "tactileImageUrl": "https://images.squarespace-cdn.com/content/v1/52d180eee4b083081e02d70b/1389551443955-0QYTXBUVED50C7YKBOF4/Cutter+Museum+Woodhorn.1.jpg?format=original",
+      "evidenceUrl": "https://topografik.co.uk/tactile-maps",
+      "planPage": 2,
+      "scope": "Cutter Building floor"
+    },
+    {
+      "slug": "laing-art-gallery",
+      "venue": "Laing Art Gallery",
+      "type": "museum",
+      "planUrl": "https://www.northeastmuseums.org.uk/laing/files/700229-lag-venue-hire-map-a4-for-screen.pdf",
+      "tactileImageUrl": "https://images.squarespace-cdn.com/content/v1/52d180eee4b083081e02d70b/1389551795080-7U0V8YMQR0T9KWA8XUXK/Talking+Plan.1.jpg?format=original",
+      "evidenceUrl": "https://topografik.co.uk/tactile-maps",
+      "planPage": 1,
+      "scope": "gallery floor"
+    },
+    {
+      "slug": "yuen-chau-kok-sports-centre",
+      "venue": "Yuen Chau Kok Sports Centre",
+      "type": "sports centre",
+      "planUrl": "https://theme.gov.hk/en/theme/wifi/images/coverage/LCSD-ShaTin-9-YuenCha%20KokSportsCentre.pdf",
+      "tactileImageUrl": "https://www.freeguider.com/upload/venues/1933/big/005b1429da9bbf01b93a5784118ddcf9.JPG",
+      "evidenceUrl": "https://www.freeguider.com/en/venues/Yuanzhoujiao-stadium-barrier-free-accessible",
+      "planPage": 1,
+      "scope": "sports centre floor"
+    },
+    {
+      "slug": "melbourne-sports-precinct",
+      "venue": "Melbourne Sports and Entertainment Precinct",
+      "type": "sports precinct",
+      "planUrl": "https://planning-schemes.app.planning.vic.gov.au/static/1693414420249/pdf/2988764.pdf",
+      "tactileImageUrl": "https://brailleaustralia.org/wp-content/uploads/2018/06/tactile-map-Melbourne-Sports-Precinct.jpg",
+      "evidenceUrl": "https://brailleaustralia.org/",
+      "planPage": 92,
+      "scope": "sports precinct"
+    },
+    {
+      "slug": "lai-king-sports-centre",
+      "venue": "Lai King Sports Centre",
+      "type": "sports centre",
+      "planUrl": "https://theme.gov.hk/en/theme/wifi/images/coverage/LCSD-KwaiTsing-1-LaiKingSportsCentre-GF.pdf",
+      "tactileImageUrl": "https://www.freeguider.com/upload/venues/1341/big/99c0ad94d1aee5c7229bc6f477c04847.jpg",
+      "evidenceUrl": "https://www.freeguider.com/en/venues/Lai-king-sports-centre-disabled-service",
+      "planPage": 1,
+      "scope": "ground floor"
+    },
+    {
+      "slug": "portland-state-university",
+      "venue": "Portland State University",
+      "type": "campus",
+      "planPath": "pipeline_tests/assets/psu-plan.pdf",
+      "tactileImagePath": "pipeline_tests/assets/psu-tactile-overview.jpg",
+      "evidenceUrl": "https://www.pdx.edu/accessibility/3d-psu-campus-map",
+      "planPage": 1,
+      "scope": "campus site"
+    },
+    {
+      "slug": "lai-chi-kok-park-sports-centre",
+      "venue": "Lai Chi Kok Park Sports Centre",
+      "type": "sports centre",
+      "planUrl": "https://theme.gov.hk/en/theme/wifi/images/coverage/LCSD-SSP-2-LaiChiKokParkSportsCentre.pdf",
+      "tactileImageUrl": "https://www.freeguider.com/upload/venues/1297/big/562888f34c4bb4d554b0569edcb7bffe.jpg",
+      "evidenceUrl": "https://www.freeguider.com/en/venues/Lai-chi-kok-park-sports-centre-disable-sports",
+      "planPage": 1,
+      "scope": "sports centre floor"
+    },
+    {
+      "slug": "po-wing-road-sports-centre",
+      "venue": "Po Wing Road Sports Centre",
+      "type": "sports centre",
+      "planUrl": "https://theme.gov.hk/en/theme/wifi/images/coverage/LCSD-NorthDistrict-6-PoWingRoadSportsCentre-GF.pdf",
+      "tactileImageUrl": "https://www.freeguider.com/upload/venues/1709/big/4aaacb0ee0959d04c2f846c02558048f.JPG",
+      "evidenceUrl": "https://www.freeguider.com/en/venues/Po-wing-road-sports-centre-disable-sports",
+      "planPage": 1,
+      "scope": "ground floor"
+    }
+  ]
+}

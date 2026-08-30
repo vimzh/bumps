@@ -6,6 +6,7 @@ import {
   openingSchema,
   pathSchema,
   pointSchema,
+  roadSchema,
   roomSchema,
   wallSchema,
   type FloorModel,
@@ -21,6 +22,7 @@ const elementSchema = z.discriminatedUnion('kind', [
   featureSchema,
   furnitureSchema,
   pathSchema,
+  roadSchema,
 ])
 
 export const editOperationSchema = z.discriminatedUnion('op', [
@@ -90,6 +92,7 @@ function mapElements(model: FloorModel, fn: <T>(element: T) => T): FloorModel {
     features: model.features.map(fn),
     furniture: model.furniture.map(fn),
     paths: (model.paths ?? []).map(fn),
+    roads: (model.roads ?? []).map(fn),
   }
 }
 
@@ -117,6 +120,8 @@ export function applyOperation(
           return { ...model, furniture: [...model.furniture, element] }
         case 'path':
           return { ...model, paths: [...(model.paths ?? []), element] }
+        case 'road':
+          return { ...model, roads: [...(model.roads ?? []), element] }
         default:
           return { ...model, features: [...model.features, element] }
       }
@@ -198,6 +203,17 @@ export function applyOperation(
           ),
         }
       }
+      if (element.kind === 'road') {
+        if (points.length < 2) {
+          throw new EditOperationError('Reshaping a road takes at least 2 points')
+        }
+        return {
+          ...model,
+          roads: model.roads.map((road) =>
+            road.id === element.id ? { ...road, points } : road,
+          ),
+        }
+      }
       if (points.length !== 1) {
         throw new EditOperationError('Reshaping a point element takes exactly 1 point')
       }
@@ -209,17 +225,22 @@ export function applyOperation(
       )
     }
     case 'delete': {
-      requireElement(model, operation.id)
+      const element = requireElement(model, operation.id)
       const keep = <T extends { id: string }>(items: T[]) =>
         items.filter((item) => item.id !== operation.id)
       return {
         ...model,
         walls: keep(model.walls),
-        openings: keep(model.openings),
+        openings: keep(model.openings).map((opening) =>
+          element.kind === 'wall' && opening.wallId === element.id
+            ? { ...opening, wallId: null }
+            : opening,
+        ),
         rooms: keep(model.rooms),
         features: keep(model.features),
         furniture: keep(model.furniture),
         paths: keep(model.paths ?? []),
+        roads: keep(model.roads ?? []),
       }
     }
     case 'relabel': {
@@ -236,8 +257,16 @@ export function applyOperation(
           ),
         }
       }
+      if (element.kind === 'road') {
+        return {
+          ...model,
+          roads: model.roads.map((road) =>
+            road.id === operation.id ? { ...road, label: operation.label } : road,
+          ),
+        }
+      }
       if (element.kind !== 'room') {
-        throw new EditOperationError('Only rooms and furniture can be relabeled')
+        throw new EditOperationError('Only rooms, roads, and furniture can be relabeled')
       }
       return {
         ...model,

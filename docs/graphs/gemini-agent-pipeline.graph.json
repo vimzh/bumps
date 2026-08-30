@@ -1,0 +1,103 @@
+{
+  "title": "Gemini-powered tactile map pipeline",
+  "subtitle": "Specialized agents parse, critique, edit, and refine before deterministic code permits an STL export",
+  "description": "A floor plan moves through Gemini parsing and critique, human-guided editing, tactile conversion, validation, and STL export.",
+  "footer": "Gemini reasons across the workflow. Deterministic geometry decides what can print.",
+  "zones": [
+    {"id": "input", "label": "1 · WHAT ENTERS", "tone": "blue", "width": 0.75},
+    {"id": "agents", "label": "2 · GEMINI AGENT TEAM", "tone": "violet", "width": 1.5},
+    {"id": "physical", "label": "3 · PHYSICAL OUTPUT", "tone": "green", "width": 1.15}
+  ],
+  "nodes": [
+    {
+      "id": "plan",
+      "zone": "input",
+      "title": "A real floor plan",
+      "body": ["PDF or image · one building level"],
+      "note": "The original stays available for visual review",
+      "status": "external",
+      "size": "standard",
+      "row": 1,
+      "span": 2,
+      "evidence": ["apps/api/src/parse.ts", "apps/api/src/agents/parser.ts"]
+    },
+    {
+      "id": "parser",
+      "zone": "agents",
+      "title": "Gemini reads structure",
+      "body": ["walls · rooms · doors · features", "confidence on every element"],
+      "status": "implemented",
+      "size": "wide",
+      "row": 1,
+      "span": 2,
+      "evidence": ["apps/api/src/agents/parser.ts", "apps/api/src/agents/llm.ts"]
+    },
+    {
+      "id": "critic",
+      "zone": "agents",
+      "title": "Gemini reviews the extraction",
+      "body": ["original plan vs rendered model", "missing · extra · misplaced · mislabeled"],
+      "note": "Major findings trigger another parse, up to 3 passes",
+      "status": "implemented",
+      "size": "wide",
+      "row": 2,
+      "span": 2,
+      "evidence": ["apps/api/src/agents/critique.ts", "apps/api/src/agents/parse-loop.ts"]
+    },
+    {
+      "id": "editor",
+      "zone": "agents",
+      "title": "Gemini translates human edits",
+      "body": ["prompt → typed operations", "real IDs only · ambiguity asks once"],
+      "status": "implemented",
+      "size": "wide",
+      "row": 3,
+      "span": 2,
+      "evidence": ["apps/api/src/agents/edit.ts"]
+    },
+    {
+      "id": "convert",
+      "zone": "physical",
+      "title": "Code builds tactile geometry",
+      "body": ["raised walls · braille keys · symbols", "smallest readable plate grid"],
+      "status": "implemented",
+      "size": "wide",
+      "row": 1,
+      "span": 2,
+      "evidence": ["packages/floor-model/src/tactile-convert.ts"]
+    },
+    {
+      "id": "layout",
+      "zone": "physical",
+      "title": "Gemini resolves judgment calls",
+      "body": ["nudges labels and point symbols only", "validator re-measures every move"],
+      "note": "A worse candidate is never accepted",
+      "status": "implemented",
+      "size": "wide",
+      "row": 2,
+      "span": 2,
+      "evidence": ["apps/api/src/agents/tactile-layout.ts", "packages/floor-model/src/validate.ts"]
+    },
+    {
+      "id": "stl",
+      "zone": "physical",
+      "title": "Zero violations unlock STL",
+      "body": ["watertight map · print plates · legend"],
+      "note": "Invalid designs receive HTTP 409 and cannot export",
+      "status": "implemented",
+      "size": "wide",
+      "row": 3,
+      "span": 2,
+      "evidence": ["apps/api/src/export.ts", "apps/api/src/geometry/mesh.ts"]
+    }
+  ],
+  "edges": [
+    {"from": "plan", "to": "parser", "tone": "violet", "route": "horizontal"},
+    {"from": "parser", "to": "critic", "tone": "violet", "route": "vertical"},
+    {"from": "critic", "to": "editor", "tone": "violet", "route": "vertical"},
+    {"from": "critic", "to": "parser", "tone": "amber", "route": "feedback"},
+    {"from": "editor", "to": "convert", "tone": "green", "route": "orthogonal"},
+    {"from": "convert", "to": "layout", "tone": "amber", "route": "vertical"},
+    {"from": "layout", "to": "stl", "tone": "green", "route": "vertical"}
+  ]
+}

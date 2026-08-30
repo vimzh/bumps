@@ -4,7 +4,7 @@ import { desc, eq } from 'drizzle-orm'
 import { Hono } from 'hono'
 import type { TactileDesign } from '@bumps/floor-model'
 import {
-  buildLegendMesh,
+  buildLegendMeshes,
   buildMapMesh,
   buildPlateMeshes,
   meshInfo,
@@ -62,11 +62,12 @@ exportRoutes.post('/:id/export', async (c) => {
     files.push({ info: meshInfo(plate.manifold), kind, path: platePath })
   }
 
-  const legend = buildLegendMesh(design)
-  if (legend) {
-    const legendPath = path.join(dir, 'legend.stl')
+  const legends = buildLegendMeshes(design)
+  for (const [index, legend] of legends.entries()) {
+    const kind = legends.length === 1 ? 'legend' : `legend-${index + 1}of${legends.length}`
+    const legendPath = path.join(dir, `${kind}.stl`)
     await Bun.write(legendPath, meshToBinaryStl(legend.getMesh()))
-    files.push({ info: meshInfo(legend), kind: 'legend', path: legendPath })
+    files.push({ info: meshInfo(legend), kind, path: legendPath })
   }
 
   for (const file of files) {
@@ -92,7 +93,9 @@ exportRoutes.post('/:id/export', async (c) => {
 
 exportRoutes.get('/:id/export/:file', async (c) => {
   const projectId = c.req.param('id')
-  const match = /^(map|legend|plate-[1-4]of[1-4])\.stl$/.exec(c.req.param('file'))
+  const match = /^(map|legend(?:-\d{1,2}of\d{1,2})?|plate-\d{1,2}of\d{1,2})\.stl$/.exec(
+    c.req.param('file'),
+  )
   if (!match) {
     return c.json({ error: 'Unknown export file' }, 404)
   }

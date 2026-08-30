@@ -29,8 +29,8 @@ These are the load-bearing numbers, from BANA's *Guidelines and Standards for Ta
 
 ### Plate
 
-- **One size for v1: 200 × 200 mm, 3 mm base** (decision confirmed; floors too large for one plate are fit automatically on a 2×1/1×2/2×2 grid of these plates, sliced with exact seams). Rationale: research places ideal tactile map size at 200–400 mm (A4 is the practitioner standard); 200 × 200 is inside that range **and** fits effectively every common consumer print bed in one piece — Ender-3 (220×220), Prusa MK4 (250×210), Bambu A1/P1/X1 (256×256). No tiling, no glue-ups.
-- Practical ceiling at this size: floors up to roughly 30 × 30 m (fingertip resolution ≈ 3 mm gives the plate a ~60×60 tactile-cell budget). Larger floors scale below readable thresholds, so the validator must fail the conversion loudly ("floor too large for one plate — split or simplify") rather than emit an unreadable map. Overview + per-wing maps are the post-v1 answer for big buildings — not a bigger plate, which printers can't fit and tactile reading can't integrate.
+- **One printable tile size: 200 × 200 mm, 3 mm base.** The converter chooses the smallest readable grid from 1×1 through 4×4 and slices it with exact seams. Each tile fits effectively every common consumer print bed — Ender-3 (220×220), Prusa MK4 (250×210), Bambu A1/P1/X1 (256×256).
+- The grid is a readability limit, not permission to shrink indefinitely: doors, roads, and site-building footprints must still meet their printed-width gates. If 4×4 is insufficient, conversion fails loudly and the user must split the source into an overview plus per-wing maps.
 - Content auto-scaled to fit with a mandatory margin; north arrow / orientation cue in a fixed corner; "you are here" marker optional.
 
 ### Relief heights (z-layers above the base)

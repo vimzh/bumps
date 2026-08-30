@@ -15,6 +15,8 @@ export const PLATE = { baseMm: 3, heightMm: 200, marginMm: 10, widthMm: 200 } as
 
 // Features and walls below these print sizes are dropped, not shrunk.
 const MIN_WALL_LENGTH_MM = 3
+const JUNCTION_TOLERANCE_MM = 1
+const MIN_FURNITURE_SIZE_MM = 5
 const WALL_WIDTH_MM = 2
 const SYMBOL_SIZE_MM = 6
 // Doorways read as gaps in the wall line (standard tactile practice);
@@ -24,6 +26,8 @@ const MIN_DOOR_GAP_MM = 6
 export type ConversionNote = {
   kind:
     | 'dropped-wall'
+    | 'dropped-furniture'
+    | 'dropped-furniture-label'
     | 'dropped-window'
     | 'multi-plate'
     | 'room-block'
@@ -44,6 +48,16 @@ function contentBounds(model: FloorModel) {
   for (const opening of model.openings) points.push(opening.at)
   for (const feature of model.features) points.push(feature.at)
   for (const item of model.furniture) points.push(...item.polygon)
+  for (const path of model.paths ?? []) points.push(...path.points)
+  for (const road of model.roads ?? []) {
+    const half = road.widthPx / 2
+    for (const point of road.points) {
+      points.push(
+        { x: point.x - half, y: point.y - half },
+        { x: point.x + half, y: point.y + half },
+      )
+    }
+  }
   if (points.length === 0) {
     return { maxX: model.plan.widthPx, maxY: model.plan.heightPx, minX: 0, minY: 0 }
   }
@@ -81,6 +95,14 @@ function centroid(polygon: Point[]): Point {
 
 function sanitizeLabel(label: string): string {
   return label.toLowerCase().replace(/[^a-z0-9 ]/g, '').trim()
+}
+
+function isNavigationalLabel(label: string): boolean {
+  const clean = sanitizeLabel(label)
+  return (
+    clean.length > 0 &&
+    !/^\d+\s*(?:sf|sq\s*ft|square\s*feet)$/.test(clean)
+  )
 }
 
 // 1-2 character braille keys, unique per design: first letters of words,
@@ -127,32 +149,97 @@ function layoutForGrid(model: FloorModel, rows: number, cols: number) {
   return { bounds, cols, mmPerPx, offsetX, offsetY, rows, toMm }
 }
 
-// Deciding step: the smallest plate grid (1x1 -> 2x1/1x2 by aspect -> 2x2)
-// whose scale keeps door openings finger-readable. There is no user choice
+export type ScaleRequirement = {
+  id: string
+  label: string
+  requiredMm: number
+  widthPx: number
+}
+
+function rendersRoomsAsBlocks(model: FloorModel, labeledRoomCount: number): boolean {
+  return (
+    labeledRoomCount > 0 &&
+    (model.walls.length === 0 ||
+      (labeledRoomCount >= 8 && model.walls.length <= labeledRoomCount / 4))
+  )
+}
+
+// Source features whose width must survive scaling. Door openings govern
+// floor plans; road bands and building footprints govern wall-less site maps.
+export function scaleRequirements(model: FloorModel): ScaleRequirement[] {
+  const requirements: ScaleRequirement[] = model.openings
+    .filter((opening) => opening.kind === 'door')
+    .map((door) => ({
+      id: door.id,
+      label: 'Door',
+      requiredMm: 5,
+      widthPx: door.width,
+    }))
+  for (const road of model.roads ?? []) {
+    requirements.push({
+      id: road.id,
+      label: 'Road',
+      requiredMm: 3,
+      widthPx: road.widthPx,
+    })
+  }
+  const labeledRooms = model.rooms.filter(
+    (room) => room.label !== null && isNavigationalLabel(room.label),
+  )
+  if (rendersRoomsAsBlocks(model, labeledRooms.length)) {
+    for (const room of labeledRooms) {
+      const xs = room.polygon.map((point) => point.x)
+      const ys = room.polygon.map((point) => point.y)
+      requirements.push({
+        id: room.id,
+        label: 'Building footprint',
+        requiredMm: 5,
+        widthPx: Math.min(
+          Math.max(...xs) - Math.min(...xs),
+          Math.max(...ys) - Math.min(...ys),
+        ),
+      })
+    }
+  }
+  return requirements
+}
+
+// Deciding step: the smallest plate grid whose scale keeps navigation-critical
+// source widths finger-readable. There is no user choice
 // here on purpose — anything smaller is unreadable, anything larger wasteful.
 export function planToPlateTransform(model: FloorModel) {
   const bounds = contentBounds(model)
   const contentW = Math.max(1, bounds.maxX - bounds.minX)
   const contentH = Math.max(1, bounds.maxY - bounds.minY)
-  const wide = contentW >= contentH
-  const candidates: [number, number][] = [
-    [1, 1],
-    wide ? [1, 2] : [2, 1],
-    [2, 2],
-  ]
-  const doorWidths = model.openings
-    .filter((o) => o.kind === 'door')
-    .map((o) => o.width)
-  const minDoorPx = doorWidths.length > 0 ? Math.min(...doorWidths) : null
+  const contentAspect = contentW / contentH
+  // Try every grid up to 4x4, fewest physical plates first. For equal
+  // plate counts, prefer the assembled aspect closest to the plan.
+  const candidates = Array.from({ length: 16 }, (_, index) => {
+    const rows = Math.floor(index / 4) + 1
+    const cols = (index % 4) + 1
+    return [rows, cols] as const
+  }).sort((a, b) => {
+    const plateCount = a[0] * a[1] - b[0] * b[1]
+    if (plateCount !== 0) return plateCount
+    const aspectError = (grid: readonly [number, number]) =>
+      Math.abs(Math.log(grid[1] / grid[0] / contentAspect))
+    return aspectError(a) - aspectError(b)
+  })
+  const requirements = scaleRequirements(model)
   for (const [rows, cols] of candidates) {
     const layout = layoutForGrid(model, rows, cols)
-    if (minDoorPx === null || minDoorPx * layout.mmPerPx >= 5) {
+    if (
+      requirements.every(
+        (requirement) =>
+          requirement.widthPx * layout.mmPerPx >= requirement.requiredMm,
+      )
+    ) {
       return layout
     }
   }
-  // Even 2x2 is too small: return the max grid and let the validator's
+  // Even 4x4 is too small: return the max grid and let the validator's
   // scale gate fail the design loudly.
-  return layoutForGrid(model, 2, 2)
+  return layoutForGrid(model, 4, 4)
 }
 
 export function convertToTactile(model: FloorModel): ConversionResult {
@@ -168,6 +255,42 @@ export function convertToTactile(model: FloorModel): ConversionResult {
 
   const elements: TactileElement[] = []
   const legend: LegendEntry[] = []
+  const tactileFurniture = model.furniture.filter((item) => {
+    const polygon = item.polygon.map(toMm)
+    const width =
+      Math.max(...polygon.map((point) => point.x)) -
+      Math.min(...polygon.map((point) => point.x))
+    const height =
+      Math.max(...polygon.map((point) => point.y)) -
+      Math.min(...polygon.map((point) => point.y))
+    if (Math.min(width, height) >= MIN_FURNITURE_SIZE_MM) return true
+    notes.push({
+      elementId: item.id,
+      kind: 'dropped-furniture',
+      message: `Furniture ${item.id} is smaller than ${MIN_FURNITURE_SIZE_MM} mm and was dropped`,
+    })
+    return false
+  })
+
+  const wallsMm = model.walls.map((wall) => ({
+    a: toMm(wall.a),
+    b: toMm(wall.b),
+    id: wall.id,
+  }))
+  const junctionWallIds = new Set<string>()
+  // ponytail: O(n²) junction scan; use a spatial index if real plans approach 2,000 walls.
+  for (const wall of wallsMm) {
+    for (const other of wallsMm) {
+      if (wall.id === other.id) continue
+      if (
+        distPointToSegment(wall.a, other.a, other.b) <= JUNCTION_TOLERANCE_MM ||
+        distPointToSegment(wall.b, other.a, other.b) <= JUNCTION_TOLERANCE_MM
+      ) {
+        junctionWallIds.add(wall.id)
+        break
+      }
+    }
+  }
 
   // Associate every door with a wall: declared wallId first, else the
   // nearest wall the door actually sits on.
@@ -203,7 +326,8 @@ export function convertToTactile(model: FloorModel): ConversionResult {
     const a = toMm(wall.a)
     const b = toMm(wall.b)
     const lengthMm = Math.hypot(b.x - a.x, b.y - a.y)
-    if (lengthMm < MIN_WALL_LENGTH_MM) {
+    const preservesJunction = junctionWallIds.has(wall.id)
+    if (lengthMm < MIN_WALL_LENGTH_MM && !preservesJunction) {
       notes.push({
         elementId: wall.id,
         kind: 'dropped-wall',
@@ -226,7 +350,10 @@ export function convertToTactile(model: FloorModel): ConversionResult {
     let cursor = 0
     let segment = 0
     const pushSegment = (from: number, to: number) => {
-      if (to - from < MIN_WALL_LENGTH_MM) return
+      if (to - from <= 0.01) return
+      const touchesJunctionEnd =
+        preservesJunction && (from <= 0.01 || to >= lengthMm - 0.01)
+      if (to - from < MIN_WALL_LENGTH_MM && !touchesJunctionEnd) return
       segment += 1
       elements.push({
         heightMm: RELIEF_MM.wallLine,
@@ -273,8 +400,69 @@ export function convertToTactile(model: FloorModel): ConversionResult {
     })
   }
 
+  // Roads / streets -> smooth low-relief bands (the PSU-model
+  // convention: streets as flat strips distinct from walls and paths).
+  // Each segment is one quad area; joints get a square patch.
+  const roadLabelPositions: { label: string; at: { x: number; y: number }; id: string }[] = []
+  for (const road of model.roads ?? []) {
+    const widthMm = Math.max(3, road.widthPx * mmPerPx)
+    const pts = road.points.map(toMm)
+    let longest = { a: pts[0]!, b: pts[1]!, len: 0 }
+    for (let i = 0; i < pts.length - 1; i++) {
+      const a = pts[i]!
+      const b = pts[i + 1]!
+      const dx = b.x - a.x
+      const dy = b.y - a.y
+      const len = Math.hypot(dx, dy)
+      if (len === 0) continue
+      if (len > longest.len) longest = { a, b, len }
+      const nx = (-dy / len) * (widthMm / 2)
+      const ny = (dx / len) * (widthMm / 2)
+      elements.push({
+        heightMm: RELIEF_MM.areaTexture,
+        id: `t-${road.id}-b${i}`,
+        kind: 'area',
+        polygon: [
+          { x: a.x + nx, y: a.y + ny },
+          { x: a.x - nx, y: a.y - ny },
+          { x: b.x - nx, y: b.y - ny },
+          { x: b.x + nx, y: b.y + ny },
+        ],
+        sourceId: road.id,
+        texture: 'solid',
+      })
+      if (i > 0) {
+        const half = widthMm / 2
+        elements.push({
+          heightMm: RELIEF_MM.areaTexture,
+          id: `t-${road.id}-j${i}`,
+          kind: 'area',
+          polygon: [
+            { x: a.x - half, y: a.y - half },
+            { x: a.x + half, y: a.y - half },
+            { x: a.x + half, y: a.y + half },
+            { x: a.x - half, y: a.y + half },
+          ],
+          sourceId: road.id,
+          texture: 'solid',
+        })
+      }
+    }
+    const label = road.label ? sanitizeLabel(road.label) : ''
+    if (label.length > 0) {
+      roadLabelPositions.push({
+        at: {
+          x: (longest.a.x + longest.b.x) / 2,
+          y: (longest.a.y + longest.b.y) / 2,
+        },
+        id: road.id,
+        label,
+      })
+    }
+  }
+
   // Guide paths / walkways -> dashed raised lines (BANA broken-line
-  // convention: distinct by touch from solid walls at the same height).
+  // convention: distinct by touch from walls at the same height).
   for (const path of model.paths ?? []) {
     elements.push({
       heightMm: RELIEF_MM.wallLine,
@@ -292,11 +480,11 @@ export function convertToTactile(model: FloorModel): ConversionResult {
   // clubbed "chairs") share one key and one legend entry.
   const labeledRooms = model.rooms.filter(
     (room): room is Room & { label: string } =>
-      room.label !== null && sanitizeLabel(room.label).length > 0,
+      room.label !== null && isNavigationalLabel(room.label),
   )
   const furnitureLabels = [
     ...new Set(
-      model.furniture
+      tactileFurniture
         .map((item) => sanitizeLabel(item.label))
         .filter((label) => label.length > 0),
     ),
@@ -304,16 +492,13 @@ export function convertToTactile(model: FloorModel): ConversionResult {
   const keyByLabel = assignKeys([
     ...labeledRooms.map((room) => room.label),
     ...furnitureLabels,
+    ...roadLabelPositions.map((road) => road.label),
   ])
   // A plan with no walls (campus/site block-plans) would otherwise emit
   // nothing but floating keys; real tactile campus maps render buildings
   // as raised blocks, so we do too. Many labeled rooms with almost no
   // walls is the same situation with a few stray parsed segments.
-  const roomsAsBlocks =
-    labeledRooms.length > 0 &&
-    (model.walls.length === 0 ||
-      (labeledRooms.length >= 8 &&
-        model.walls.length <= labeledRooms.length / 4))
+  const roomsAsBlocks = rendersRoomsAsBlocks(model, labeledRooms.length)
   if (roomsAsBlocks) {
     for (const room of labeledRooms) {
       elements.push({
@@ -359,7 +544,7 @@ export function convertToTactile(model: FloorModel): ConversionResult {
 
   // Furniture -> low-relief solid blocks, height-differentiated from walls,
   // with the braille key on the block when it fits.
-  for (const item of model.furniture) {
+  for (const item of tactileFurniture) {
     const polygonMm = item.polygon.map(toMm)
     elements.push({
       heightMm: RELIEF_MM.areaTexture,
@@ -373,15 +558,20 @@ export function convertToTactile(model: FloorModel): ConversionResult {
     const key = keyByLabel.get(label)
     if (!key) continue
     const size = textBrailleSize(key)
-    // On the block when it fits; beside it when the block is too small —
-    // the key must always exist for the legend to mean anything.
-    const center =
-      fitRectInPolygon(
-        size.widthMm,
-        size.heightMm,
-        polygonMm,
-        centroid(polygonMm),
-      ) ?? adjacentRectPosition(size.widthMm, size.heightMm, polygonMm, 4.5)
+    const center = fitRectInPolygon(
+      size.widthMm,
+      size.heightMm,
+      polygonMm,
+      centroid(polygonMm),
+    )
+    if (!center) {
+      notes.push({
+        elementId: item.id,
+        kind: 'dropped-furniture-label',
+        message: `Furniture ${item.id} cannot contain its braille key, so the key was omitted`,
+      })
+      continue
+    }
     elements.push({
       at: { x: center.x - size.widthMm / 2, y: center.y - size.heightMm / 2 },
       id: `t-label-${item.id}`,
@@ -391,6 +581,27 @@ export function convertToTactile(model: FloorModel): ConversionResult {
     })
     if (!legend.some((entry) => entry.key === key)) {
       legend.push({ key, text: label })
+    }
+  }
+
+  // Street-name keys sit beside the band's midpoint (bands are usually
+  // too narrow to hold braille), like street labels on the PSU model.
+  for (const road of roadLabelPositions) {
+    const key = keyByLabel.get(road.label)
+    if (!key) continue
+    const size = textBrailleSize(key)
+    elements.push({
+      at: {
+        x: road.at.x - size.widthMm / 2,
+        y: road.at.y - size.heightMm - 3.5,
+      },
+      id: `t-label-${road.id}`,
+      key,
+      kind: 'braille',
+      sourceId: road.id,
+    })
+    if (!legend.some((entry) => entry.key === key)) {
+      legend.push({ key, text: road.label })
     }
   }
 

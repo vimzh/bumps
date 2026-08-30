@@ -111,28 +111,30 @@ export function TactileViewer({ design }: TactileViewerProps) {
         x={marginMm}
         y={marginMm}
       />
-      {grid.cols > 1 && (
+      {Array.from({ length: grid.cols - 1 }, (_, i) => (
         <line
           className="stroke-(--color-brand)/50"
+          key={`sx-${i}`}
           strokeDasharray="4 3"
           strokeWidth={0.4}
-          x1={design.plate.widthMm}
-          x2={design.plate.widthMm}
+          x1={design.plate.widthMm * (i + 1)}
+          x2={design.plate.widthMm * (i + 1)}
           y1={0}
           y2={heightMm}
         />
-      )}
-      {grid.rows > 1 && (
+      ))}
+      {Array.from({ length: grid.rows - 1 }, (_, i) => (
         <line
           className="stroke-(--color-brand)/50"
+          key={`sy-${i}`}
           strokeDasharray="4 3"
           strokeWidth={0.4}
           x1={0}
           x2={widthMm}
-          y1={design.plate.heightMm}
-          y2={design.plate.heightMm}
+          y1={design.plate.heightMm * (i + 1)}
+          y2={design.plate.heightMm * (i + 1)}
         />
-      )}
+      ))}
       {design.elements.map((element) => {
         if (element.kind === "line") {
           return (

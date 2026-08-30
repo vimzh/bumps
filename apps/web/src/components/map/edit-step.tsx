@@ -32,7 +32,7 @@ function newId(kind: string): string {
 }
 
 function pointElement(
-  kind: Exclude<PlaceableKind, "furniture" | "path" | "room" | "wall">,
+  kind: Exclude<PlaceableKind, "furniture" | "path" | "road" | "room" | "wall">,
   at: Point,
   model: FloorModel
 ): EditOperation & { op: "add" } {
@@ -115,6 +115,24 @@ function pathElement(a: Point, b: Point): EditOperation & { op: "add" } {
       id: newId("path"),
       kind: "path",
       points: [a, b],
+    },
+  };
+}
+
+function roadElement(
+  a: Point,
+  b: Point,
+  model: FloorModel
+): EditOperation & { op: "add" } {
+  return {
+    op: "add",
+    element: {
+      confidence: 1,
+      id: newId("road"),
+      kind: "road",
+      label: null,
+      points: [a, b],
+      widthPx: Math.max(14, Math.round(model.plan.widthPx * 0.015)),
     },
   };
 }
@@ -301,11 +319,15 @@ export function EditStep({
                   void apply(withConfirm(id, [{ op: "move", id, dx, dy }]))
                 }
                 onPlaceLine={(a, b) => {
-                  if (placing !== "wall" && placing !== "path") return;
+                  if (placing !== "wall" && placing !== "path" && placing !== "road") {
+                    return;
+                  }
                   const operation =
                     placing === "path"
                       ? pathElement(a, b)
-                      : lineElement(a, b, model);
+                      : placing === "road"
+                        ? roadElement(a, b, model)
+                        : lineElement(a, b, model);
                   setPlacing(null);
                   void apply([operation]).then(() =>
                     setSelectedId(operation.element.id)
@@ -317,7 +339,8 @@ export function EditStep({
                     placing === "room" ||
                     placing === "furniture" ||
                     placing === "wall" ||
-                    placing === "path"
+                    placing === "path" ||
+                    placing === "road"
                   ) {
                     return;
                   }

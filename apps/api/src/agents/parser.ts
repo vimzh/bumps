@@ -1,8 +1,18 @@
 import path from 'node:path'
 import { z } from 'zod'
-import { LlmAgent, InMemorySessionService, Runner } from '@google/adk'
+import { LlmAgent } from '@google/adk'
+import { imageSize } from 'image-size'
 import { featureKinds, floorModelSchema, type FloorModel } from '@bumps/floor-model'
-import { JSON_ONLY, llmPointSchema, makeModel, MODEL_CRITICAL, parseAgentJson } from './llm'
+import { cropPlanImage, type NormalizedCrop } from '../lib/rasterize'
+import {
+  JSON_ONLY,
+  llmPointSchema,
+  makeModel,
+  MODEL_CRITICAL,
+  parseAgentJson,
+  runAgentTurn,
+  type MessagePart,
+} from './llm'
 import { withModelRetry } from './retry'
 
 export { MODEL_CRITICAL, MODEL_FAST } from './llm'
@@ -20,16 +30,20 @@ const llmConfidence = z.number().min(0).max(1)
 // fields are optional here; code fills them and the strict package schema
 // validates the final result.
 const parsedOutputSchema = z.object({
+  drawingType: z.enum(['floor-plan', 'site-plan', 'not-a-plan']),
+  suitability: z.enum(['good', 'usable', 'poor']),
+  suitabilityIssues: z.array(z.string()),
   title: z.string().nullable().optional(),
   walls: z.array(
     z.object({
       id: z.string(),
+      kind: z.literal('wall').optional(),
       // Dialects: a/b points, or the whole segment as a=[x0,y0,x1,y1].
       a: z.union([llmPoint, z.tuple([z.number(), z.number(), z.number(), z.number()])]),
       b: llmPoint.optional(),
       thickness: z.number().optional(),
       confidence: llmConfidence,
-    }),
+    }).strict(),
   ),
   openings: z.array(
     z.object({
@@ -39,15 +53,16 @@ const parsedOutputSchema = z.object({
       width: z.number().min(1),
       wallId: z.string().nullable().optional(),
       confidence: llmConfidence,
-    }),
+    }).strict(),
   ),
   rooms: z.array(
     z.object({
       id: z.string(),
+      kind: z.literal('room').optional(),
       polygon: z.array(llmPoint).min(3),
       label: z.string().nullable().optional(),
       confidence: llmConfidence,
-    }),
+    }).strict(),
   ),
   features: z.array(
     z.object({
@@ -56,29 +71,44 @@ const parsedOutputSchema = z.object({
       at: llmPoint,
       rotation: z.number().optional(),
       confidence: llmConfidence,
-    }),
+    }).strict(),
   ),
   furniture: z.array(
     z.object({
       id: z.string(),
+      kind: z.literal('furniture').optional(),
       polygon: z.array(llmPoint).min(3).optional(),
       // The model's preferred block shape: [x0, y0, x1, y1].
       bounds: z.array(z.number()).length(4).optional(),
       label: z.string(),
       confidence: llmConfidence,
-    }),
+    }).strict(),
   ),
   paths: z
     .array(
       z.object({
         id: z.string(),
+        kind: z.literal('path').optional(),
         points: z.array(llmPoint).min(2),
         confidence: llmConfidence,
-      }),
+      }).strict(),
+    )
+    .optional(),
+  roads: z
+    .array(
+      z.object({
+        id: z.string(),
+        kind: z.literal('road').optional(),
+        points: z.array(llmPoint).min(2),
+        widthPx: z.coerce.number().min(1).optional(),
+        width: z.coerce.number().min(1).optional(),
+        label: z.string().nullable().optional(),
+        confidence: llmConfidence,
+      }).strict(),
     )
     .optional(),
   north: z.number().nullable().optional(),
-})
+}).strict()
 
 function furniturePolygon(item: {
   bounds?: number[]
@@ -97,33 +127,90 @@ function furniturePolygon(item: {
   throw new Error('Parser returned schema-invalid output: furniture without geometry')
 }
 
-const INSTRUCTION = `You read architectural floor plans for blind-accessibility mapping.
+export const PARSER_INSTRUCTION = `You are an expert architectural-drawing analyst extracting structured geometry from ONE floor plan (or campus/site plan) image, to be turned into a tactile map for blind readers. Everything you emit becomes raised geometry under a blind reader's fingertip, and everything you miss is simply absent from their world — extract with care.
 
-You are given one floor plan image. Extract its structure as JSON:
+You receive one full-plan image. All coordinates must use that image's pixel coordinate system.
 
-- walls: load-bearing and partition walls as straight segments (a, b endpoints). Split bent walls into segments. thickness is the drawn wall thickness in pixels. Include SHORT wall stubs and partial partitions too — even segments barely a door-width long matter for navigation; do not merge them away.
-- openings: doors and windows. "at" is the center of the opening, width its size along the wall in pixels. Set wallId to the id of the wall it interrupts, or null. EVERY quarter-circle swing arc is a door — count the arcs. Almost every enclosed room has at least one door; if a room looks sealed, look again for its doorway before moving on.
-- rooms: enclosed spaces as simple polygons (3+ corner points, no self-intersection). TRACE THE ACTUAL OUTLINE: an L- or T-shaped room/building gets its true 6-8 corner polygon — never collapse a drawn footprint to a triangle or a loose blob. label is the room's printed name if legible, else null. Include corridors as rooms. On campus/site plans each building footprint is a room.
-- features: stairs, elevator, entrance, exit, restroom, ramp when their symbols or labels are present. "at" is the symbol center. rotation is degrees clockwise (for stairs/ramp: ascending direction). Never invent a you-are-here feature.
-- paths: walkways, guide routes, and pedestrian paths when they are actually DRAWN (campus walkway networks, dotted route lines, marked corridors' guide lines) — as polylines of 2+ points along the path centerline. Never invent paths that are not drawn.
-- north: if the plan draws a north arrow or compass, output "north" as degrees clockwise from image-up to north (0 = up); otherwise null.
-- furniture: furniture generalized into BLOCKS — coarse axis-aligned rectangles, never per-item outlines. CLUB adjacent same-kind items into one block: a row of chairs is ONE block labeled "chairs", a desk with its chairs is one "desks" block. Blocks must TIGHTLY bound the drawn items (at most ~10% padding) — never inflate a block beyond what is drawn; prefer two tight blocks over one oversized one. Do not miss chair clusters ("chairs"). label: short generic lowercase noun ("sofa", "chairs", "desks", "table", "counter"), plural when clubbed. Only include furniture actually drawn; skip tiny isolated items.
+## First, classify the drawing
+- floor-plan: a clear orthographic 2D building plan with traceable room boundaries, walls, and openings.
+- site-plan: a clear orthographic 2D site/campus map with traceable building footprints and connecting roads or walkways.
+- not-a-plan: perspective/isometric marketing render, ordinary photograph, elevation, transit diagram, illustration, or any image whose geometry cannot be traced as an overhead plan. An isometric architectural view is still not a floor plan.
 
-Rules:
-- Coordinates are PIXELS in the exact image you were given, origin top-left, x right, y down. The prompt states the image dimensions; never exceed them.
-- ids: short, unique, prefixed by type: w-1, d-1, win-1, r-1, f-1, fur-1, ...
-- confidence: your honest certainty in THIS element (0-1). Blurry, ambiguous, inferred, or partially occluded elements get lower values. Do not default everything to one value.
-- Ignore dimension lines, hatching, title blocks, and decorative detail (the compass/north arrow feeds ONLY the "north" field).
+Set suitability to good when geometry and labels are clear, usable when the overhead geometry remains traceable despite low resolution or moderate clutter, and poor when perspective, occlusion, illegibility, or missing boundaries make faithful extraction impossible. List concrete suitabilityIssues. For not-a-plan or poor input, return empty geometry arrays; the application will reject it and ask for a real floor/site plan.
+
+For a BUILDING FLOOR PLAN: extract walls/openings/rooms/features/furniture. Roads/paths only if grounds are also drawn.
+For a CAMPUS or SITE PLAN: each building footprint is a "room" with its name as label; extract roads, walkway paths, and entrances. Walls only where an individual building's interior is actually drawn.
+
+## What to extract
+
+walls — load-bearing and partition walls as straight segments (a, b endpoints).
+- Split bent walls into straight segments at each corner.
+- L-, U-, and T-shaped walls are connected segment networks, not decoration. Trace every leg, including a short leg. At an L/U corner the segment endpoints must meet; at a T junction the stem endpoint must land on the crossbar segment.
+- CURVED WALLS ARE REQUIRED: approximate every visible curve with a connected chain of 6-16 short wall segments whose endpoints touch and visibly follow the arc. Never omit a curve or replace it with one straight chord.
+- thickness = drawn wall thickness in pixels.
+- Include SHORT stubs and partial partitions — even segments barely a door-width long shape navigation; never merge them away.
+- Follow the drawn geometry precisely: endpoints ON the wall centerlines, not approximations.
+
+openings — doors and windows in walls.
+- kind MUST be exactly "door" or "window". Encode an archway or open passage through a wall as "door" because it becomes the same tactile wall gap.
+- "at" = center of the opening; width = its size along the wall in pixels; wallId = id of the interrupted wall (or null).
+- A door requires DIRECT VISIBLE EVIDENCE: a door leaf plus swing arc rooted at a wall gap, parallel sliding-door panels at a wall gap, or an unmistakable open passage interrupting a wall. A quarter-circle curve by itself, curved furniture, dimension marks, or nearby text is not a door.
+- A plain open passage is directly evidenced when two aligned wall strokes visibly terminate on opposite sides of a plausible doorway-width gap between navigable spaces. Trace these gaps even when the drawing omits a swing arc. Do not treat an arbitrary missing boundary or large unbounded area as a passage.
+- Never infer or invent a door because a room would otherwise be sealed. If no doorway is visibly traceable, emit no opening there and lower the room confidence.
+- Assign wallId whenever the interrupted wall is identifiable. If you cannot locate the opening on a specific visible wall, omit it rather than guessing.
+
+rooms — enclosed spaces (or building footprints on campus plans) as simple polygons.
+- TRACE THE TRUE OUTLINE: an L- or T-shaped space gets its actual 6-8 corner polygon. NEVER collapse a drawn footprint to a triangle, and never emit a thin sliver when the drawing shows a full building.
+- For a curved room boundary, put 6-16 ordered vertices along the curve so the polygon follows it; never flatten the curve to a single edge.
+- label = the printed name if legible (else null). Corridors are rooms too.
+- Polygons must not self-intersect; vertices in drawing order.
+
+features — stairs, elevator, entrance, exit, restroom, ramp — when their symbol or label is present.
+- "at" = symbol center; rotation = degrees clockwise (stairs/ramp: ascending direction; entrance: direction of entry).
+- Extract EVERY occurrence, not one representative.
+- Never invent a you-are-here feature.
+- Keep only features that help a blind visitor orient, navigate, find accessibility facilities, or avoid hazards. Ignore operational and technology markers such as Wi-Fi hotspots, fire equipment, CCTV, vending machines, and electrical fixtures.
+- "info-point" means a staffed visitor information or reception point. A Wi-Fi hotspot is never an info-point.
+
+furniture — furniture and fixed interior landmarks generalized into tactile areas, never per-item outlines.
+- CLUB adjacent same-kind items: a row of chairs is ONE block "chairs"; a desk group is one "desks" block.
+- Blocks TIGHTLY bound the drawn items (at most 10% padding); prefer two tight blocks over one inflated one.
+- PRESERVE SHAPE for navigation landmarks. A round fountain, circular desk, round planter, or curved counter must use a 12-24 point polygon following its visible outline — never a square or rectangular bounds box. Rectangular furniture may use bounds.
+- label: short generic lowercase noun ("fountain", "sofa", "chairs", "desks", "table", "counter"), plural when clubbed.
+- Skip tiny isolated items; do not miss chair clusters.
+
+paths — pedestrian walkways, guide routes, marked trails — ONLY when actually drawn.
+- Polyline of 2+ points along the centerline. Campus walkway networks matter: they connect the buildings; without them the map is disconnected blocks. Trace the main network, splitting at junctions into separate paths.
+- Never invent paths that are not drawn.
+
+roads — streets, drives, parking access — drawn as bands with real width.
+- Polyline along the centerline + widthPx = the drawn band width in pixels.
+- label = the street name if printed ("Main St").
+- On campus/site plans the street network is required content when drawn — it is how a blind reader anchors the campus to the city.
+
+north — if a north arrow / compass is drawn: degrees clockwise from image-up to north (0 = up, 90 = north points right). Else null.
+
+title — the plan's printed title if present.
+
+## Coordinate discipline
+- Coordinates are PIXELS in the exact image given, origin top-left, x right, y down. The prompt states the image dimensions; never exceed them.
+- Trace what is drawn where it is drawn. Do not snap, straighten, or "improve" the drawing.
+- Ignore dimension lines, hatching, title blocks, and decorative texture (the compass feeds ONLY "north"; a scale bar feeds nothing).
 - Emit nothing outside the plan's drawn area.
 
-Output shape (coordinates are [x, y] number pairs):
-{"title": "..." , "walls": [{"id": "w-1", "a": [x, y], "b": [x, y], "thickness": 12, "confidence": 0.9}], "openings": [{"id": "d-1", "kind": "door", "at": [x, y], "width": 40, "wallId": "w-1", "confidence": 0.9}], "rooms": [{"id": "r-1", "polygon": [[x, y], [x, y], [x, y], [x, y]], "label": "RECEPTION", "confidence": 0.9}], "features": [{"id": "f-1", "kind": "stairs", "at": [x, y], "rotation": 0, "confidence": 0.9}], "furniture": [{"id": "fur-1", "label": "chairs", "bounds": [x0, y0, x1, y1], "confidence": 0.9}], "paths": [{"id": "p-1", "points": [[x, y], [x, y]], "confidence": 0.8}], "north": null}` + JSON_ONLY
+## Honesty
+- ids: short, unique, type-prefixed: w-1, d-1, win-1, r-1, f-1, fur-1, p-1, rd-1.
+- confidence per element: your honest certainty 0-1. Blurry, inferred, or occluded means lower. Do not default everything to one value.
+- It is better to omit an uncertain opening than to cut a fake gap into a tactile wall. It is better to extract 40 real elements than 8 vague ones. Completeness AND fidelity are both graded by a reviewer comparing your output against the image.
+
+## Output shape (coordinates are [x, y] number pairs)
+{"drawingType": "floor-plan", "suitability": "good", "suitabilityIssues": [], "title": "...", "north": null, "walls": [{"id": "w-1", "a": [x, y], "b": [x, y], "thickness": 12, "confidence": 0.9}], "openings": [{"id": "d-1", "kind": "door", "at": [x, y], "width": 40, "wallId": "w-1", "confidence": 0.9}], "rooms": [{"id": "r-1", "polygon": [[x, y], [x, y], [x, y], [x, y]], "label": "RECEPTION", "confidence": 0.9}], "features": [{"id": "f-1", "kind": "stairs", "at": [x, y], "rotation": 0, "confidence": 0.9}], "furniture": [{"id": "fur-1", "label": "chairs", "polygon": [[x, y], [x, y], [x, y], [x, y]], "confidence": 0.9}], "paths": [{"id": "p-1", "points": [[x, y], [x, y]], "confidence": 0.8}], "roads": [{"id": "rd-1", "points": [[x, y], [x, y]], "widthPx": 22, "label": "Main St", "confidence": 0.85}]}` + JSON_ONLY
 
 export const parserAgent = new LlmAgent({
   name: 'floor_plan_parser',
   description: 'Extracts a structured floor model from a floor plan image',
   model: makeModel(MODEL_CRITICAL),
-  instruction: INSTRUCTION,
+  instruction: PARSER_INSTRUCTION,
   outputSchema: parsedOutputSchema,
   generateContentConfig: {
     temperature: 0.1,
@@ -147,9 +234,42 @@ export async function loadPlanImagePart(planPath: string) {
   return { data: Buffer.from(bytes).toString('base64'), mimeType }
 }
 
-type MessagePart =
-  | { inlineData: { data: string; mimeType: string } }
-  | { text: string }
+export const DETAIL_CROPS: { crop: NormalizedCrop; label: string }[] = [
+  { crop: { height: 0.58, left: 0, top: 0, width: 0.58 }, label: 'top-left' },
+  { crop: { height: 0.58, left: 0.42, top: 0, width: 0.58 }, label: 'top-right' },
+  { crop: { height: 0.58, left: 0, top: 0.42, width: 0.58 }, label: 'bottom-left' },
+  {
+    crop: { height: 0.58, left: 0.42, top: 0.42, width: 0.58 },
+    label: 'bottom-right',
+  },
+]
+
+export async function loadPlanImageParts(planPath: string): Promise<MessagePart[]> {
+  const bytes = await Bun.file(planPath).bytes()
+  const mimeType = MIME_BY_EXT[path.extname(planPath).toLowerCase()]
+  if (!mimeType) throw new Error(`Unsupported plan image type: ${planPath}`)
+  const { height, width } = imageSize(bytes)
+  if (!width || !height) throw new Error(`Could not read plan image: ${planPath}`)
+  const parts: MessagePart[] = [
+    { text: `FULL PLAN — coordinate space x=0..${width}, y=0..${height}:` },
+    { inlineData: { data: Buffer.from(bytes).toString('base64'), mimeType } },
+  ]
+  if (Math.max(width, height) < 1200) return parts
+  for (const { crop, label } of DETAIL_CROPS) {
+    const x0 = Math.round(crop.left * width)
+    const y0 = Math.round(crop.top * height)
+    const x1 = Math.round((crop.left + crop.width) * width)
+    const y1 = Math.round((crop.top + crop.height) * height)
+    const tile = cropPlanImage(bytes, mimeType, crop)
+    parts.push(
+      {
+        text: `DETAIL ${label} — full-plan pixel bounds x=${x0}..${x1}, y=${y0}..${y1}; report coordinates in the FULL PLAN space:`,
+      },
+      { inlineData: { data: Buffer.from(tile).toString('base64'), mimeType: 'image/png' } },
+    )
+  }
+  return parts
+}
 
 async function runParser(
   parts: MessagePart[],
@@ -164,32 +284,15 @@ async function runParserOnce(
   dimensions: { widthPx: number; heightPx: number },
   title: string | null | undefined,
 ): Promise<FloorModel> {
-  const runner = new Runner({
-    appName: 'bumps',
-    agent: parserAgent,
-    sessionService: new InMemorySessionService(),
+  const finalText = await runAgentTurn({
+    adkAgent: parserAgent,
+    agentName: 'Parser',
+    instruction: PARSER_INSTRUCTION,
+    parts,
   })
 
-  let finalText = ''
-  for await (const event of runner.runEphemeral({
-    userId: 'bumps',
-    newMessage: { parts },
-  })) {
-    if (event.errorMessage) {
-      throw new Error(`Parser model error: ${event.errorMessage}`)
-    }
-    const text = event.content?.parts
-      ?.map((part) => part.text ?? '')
-      .join('')
-    if (text) {
-      finalText = text
-    }
-  }
-
-  if (!finalText) {
-    throw new Error('Parser returned no output')
-  }
   const parsed = parseAgentJson(parsedOutputSchema, finalText, 'Parser')
+  assertUsablePlanInput(parsed)
   return floorModelSchema.parse({
     schemaVersion: 1,
     title: parsed.title ?? title ?? null,
@@ -240,20 +343,40 @@ async function runParserOnce(
       ...path,
       kind: 'path' as const,
     })),
+    roads: (parsed.roads ?? []).map((road) => ({
+      confidence: road.confidence,
+      id: road.id,
+      kind: 'road' as const,
+      label: road.label ?? null,
+      points: road.points,
+      widthPx: road.widthPx ?? road.width ?? 12,
+    })),
   })
+}
+
+export function assertUsablePlanInput(assessment: {
+  drawingType: 'floor-plan' | 'site-plan' | 'not-a-plan'
+  suitability: 'good' | 'usable' | 'poor'
+  suitabilityIssues: string[]
+}): void {
+  if (assessment.drawingType !== 'not-a-plan' && assessment.suitability !== 'poor') {
+    return
+  }
+  const reason = assessment.suitabilityIssues.join('; ') || assessment.drawingType
+  throw new Error(`Input is not a usable floor or site plan: ${reason.slice(0, 400)}`)
 }
 
 export async function parsePlanImage(
   planPath: string,
   dimensions: { widthPx: number; heightPx: number },
 ): Promise<FloorModel> {
-  const image = await loadPlanImagePart(planPath)
+  const imagePart = await loadPlanImagePart(planPath)
   return runParser(
     [
       {
         text: `Parse this floor plan. The image is ${dimensions.widthPx}x${dimensions.heightPx} pixels.`,
       },
-      { inlineData: image },
+      { inlineData: imagePart },
     ],
     dimensions,
     null,
@@ -266,15 +389,15 @@ export async function refineParse(
   previousModel: FloorModel,
   critiqueJson: string,
 ): Promise<FloorModel> {
-  const image = await loadPlanImagePart(planPath)
+  const imagePart = await loadPlanImagePart(planPath)
   return runParser(
     [
       {
         text: `Parse this floor plan. The image is ${dimensions.widthPx}x${dimensions.heightPx} pixels.`,
       },
-      { inlineData: image },
+      { inlineData: imagePart },
       {
-        text: `Your previous extraction:\n${JSON.stringify(previousModel)}\n\nA reviewer compared it against the plan and found:\n${critiqueJson}\n\nProduce a corrected COMPLETE model: fix every finding, keep unaffected elements and their ids unchanged, and re-assess confidence honestly.`,
+        text: `Your previous extraction:\n${JSON.stringify(previousModel)}\n\nA reviewer compared it against the plan and found:\n${critiqueJson}\n\nProduce a corrected COMPLETE model: fix every finding, keep unaffected elements and their ids unchanged, and re-assess confidence honestly. Never add an opening merely to satisfy a sealed-room finding; a new door still requires direct visible evidence in the source image.`,
       },
     ],
     dimensions,

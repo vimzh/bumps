@@ -4,7 +4,7 @@ import { eq } from 'drizzle-orm'
 import { Hono } from 'hono'
 import { db } from './db'
 import { projects } from './db/schema'
-import { pdfFirstPageToPng } from './lib/rasterize'
+import { downscalePlanImage, pdfFirstPageToPng } from './lib/rasterize'
 
 const MAX_UPLOAD_BYTES = 10 * 1024 * 1024
 const UPLOADS_DIR = process.env.UPLOADS_DIR ?? 'data/uploads'
@@ -40,25 +40,32 @@ projectRoutes.post('/', async (c) => {
     return c.json({ error: 'File exceeds the 10 MB limit' }, 413)
   }
 
-  const id = Bun.randomUUIDv7()
-  const projectDir = path.join(UPLOADS_DIR, id)
-  await mkdir(projectDir, { recursive: true })
-
   const bytes = new Uint8Array(await file.arrayBuffer())
-  const sourcePath = path.join(projectDir, `source.${extension}`)
-  await Bun.write(sourcePath, bytes)
-
-  let planPath = sourcePath
+  let preparedPlan: Uint8Array | null = null
   if (extension === 'pdf') {
-    let planPng: Uint8Array
     try {
-      planPng = pdfFirstPageToPng(bytes)
+      preparedPlan = pdfFirstPageToPng(bytes)
     } catch {
       return c.json({ error: 'Could not read that PDF' }, 422)
     }
-    planPath = path.join(projectDir, 'plan.png')
-    await Bun.write(planPath, planPng)
+  } else {
+    // Huge scans hurt the vision models; store a capped copy instead.
+    const mime =
+      extension === 'jpg' ? 'image/jpeg' : `image/${extension}`
+    try {
+      preparedPlan = downscalePlanImage(bytes, mime)
+    } catch {
+      return c.json({ error: 'Could not read that image' }, 422)
+    }
   }
+
+  const id = Bun.randomUUIDv7()
+  const projectDir = path.join(UPLOADS_DIR, id)
+  await mkdir(projectDir, { recursive: true })
+  const sourcePath = path.join(projectDir, `source.${extension}`)
+  await Bun.write(sourcePath, bytes)
+  const planPath = preparedPlan ? path.join(projectDir, 'plan.png') : sourcePath
+  if (preparedPlan) await Bun.write(planPath, preparedPlan)
 
   await db.insert(projects).values({ id, name: file.name, planPath, sourcePath })
   return c.json({ id }, 201)

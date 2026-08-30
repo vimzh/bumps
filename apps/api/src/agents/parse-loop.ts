@@ -4,12 +4,20 @@ import {
   allElements,
   PARSE_TARGET_CONFIDENCE,
   renderFloorModelSvg,
+  renderFloorTopologyOverlaySvg,
   type FloorModel,
 } from '@bumps/floor-model'
+import { cropPlanImage } from '../lib/rasterize'
+import type { MessagePart } from './llm'
 import { runCritique, type Critique } from './critique'
-import { loadPlanImagePart, parsePlanImage, refineParse } from './parser'
+import {
+  DETAIL_CROPS,
+  loadPlanImageParts,
+  parsePlanImage,
+  refineParse,
+} from './parser'
 
-export const MAX_ITERATIONS = 3
+export const MAX_ITERATIONS = 5
 
 export type ParseStage = 'parsing' | 'critiquing' | 'refining'
 
@@ -47,6 +55,9 @@ function applyConfidenceAdjustments(
     openings: adjust(model.openings),
     rooms: adjust(model.rooms),
     features: adjust(model.features),
+    furniture: adjust(model.furniture ?? []),
+    paths: adjust(model.paths ?? []),
+    roads: adjust(model.roads ?? []),
   }
 }
 
@@ -58,6 +69,40 @@ function renderModelPngBase64(model: FloorModel): string {
     .render()
     .asPng()
   return Buffer.from(png).toString('base64')
+}
+
+function renderTopologyOverlayParts(
+  model: FloorModel,
+  source: Extract<MessagePart, { inlineData: unknown }>['inlineData'],
+): MessagePart[] {
+  const svg = renderFloorTopologyOverlaySvg(
+    model,
+    `data:${source.mimeType};base64,${source.data}`,
+  )
+  const png = new Uint8Array(new Resvg(svg, {
+    fitTo: { mode: 'width', value: model.plan.widthPx },
+  })
+    .render()
+    .asPng())
+  const parts: MessagePart[] = [
+    { inlineData: { data: Buffer.from(png).toString('base64'), mimeType: 'image/png' } },
+  ]
+  if (Math.max(model.plan.widthPx, model.plan.heightPx) < 1200) return parts
+
+  for (const { crop, label } of DETAIL_CROPS) {
+    parts.push(
+      { text: `OVERLAY DETAIL — ${label}` },
+      {
+        inlineData: {
+          data: Buffer.from(cropPlanImage(png, 'image/png', crop)).toString(
+            'base64',
+          ),
+          mimeType: 'image/png',
+        },
+      },
+    )
+  }
+  return parts
 }
 
 function shouldStop(critique: Critique, aggregate: number): boolean {
@@ -93,7 +138,12 @@ export async function runParseLoop(params: {
 
   await progress('parsing', 1, null)
   let model = await parsePlanImage(planPath, dimensions)
-  const plan = await loadPlanImagePart(planPath)
+  const planParts = await loadPlanImageParts(planPath)
+  const source = planParts.find(
+    (part): part is Extract<MessagePart, { inlineData: unknown }> =>
+      'inlineData' in part,
+  )?.inlineData
+  if (!source) throw new Error('Parser did not load the source plan image')
 
   for (let iteration = 1; iteration <= MAX_ITERATIONS; iteration++) {
     await progress('critiquing', iteration, aggregateConfidence(model))
@@ -101,19 +151,13 @@ export async function runParseLoop(params: {
     try {
       critique = await runCritique({
         modelJson: JSON.stringify(model),
-        planMime: plan.mimeType,
-        planPngBase64: plan.data,
+        overlayParts: renderTopologyOverlayParts(model, source),
+        planParts,
         renderPngBase64: renderModelPngBase64(model),
       })
     } catch (error) {
-      // A parse without a review beats no parse at all: keep the model,
-      // skip further refinement, and let the user review it by hand.
-      console.error(
-        '[parse-loop] critique unavailable, accepting parse as-is:',
-        error instanceof Error ? error.message.slice(0, 200) : error,
-      )
-      await saveIteration(model, iteration, null)
-      return
+      const message = error instanceof Error ? error.message : String(error)
+      throw new Error(`Critique unavailable; parse was not accepted: ${message}`)
     }
     // Drop adjustments pointing at ids that don't exist.
     const validIds = new Set(allElements(model).map((e) => e.id))
@@ -131,7 +175,18 @@ export async function runParseLoop(params: {
     })
     await saveIteration(model, iteration, critique)
 
-    if (shouldStop(critique, aggregate) || iteration === MAX_ITERATIONS) {
+    if (shouldStop(critique, aggregate)) {
+      return
+    }
+    if (iteration === MAX_ITERATIONS) {
+      const majorCount = critique.findings.filter(
+        (finding) => finding.severity === 'major',
+      ).length
+      if (majorCount > 0) {
+        throw new Error(
+          `Parse did not pass review after ${MAX_ITERATIONS} iterations: ${majorCount} major finding${majorCount === 1 ? '' : 's'} remain`,
+        )
+      }
       return
     }
     await progress('refining', iteration + 1, aggregate)
@@ -143,13 +198,8 @@ export async function runParseLoop(params: {
         JSON.stringify(critique.findings),
       )
     } catch (error) {
-      // Refinement failing (quota, transient) should not lose the model
-      // we already have — the saved iteration stands.
-      console.error(
-        '[parse-loop] refinement unavailable, keeping current model:',
-        error instanceof Error ? error.message.slice(0, 200) : error,
-      )
-      return
+      const message = error instanceof Error ? error.message : String(error)
+      throw new Error(`Refinement failed; reviewed parse was saved: ${message}`)
     }
   }
 }

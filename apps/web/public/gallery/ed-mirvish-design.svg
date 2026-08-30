@@ -1,0 +1,147 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1787 2000" width="1787" height="2000">
+<rect width="1787" height="2000" fill="white"/>
+<polyline data-id="rd-1" points="240,289 240,1900" fill="none" stroke="#78716c" stroke-width="240" stroke-linecap="round" stroke-linejoin="round" opacity="0.55"/>
+<text x="240" y="1660" font-family="monospace" font-size="16" fill="#57534e" text-anchor="middle">O'Keefe Lane</text>
+<polygon data-id="r-1" points="368,760 628,760 725,800 1050,800 1132,792 1382,850 1382,1540 1090,1600 665,1600 368,1545" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="879" y="1104.7" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">Orchestra Seating</text>
+<polygon data-id="r-2" points="354,1645 1467,1645 1467,1900 354,1900" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="910.5" y="1772.5" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">Stage</text>
+<polygon data-id="r-3" points="603,420 1132,420 1330,690 1132,792 628,760 444,550" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="878.1666666666666" y="605.3333333333334" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">Lobby Promenade</text>
+<polygon data-id="r-4" points="334,289 603,289 603,480 334,480" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="468.5" y="384.5" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">Women's Restroom</text>
+<polygon data-id="r-5" points="603,289 700,289 700,412 603,412" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="651.5" y="350.5" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">Accessible Restroom</text>
+<polygon data-id="r-6" points="486,688 628,688 628,804 486,804" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="557" y="746" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">Men's Restroom</text>
+<polygon data-id="r-7" points="765,312 972,312 972,420 765,420" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="868.5" y="366" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">Concessions Bar</text>
+<polygon data-id="r-8" points="1382,668 1453,668 1453,1540 1382,1540" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="1417.5" y="1104" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">East Corridor</text>
+<polygon data-id="fur-1" points="765,412 972,412 972,442 765,442" fill="#d6d3d1" stroke="#a8a29e" stroke-width="2"/>
+<text x="868.5" y="427" font-family="monospace" font-size="16" fill="#44403c" text-anchor="middle" dominant-baseline="middle">counter</text>
+<polygon data-id="fur-2" points="725,665 1000,665 1000,765 725,765" fill="#d6d3d1" stroke="#a8a29e" stroke-width="2"/>
+<text x="862.5" y="715" font-family="monospace" font-size="16" fill="#44403c" text-anchor="middle" dominant-baseline="middle">counter</text>
+<polygon data-id="fur-3" points="415,800 845,800 845,1380 415,1380" fill="#d6d3d1" stroke="#a8a29e" stroke-width="2"/>
+<text x="630" y="1090" font-family="monospace" font-size="16" fill="#44403c" text-anchor="middle" dominant-baseline="middle">chairs</text>
+<polygon data-id="fur-4" points="905,800 1335,800 1335,1380 905,1380" fill="#d6d3d1" stroke="#a8a29e" stroke-width="2"/>
+<text x="1120" y="1090" font-family="monospace" font-size="16" fill="#44403c" text-anchor="middle" dominant-baseline="middle">chairs</text>
+<polygon data-id="fur-5" points="690,1380 845,1380 845,1550 690,1550" fill="#d6d3d1" stroke="#a8a29e" stroke-width="2"/>
+<text x="767.5" y="1465" font-family="monospace" font-size="16" fill="#44403c" text-anchor="middle" dominant-baseline="middle">chairs</text>
+<polygon data-id="fur-6" points="905,1380 1060,1380 1060,1550 905,1550" fill="#d6d3d1" stroke="#a8a29e" stroke-width="2"/>
+<text x="982.5" y="1465" font-family="monospace" font-size="16" fill="#44403c" text-anchor="middle" dominant-baseline="middle">chairs</text>
+<line data-id="w-1" x1="334" y1="289" x2="700" y2="289" stroke="#1c1917" stroke-width="14" stroke-linecap="square"/>
+<line data-id="w-2" x1="334" y1="289" x2="334" y2="550" stroke="#1c1917" stroke-width="14" stroke-linecap="square"/>
+<line data-id="w-3" x1="334" y1="690" x2="334" y2="760" stroke="#1c1917" stroke-width="14" stroke-linecap="square"/>
+<line data-id="w-4" x1="334" y1="760" x2="368" y2="760" stroke="#1c1917" stroke-width="14" stroke-linecap="square"/>
+<line data-id="w-5" x1="368" y1="760" x2="368" y2="1545" stroke="#1c1917" stroke-width="14" stroke-linecap="square"/>
+<line data-id="w-6" x1="368" y1="1545" x2="368" y2="1645" stroke="#1c1917" stroke-width="14" stroke-linecap="square"/>
+<line data-id="w-7" x1="354" y1="1645" x2="354" y2="1900" stroke="#1c1917" stroke-width="18" stroke-linecap="square"/>
+<line data-id="w-8" x1="354" y1="1645" x2="665" y2="1645" stroke="#1c1917" stroke-width="14" stroke-linecap="square"/>
+<line data-id="w-9" x1="1085" y1="1645" x2="1467" y2="1645" stroke="#1c1917" stroke-width="14" stroke-linecap="square"/>
+<line data-id="w-10" x1="1467" y1="1645" x2="1467" y2="1900" stroke="#1c1917" stroke-width="18" stroke-linecap="square"/>
+<line data-id="w-11" x1="1072" y1="289" x2="1453" y2="289" stroke="#1c1917" stroke-width="14" stroke-linecap="square"/>
+<line data-id="w-12" x1="1453" y1="289" x2="1453" y2="668" stroke="#1c1917" stroke-width="14" stroke-linecap="square"/>
+<line data-id="w-13" x1="1453" y1="668" x2="1453" y2="1540" stroke="#1c1917" stroke-width="14" stroke-linecap="square"/>
+<line data-id="w-14" x1="1382" y1="668" x2="1382" y2="1540" stroke="#1c1917" stroke-width="12" stroke-linecap="square"/>
+<line data-id="w-15" x1="1382" y1="1540" x2="1467" y2="1645" stroke="#1c1917" stroke-width="12" stroke-linecap="square"/>
+<line data-id="w-16" x1="368" y1="1545" x2="500" y2="1645" stroke="#1c1917" stroke-width="12" stroke-linecap="square"/>
+<line data-id="w-17" x1="444" y1="289" x2="444" y2="412" stroke="#1c1917" stroke-width="10" stroke-linecap="square"/>
+<line data-id="w-18" x1="444" y1="412" x2="700" y2="412" stroke="#1c1917" stroke-width="10" stroke-linecap="square"/>
+<line data-id="w-19" x1="464" y1="480" x2="624" y2="480" stroke="#1c1917" stroke-width="10" stroke-linecap="square"/>
+<line data-id="w-20" x1="624" y1="412" x2="624" y2="480" stroke="#1c1917" stroke-width="10" stroke-linecap="square"/>
+<line data-id="w-21" x1="603" y1="289" x2="603" y2="412" stroke="#1c1917" stroke-width="10" stroke-linecap="square"/>
+<line data-id="w-22" x1="486" y1="688" x2="628" y2="688" stroke="#1c1917" stroke-width="12" stroke-linecap="square"/>
+<line data-id="w-23" x1="486" y1="688" x2="486" y2="804" stroke="#1c1917" stroke-width="12" stroke-linecap="square"/>
+<line data-id="w-24" x1="486" y1="804" x2="628" y2="804" stroke="#1c1917" stroke-width="12" stroke-linecap="square"/>
+<line data-id="w-25" x1="628" y1="688" x2="628" y2="770" stroke="#1c1917" stroke-width="12" stroke-linecap="square"/>
+<line data-id="w-26" x1="1132" y1="690" x2="1330" y2="690" stroke="#1c1917" stroke-width="10" stroke-linecap="square"/>
+<line data-id="w-27" x1="1132" y1="690" x2="1132" y2="792" stroke="#1c1917" stroke-width="10" stroke-linecap="square"/>
+<line data-id="w-28" x1="1132" y1="792" x2="1330" y2="830" stroke="#1c1917" stroke-width="10" stroke-linecap="square"/>
+<line data-id="w-29" x1="1330" y1="690" x2="1330" y2="830" stroke="#1c1917" stroke-width="10" stroke-linecap="square"/>
+<line data-id="w-30" x1="765" y1="312" x2="972" y2="312" stroke="#1c1917" stroke-width="10" stroke-linecap="square"/>
+<line data-id="w-31" x1="765" y1="420" x2="972" y2="420" stroke="#1c1917" stroke-width="10" stroke-linecap="square"/>
+<circle data-id="d-1" cx="368" cy="615" r="23" fill="none" stroke="#0d9488" stroke-width="3"/>
+<circle data-id="d-2" cx="368" cy="1275" r="21" fill="none" stroke="#0d9488" stroke-width="3"/>
+<circle data-id="d-3" cx="368" cy="1560" r="23" fill="none" stroke="#0d9488" stroke-width="3"/>
+<circle data-id="d-4" cx="1453" cy="1070" r="26" fill="none" stroke="#0d9488" stroke-width="3"/>
+<circle data-id="d-5" cx="1453" cy="1315" r="26" fill="none" stroke="#0d9488" stroke-width="3"/>
+<circle data-id="d-6" cx="1453" cy="1450" r="26" fill="none" stroke="#0d9488" stroke-width="3"/>
+<circle data-id="d-7" cx="1435" cy="1590" r="23" fill="none" stroke="#0d9488" stroke-width="3"/>
+<circle data-id="d-8" cx="1435" cy="465" r="23" fill="none" stroke="#0d9488" stroke-width="3"/>
+<circle data-id="d-9" cx="550" cy="755" r="19" fill="none" stroke="#0d9488" stroke-width="3"/>
+<circle data-id="d-10" cx="480" cy="480" r="19" fill="none" stroke="#0d9488" stroke-width="3"/>
+<circle data-id="d-11" cx="660" cy="412" r="18" fill="none" stroke="#0d9488" stroke-width="3"/>
+<g data-id="f-1" transform="translate(408 595) rotate(180)">
+<rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
+<text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">S</text>
+</g>
+<g data-id="f-2" transform="translate(720 350) rotate(0)">
+<rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
+<text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">S</text>
+</g>
+<g data-id="f-3" transform="translate(1005 350) rotate(0)">
+<rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
+<text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">S</text>
+</g>
+<g data-id="f-4" transform="translate(1330 410) rotate(0)">
+<rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
+<text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">S</text>
+</g>
+<g data-id="f-5" transform="translate(1418 985) rotate(180)">
+<rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
+<text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">S</text>
+</g>
+<g data-id="f-6" transform="translate(1418 1240) rotate(180)">
+<rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
+<text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">S</text>
+</g>
+<g data-id="f-7" transform="translate(1418 1415) rotate(180)">
+<rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
+<text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">S</text>
+</g>
+<g data-id="f-8" transform="translate(408 795) rotate(270)">
+<rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
+<text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">S</text>
+</g>
+<g data-id="f-9" transform="translate(1330 275) rotate(0)">
+<rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
+<text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">E</text>
+</g>
+<g data-id="f-10" transform="translate(402 395) rotate(0)">
+<rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
+<text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">WC</text>
+</g>
+<g data-id="f-11" transform="translate(650 355) rotate(0)">
+<rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
+<text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">WC</text>
+</g>
+<g data-id="f-12" transform="translate(555 742) rotate(0)">
+<rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
+<text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">WC</text>
+</g>
+<g data-id="f-13" transform="translate(368 615) rotate(270)">
+<rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
+<text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">X</text>
+</g>
+<g data-id="f-14" transform="translate(368 1275) rotate(270)">
+<rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
+<text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">X</text>
+</g>
+<g data-id="f-15" transform="translate(368 1560) rotate(270)">
+<rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
+<text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">X</text>
+</g>
+<g data-id="f-16" transform="translate(1453 1070) rotate(90)">
+<rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
+<text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">X</text>
+</g>
+<g data-id="f-17" transform="translate(1453 1315) rotate(90)">
+<rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
+<text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">X</text>
+</g>
+<g data-id="f-18" transform="translate(1453 1450) rotate(90)">
+<rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
+<text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">X</text>
+</g>
+</svg>

@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4000 3000" width="4000" height="3000">
+<rect width="4000" height="3000" fill="white"/>
+<polygon data-id="r-1" points="120,600 3880,600 3880,850 120,850" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="2000" y="725" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">corridor</text>
+<polygon data-id="fur-1" points="3500,550 3800,550 3800,650 3500,650" fill="#d6d3d1" stroke="#a8a29e" stroke-width="2"/>
+<text x="3650" y="600" font-family="monospace" font-size="16" fill="#44403c" text-anchor="middle" dominant-baseline="middle">counter</text>
+<line data-id="w-1" x1="120" y1="600" x2="3880" y2="600" stroke="#1c1917" stroke-width="10" stroke-linecap="square"/>
+<line data-id="w-2" x1="120" y1="600" x2="120" y2="850" stroke="#1c1917" stroke-width="10" stroke-linecap="square"/>
+<line data-id="w-3" x1="3880" y1="600" x2="3880" y2="850" stroke="#1c1917" stroke-width="10" stroke-linecap="square"/>
+<line data-id="w-4" x1="120" y1="850" x2="3880" y2="850" stroke="#1c1917" stroke-width="10" stroke-linecap="square"/>
+<circle data-id="d-1" cx="150" cy="600" r="30" fill="none" stroke="#0d9488" stroke-width="3"/>
+<circle data-id="d-2" cx="850" cy="600" r="30" fill="none" stroke="#0d9488" stroke-width="3"/>
+<circle data-id="d-3" cx="2500" cy="600" r="30" fill="none" stroke="#0d9488" stroke-width="3"/>
+<circle data-id="d-4" cx="3500" cy="600" r="30" fill="none" stroke="#0d9488" stroke-width="3"/>
+<g data-id="f-1" transform="translate(150 750) rotate(0)">
+<rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
+<text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">S</text>
+</g>
+<g data-id="f-2" transform="translate(500 750) rotate(0)">
+<rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
+<text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">S</text>
+</g>
+<g data-id="f-3" transform="translate(2000 750) rotate(0)">
+<rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
+<text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">S</text>
+</g>
+<g data-id="f-4" transform="translate(2800 750) rotate(0)">
+<rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
+<text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">S</text>
+</g>
+<g data-id="f-5" transform="translate(200 200) rotate(0)">
+<rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
+<text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">→</text>
+</g>
+</svg>

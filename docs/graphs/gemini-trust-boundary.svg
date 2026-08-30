@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title description" data-layout-version="cloudy-native-v2" data-spec-sha256="d301cc4246dbf67a35ae82644ccc06d550791622c868ce4b6aa0ac1558867d2f">
+  <title id="title">Why Gemini is powerful here</title>
+  <desc id="description">Gemini&#x27;s multimodal and language capabilities feed schema validation, restricted operations, deterministic standards checks, and a hard export gate.</desc>
+  <defs>
+    <marker id="arrow-blue" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L9,3 z" fill="#2563eb"/></marker>
+    <marker id="arrow-violet" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L9,3 z" fill="#7c3aed"/></marker>
+    <marker id="arrow-green" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L9,3 z" fill="#16a34a"/></marker>
+    <marker id="arrow-amber" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L9,3 z" fill="#d97706"/></marker>
+    <marker id="arrow-teal" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L9,3 z" fill="#0f766e"/></marker>
+    <marker id="arrow-rose" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L9,3 z" fill="#e11d48"/></marker>
+    <marker id="arrow-slate" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L9,3 z" fill="#57534e"/></marker>
+    <style>
+      text { font-family: "Comic Sans MS", "Segoe Print", cursive; }
+      .title { font-size: 36px; fill: #292524; }
+      .subtitle { font-size: 17px; fill: #78716c; }
+      .zone-label { font-size: 14px; letter-spacing: 1px; }
+      .node-title { font-size: 20px; fill: #292524; }
+      .node-body { font-size: 15px; fill: #44403c; }
+      .node-note { font-size: 13px; fill: #57534e; }
+      .edge-label { font-size: 13px; fill: #57534e; paint-order: stroke; stroke: #fffdf8; stroke-width: 4px; stroke-linejoin: round; }
+      .footer { font-size: 13px; fill: #57534e; }
+      .arrow { fill: none; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+    </style>
+  </defs>
+  <rect width="1600" height="900" fill="#fffdf8"/>
+  <text x="54" y="62" class="title">Why Gemini is powerful here</text>
+  <text x="54" y="94" class="subtitle">Gemini handles perception and judgment while typed boundaries protect the physical accessibility contract</text>
+  <rect data-zone-id="gemini" x="42.0" y="130" width="466.4" height="690" rx="28" fill="#faf5ff" stroke="#c4b5fd" stroke-width="2" stroke-dasharray="8 8"/>
+  <text x="62.0" y="160" class="zone-label" fill="#5b21b6">1 · GEMINI&#x27;S STRENGTHS</text>
+  <rect data-zone-id="boundary" x="536.4" y="130" width="466.4" height="690" rx="28" fill="#fffbeb" stroke="#fcd34d" stroke-width="2" stroke-dasharray="8 8"/>
+  <text x="556.4" y="160" class="zone-label" fill="#92400e">2 · TYPED BOUNDARIES</text>
+  <rect data-zone-id="guarantee" x="1030.8" y="130" width="527.2" height="690" rx="28" fill="#f0fdf4" stroke="#86efac" stroke-width="2" stroke-dasharray="8 8"/>
+  <text x="1050.8" y="160" class="zone-label" fill="#166534">3 · PRINT GUARANTEES</text>
+  <path class="arrow" data-edge="vision--schema" d="M478.4 258.0 C509.2 258.0 535.6 258.0 566.4 258.0" stroke="#d97706" marker-end="url(#arrow-amber)"/>
+  <path class="arrow" data-edge="review--permissions" d="M478.4 408.0 C509.2 408.0 535.6 408.0 566.4 408.0" stroke="#d97706" marker-end="url(#arrow-amber)"/>
+  <path class="arrow" data-edge="language--permissions" d="M478.4 558.0 H522.4 V408.0 H566.4" stroke="#d97706" marker-end="url(#arrow-amber)"/>
+  <path class="arrow" data-edge="schema--validator" d="M972.8 258.0 C1003.6 258.0 1030.0 258.0 1060.8 258.0" stroke="#16a34a" marker-end="url(#arrow-green)"/>
+  <path class="arrow" data-edge="permissions--gate" d="M972.8 408.0 C1003.6 408.0 1030.0 408.0 1060.8 408.0" stroke="#16a34a" marker-end="url(#arrow-green)"/>
+  <path class="arrow" data-edge="validator--gate" d="M1294.4 314.0 V352.0" stroke="#16a34a" marker-end="url(#arrow-green)"/>
+  <path class="arrow" data-edge="gate--mesh" d="M1294.4 464.0 V502.0" stroke="#16a34a" marker-end="url(#arrow-green)"/>
+  <rect class="node" data-node-id="vision" data-status="implemented" x="72.0" y="202.0" width="406.4" height="112.0" rx="22" fill="#ede9fe" stroke="#7c3aed" stroke-width="2"/>
+  <text x="275.2" y="237.0" text-anchor="middle" class="node-title">Multimodal plan understanding</text>
+  <text x="275.2" y="268.0" text-anchor="middle" class="node-body">pixels → navigable structure</text>
+  <text x="275.2" y="290.0" text-anchor="middle" class="node-body">full thinking budget for critical roles</text>
+  <rect class="node" data-node-id="review" data-status="implemented" x="72.0" y="352.0" width="406.4" height="112.0" rx="22" fill="#ede9fe" stroke="#7c3aed" stroke-width="2"/>
+  <text x="275.2" y="387.0" text-anchor="middle" class="node-title">Visual self-critique</text>
+  <text x="275.2" y="418.0" text-anchor="middle" class="node-body">compares source with its own rendering</text>
+  <text x="275.2" y="440.0" text-anchor="middle" class="node-body">major navigation errors become findings</text>
+  <rect class="node" data-node-id="language" data-status="implemented" x="72.0" y="502.0" width="406.4" height="112.0" rx="22" fill="#ede9fe" stroke="#7c3aed" stroke-width="2"/>
+  <text x="275.2" y="537.0" text-anchor="middle" class="node-title">Natural-language control</text>
+  <text x="275.2" y="568.0" text-anchor="middle" class="node-body">rename · move · reshape · merge</text>
+  <text x="275.2" y="590.0" text-anchor="middle" class="node-body">one clarification instead of a guess</text>
+  <rect class="node" data-node-id="schema" data-status="implemented" x="566.4" y="202.0" width="406.4" height="112.0" rx="22" fill="#fef3c7" stroke="#d97706" stroke-width="2"/>
+  <text x="769.6" y="237.0" text-anchor="middle" class="node-title">Schema-checked JSON</text>
+  <text x="769.6" y="268.0" text-anchor="middle" class="node-body">bounded Zod shapes</text>
+  <text x="769.6" y="290.0" text-anchor="middle" class="node-body">strict floor-model validation after output</text>
+  <rect class="node" data-node-id="permissions" data-status="implemented" x="566.4" y="340.0" width="406.4" height="136.0" rx="22" fill="#fef3c7" stroke="#d97706" stroke-width="2"/>
+  <text x="769.6" y="375.0" text-anchor="middle" class="node-title">Agents receive narrow permissions</text>
+  <text x="769.6" y="406.0" text-anchor="middle" class="node-body">editor emits typed operations</text>
+  <text x="769.6" y="428.0" text-anchor="middle" class="node-body">layout moves labels and symbols only</text>
+  <text x="769.6" y="458.0" text-anchor="middle" class="node-note">Agents cannot resize walls to erase violations</text>
+  <rect class="node" data-node-id="validator" data-status="implemented" x="1060.8" y="202.0" width="467.2" height="112.0" rx="22" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+  <text x="1294.4" y="237.0" text-anchor="middle" class="node-title">Millimeter-level standards checks</text>
+  <text x="1294.4" y="268.0" text-anchor="middle" class="node-body">encoded BANA 2022 + ADA §703 rules</text>
+  <text x="1294.4" y="290.0" text-anchor="middle" class="node-body">scale · margins · symbols · clearances · seams</text>
+  <rect class="node" data-node-id="gate" data-status="implemented" x="1060.8" y="352.0" width="467.2" height="112.0" rx="22" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+  <text x="1294.4" y="387.0" text-anchor="middle" class="node-title">Hard export gate</text>
+  <text x="1294.4" y="418.0" text-anchor="middle" class="node-body">zero violations → STL</text>
+  <text x="1294.4" y="440.0" text-anchor="middle" class="node-body">any violation → blocked export</text>
+  <rect class="node" data-node-id="mesh" data-status="implemented" x="1060.8" y="502.0" width="467.2" height="112.0" rx="22" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+  <text x="1294.4" y="537.0" text-anchor="middle" class="node-title">Watertight physical output</text>
+  <text x="1294.4" y="568.0" text-anchor="middle" class="node-body">spherical braille domes</text>
+  <text x="1294.4" y="590.0" text-anchor="middle" class="node-body">composite mesh sliced into exact plates</text>
+  <rect x="54" y="844" width="1492" height="36" rx="14" fill="#f5f5f4" stroke="#d6d3d1"/>
+  <text x="800" y="868" text-anchor="middle" class="footer">The model gets room to reason—not permission to violate the physical contract.</text>
+</svg>

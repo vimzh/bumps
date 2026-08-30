@@ -8,7 +8,7 @@ import {
 } from '@bumps/floor-model'
 import { runTactileLayout } from './agents/tactile-layout'
 import { db } from './db'
-import { floorModels, tactileDesigns } from './db/schema'
+import { floorModels, projects, tactileDesigns } from './db/schema'
 
 export const tactileRoutes = new Hono()
 
@@ -43,6 +43,15 @@ async function runConversion(rowId: string, model: FloorModel) {
 // gate: false designs never print.
 tactileRoutes.post('/:id/tactile', async (c) => {
   const projectId = c.req.param('id')
+  const project = await db.query.projects.findFirst({
+    where: eq(projects.id, projectId),
+  })
+  if (!project) {
+    return c.json({ error: 'Project not found' }, 404)
+  }
+  if (project.status !== 'parsed') {
+    return c.json({ error: 'Project must finish parsing before tactile conversion' }, 409)
+  }
   const latest = await db.query.floorModels.findFirst({
     orderBy: desc(floorModels.version),
     where: eq(floorModels.projectId, projectId),
