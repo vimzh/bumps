@@ -1,9 +1,9 @@
 export const landingContent = {
   hero: {
     brand: "bumps",
-    subheading: "maps you can feel",
+    subheading: "Floor plan in. Tactile map out.",
     tagline:
-      "Upload a floor plan, get a 3D-printable tactile map for blind navigation.",
+      "Accessibility you can print: turn any floor plan into a map blind visitors read by touch. Minutes to design, a few dollars to print — so every building can afford to be accessible.",
     upload: {
       failed: "Upload failed. Try again.",
       guideHref: "/input-guide",
