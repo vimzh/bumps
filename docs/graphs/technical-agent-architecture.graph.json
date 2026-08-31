@@ -1,0 +1,129 @@
+{
+  "title": "Agent pipeline: floor plan to validated STL",
+  "subtitle": "Five Vertex AI agents exchange constrained JSON; TypeScript owns loops, persistence, validation, and export gates",
+  "description": "Technical architecture of the reachable bumps pipeline from upload preprocessing through five Gemini agents, human review, deterministic tactile validation, and STL export.",
+  "footer": "Five ADK LlmAgents use Gemini on Vertex AI. TypeScript owns loops, schema gates, persistence, and STL authorization.",
+  "zones": [
+    {"id": "ingress", "label": "1 · INGEST + ORCHESTRATION", "tone": "blue", "width": 1.15},
+    {"id": "extraction", "label": "2 · EXTRACTION + VERIFICATION", "tone": "violet", "width": 1.3},
+    {"id": "review", "label": "3 · HUMAN CONTROL", "tone": "amber", "width": 1.1},
+    {"id": "tactile", "label": "4 · TACTILE + EXPORT", "tone": "green", "width": 1.45}
+  ],
+  "nodes": [
+    {
+      "id": "upload",
+      "zone": "ingress",
+      "title": "Ingest one floor plan",
+      "body": ["IN PDF/PNG/JPG/WebP · 10 MB", "PDF page 1→PNG · images downscaled"],
+      "note": "Rejects invalid input",
+      "status": "implemented",
+      "size": "wide",
+      "row": 1,
+      "span": 2,
+      "evidence": ["apps/api/src/projects.ts", "apps/api/src/lib/rasterize.ts"]
+    },
+    {
+      "id": "orchestrator",
+      "zone": "ingress",
+      "title": "Hono job runner",
+      "body": ["202 + polling · Postgres JSON · plan/STL files"],
+      "note": "Process-local · no durable queue",
+      "status": "implemented",
+      "size": "wide",
+      "row": 3,
+      "span": 2,
+      "evidence": ["apps/api/src/index.ts", "apps/api/src/parse.ts", "apps/api/src/db/schema.ts", "apps/web/src/components/map/parse-view.tsx"]
+    },
+    {
+      "id": "parser",
+      "zone": "extraction",
+      "title": "ParserAgent → FloorModel",
+      "body": ["IN plan/crops/dimensions", "OUT Zod FloorModel + confidence"],
+      "status": "implemented",
+      "size": "wide",
+      "row": 1,
+      "span": 2,
+      "evidence": ["apps/api/src/agents/parser.ts", "packages/floor-model/src/schema.ts", "packages/floor-model/src/structure.ts"]
+    },
+    {
+      "id": "critic",
+      "zone": "extraction",
+      "title": "CritiqueAgent ↺ ParserAgent",
+      "body": ["IN source/overlay/render/audits", "OUT findings/verdict/confidence"],
+      "note": "Full reparse · max 5 · salvage",
+      "status": "implemented",
+      "size": "wide",
+      "row": 2,
+      "span": 2,
+      "evidence": ["apps/api/src/agents/critique.ts", "apps/api/src/agents/parse-loop.ts", "apps/api/src/lib/coverage.ts"]
+    },
+    {
+      "id": "openings",
+      "zone": "extraction",
+      "title": "OpeningsAuditAgent → door ops",
+      "body": ["IN model + door crops", "OUT keep/move/delete/add"],
+      "note": "Guarded · failure is non-blocking",
+      "status": "implemented",
+      "size": "wide",
+      "row": 4,
+      "span": 2,
+      "evidence": ["apps/api/src/agents/openings-audit.ts", "apps/api/src/agents/parse-loop.ts"]
+    },
+    {
+      "id": "human-edit",
+      "zone": "review",
+      "title": "Human + EditAgent",
+      "body": ["Canvas→ops · prompt→EditAgent"],
+      "note": "Client-only gate · versioned models",
+      "status": "implemented",
+      "size": "wide",
+      "row": 2,
+      "span": 2,
+      "evidence": ["apps/api/src/models.ts", "apps/api/src/agents/edit.ts", "packages/floor-model/src/operations.ts", "apps/web/src/components/map/edit-step.tsx"]
+    },
+    {
+      "id": "convert",
+      "zone": "tactile",
+      "title": "Deterministic tactile core",
+      "body": ["Model → plates/braille/symbols", "Repair + validate scale/margins/clearance"],
+      "status": "implemented",
+      "size": "wide",
+      "row": 1,
+      "span": 2,
+      "evidence": ["packages/floor-model/src/tactile-convert.ts", "packages/floor-model/src/validate.ts", "packages/floor-model/src/mechanical-fixes.ts", "apps/api/src/tactile.ts"]
+    },
+    {
+      "id": "layout",
+      "zone": "tactile",
+      "title": "TactileLayoutAgent ↔ validator",
+      "body": ["Violations → braille/symbol moves", "Revalidate · max 4 · reject worse"],
+      "status": "implemented",
+      "size": "wide",
+      "row": 2,
+      "span": 2,
+      "evidence": ["apps/api/src/agents/tactile-layout.ts", "packages/floor-model/src/validate.ts"]
+    },
+    {
+      "id": "export",
+      "zone": "tactile",
+      "title": "Zero violations unlock STL",
+      "body": ["OUT map + sliced plates + legends", "Manifold mesh · bounds · triangles"],
+      "note": "Invalid or unfinished → HTTP 409/404",
+      "status": "implemented",
+      "size": "wide",
+      "row": 4,
+      "span": 2,
+      "evidence": ["apps/api/src/export.ts", "apps/api/src/geometry/mesh.ts", "apps/api/src/db/schema.ts"]
+    }
+  ],
+  "edges": [
+    {"from": "upload", "to": "orchestrator", "label": "prepared plan + project row", "tone": "blue", "route": "vertical"},
+    {"from": "orchestrator", "to": "parser", "tone": "violet", "route": "orthogonal"},
+    {"from": "parser", "to": "critic", "tone": "violet", "route": "vertical"},
+    {"from": "critic", "to": "openings", "label": "accepted model", "tone": "violet", "route": "vertical"},
+    {"from": "openings", "to": "human-edit", "tone": "amber", "route": "orthogonal"},
+    {"from": "human-edit", "to": "convert", "tone": "green", "route": "orthogonal"},
+    {"from": "convert", "to": "layout", "tone": "amber", "route": "vertical"},
+    {"from": "layout", "to": "export", "tone": "green", "route": "vertical"}
+  ]
+}
