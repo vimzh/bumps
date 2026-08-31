@@ -231,7 +231,7 @@ That is the kind of agentic AI I want to keep building: not a model that merely 
 
 ---
 
-**bumps was built solo for the #AllThingsAgentic Hackathon using Gemini 3.7 Flash, Google ADK for TypeScript, Next.js, Bun, Hono, Three.js, manifold-3d, SQLite, and Google Cloud Run.**
+**bumps was built solo for the #AllThingsAgentic Hackathon using Gemini 3.7 Flash, Google ADK for TypeScript, Next.js, Bun, Hono, Three.js, manifold-3d, PostgreSQL, Vercel, and Render.**
 
 Demo: [add link]
 

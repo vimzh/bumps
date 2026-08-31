@@ -39,7 +39,7 @@ app.route('/projects', parseRoutes)
 app.route('/projects', tactileRoutes)
 app.route('/projects', exportRoutes)
 
-// Cloud Run provides PORT; local dev overrides via --port in the dev script.
+// Render provides PORT; local dev overrides via --port in the dev script.
 export default {
   fetch: app.fetch,
   idleTimeout: 30,

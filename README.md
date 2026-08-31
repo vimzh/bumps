@@ -10,12 +10,12 @@ Built for the All Things Agentic Hackathon (Taskmaster track). Product brief: [d
 
 ```mermaid
 flowchart LR
-  subgraph web["web (Next.js · Cloud Run)"]
+  subgraph web["web (Next.js · Vercel)"]
     U[Upload] --> W[Wizard: Parse → Edit → Tactile → Export]
     W --> C[Edit canvas + prompt panel]
     W --> P3[three.js STL preview]
   end
-  subgraph api["api (Bun + Hono · Cloud Run)"]
+  subgraph api["api (Bun + Hono · Render)"]
     subgraph agents["ADK agents (Gemini 3.5 Flash)"]
       PA[ParserAgent] <--> CA[CritiqueAgent]
       EA[EditAgent]
@@ -25,7 +25,7 @@ flowchart LR
       TC[tactile convert] --> V[standards validator]
       V --> M[manifold-3d mesh → binary STL]
     end
-    DB[(SQLite · drizzle)]
+    DB[(Render Postgres · Drizzle)]
   end
   W -->|HTTP + floor-model JSON| api
   PA -->|floor model + confidence| DB
@@ -45,6 +45,7 @@ Requirements: [Bun](https://bun.sh) ≥ 1.3.
 
 ```bash
 bun install
+export DATABASE_URL=postgresql://postgres:postgres@localhost:5432/bumps
 cd apps/api && bun run db:migrate && cd ../..
 echo 'GEMINI_API_KEY=your-key' > apps/api/.env       # aistudio.google.com
 cp apps/web/.env.example apps/web/.env.local          # defaults work locally
@@ -56,10 +57,10 @@ bun run dev
 
 ## Deploy
 
-Both services ship as containers to Cloud Run — see [docs/deploy.md](docs/deploy.md) for the exact commands.
+The web app deploys to Vercel and the API plus Postgres deploy to Render — see [docs/deploy.md](docs/deploy.md).
 
 ## Repo layout
 
 - `apps/web` — Next.js UI: landing, wizard, edit canvas, prompt panel, STL preview
-- `apps/api` — Bun + Hono: uploads, ADK agents, validator + mesh generation, SQLite
+- `apps/api` — Bun + Hono: uploads, ADK agents, validator + mesh generation, Postgres
 - `packages/floor-model` — the shared contract: schemas, edit operations, braille, tactile conversion, standards validator (tested)

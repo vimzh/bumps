@@ -1,6 +1,6 @@
 # Build from the repo root: docker build -f apps/web/Dockerfile .
 # NEXT_PUBLIC_API_URL is inlined at build time — pass the api's public URL:
-#   docker build -f apps/web/Dockerfile --build-arg NEXT_PUBLIC_API_URL=https://api-....run.app .
+#   docker build -f apps/web/Dockerfile --build-arg NEXT_PUBLIC_API_URL=https://bumps-api.onrender.com .
 FROM oven/bun:1.3 AS builder
 WORKDIR /app
 COPY package.json bun.lock ./

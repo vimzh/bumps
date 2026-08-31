@@ -88,7 +88,7 @@ bun test packages/floor-model apps/api/src apps/web/src
 | `OPENROUTER_API_KEY` | `apps/api/.env` | OpenRouter key (openrouter provider) |
 | `MODEL_CRITICAL` / `MODEL_FAST` / `MODEL_LAYOUT` / `MODEL_COMPARE` | `apps/api/.env` | Per-role model ids; default `gemini-3.7-flash` (or `google/gemini-3.7-flash` on OpenRouter) |
 | `MODEL_MAX_OUTPUT_TOKENS` | `apps/api/.env` | Output cap per OpenRouter call (default 32768) |
-| `DB_FILE_NAME` | `apps/api/.env` | SQLite path (default `local.db`) |
+| `DATABASE_URL` | `apps/api/.env` | PostgreSQL connection string |
 | `NEXT_PUBLIC_API_URL` | `apps/web/.env.local` | API origin (default `http://localhost:3003`) |
 
 No secrets ship in this archive; both `.env.example` files list every field.

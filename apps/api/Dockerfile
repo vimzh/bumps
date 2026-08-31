@@ -16,6 +16,5 @@ COPY --from=deps /app/packages/floor-model/node_modules packages/floor-model/nod
 COPY packages/floor-model packages/floor-model
 COPY apps/api apps/api
 WORKDIR /app/apps/api
-# SQLite + uploads live on the container filesystem: ephemeral on Cloud Run,
-# which is acceptable for the demo (see docs/requirements.md).
+# Run schema migrations before accepting requests.
 CMD ["sh", "-c", "bun run src/db/migrate.ts && bun src/index.ts"]

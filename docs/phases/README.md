@@ -13,7 +13,7 @@ Execution plan for the tactile map product ([idea.md](../idea.md), [requirements
 | 7 | [Tactile conversion](phase-07-tactile-conversion.md) | Standards transform, braille, legend |
 | 8 | [Validator + layout loop](phase-08-validator-loop.md) | Zero-violation tactile layout |
 | 9 | [STL export](phase-09-stl-export.md) | Mesh, preview, download |
-| 10 | [Deploy & submission](phase-10-deploy-submission.md) | Cloud Run + Devpost |
+| 10 | [Deploy & submission](phase-10-deploy-submission.md) | Vercel + Render + Devpost |
 | 11 | [Google Maps source](phase-11-google-maps-source.md) | Outdoor areas via 4-point selection (post-submission) |
 
 Dependency shape: 1 → 2 → 3 → 4, then 5–6 (UI) can proceed in parallel with 7–9 (geometry) since both sit on the phase-2 contract. Phase 10 last before the deadline; 11 is a stretch that reuses the whole pipeline for outdoor areas. If time runs out, cut 6 before 4 — the loop + confidence is the track story.

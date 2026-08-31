@@ -1,5 +1,5 @@
-import { migrate } from 'drizzle-orm/bun-sqlite/migrator'
+import { migrate } from 'drizzle-orm/bun-sql/migrator'
 import { db } from '.'
 
-migrate(db, { migrationsFolder: './drizzle' })
-db.$client.close()
+await migrate(db, { migrationsFolder: './drizzle' })
+await db.$client.close()

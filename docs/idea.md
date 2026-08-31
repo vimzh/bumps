@@ -66,7 +66,7 @@ Fixed, BANA-consistent set: solid line = wall; gap + threshold bar = door; groov
 apps/web (Next.js App Router + shadcn/ui, existing starter)
   minimal landing (/) · wizard (/map/[id]) · canvas editor · 3D preview (three.js)
 apps/api (Bun + Hono, existing starter)
-  upload handling · SQLite via drizzle/bun-sqlite for projects/versions · hosts agents + geometry
+  upload handling · Render Postgres via Drizzle for projects/versions · hosts agents + geometry
 agents (Google ADK for TypeScript, @google/adk — in-process inside apps/api)
   ParserAgent   : Gemini multimodal (max thinking budget) → floor model JSON, per-element confidence 0–1
   CritiqueAgent : renders the model, compares against the original image → discrepancies; drives the
@@ -85,7 +85,7 @@ Key principle: **AI proposes, geometry code disposes.** Parsing and editing are 
 
 ## Persistence
 
-SQLite via `bun:sqlite` (per repo convention): `projects`, `floor_models` (versioned JSON), `exports`. Uploaded files on disk, path in DB.
+PostgreSQL via Drizzle and Bun's SQL client: `projects`, `floor_models` (versioned JSON), `tactile_designs`, `exports`. Uploaded files remain on the API filesystem for the demo; database persistence does not make those files durable across service restarts.
 
 ## v1 scope cuts
 

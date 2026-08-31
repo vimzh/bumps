@@ -1,6 +1,6 @@
 # Demo video script (~4 minutes)
 
-Record at the deployed Cloud Run URL. One continuous flow, one project, real floor plan (use `test-assets/floor-plans/` — the office plan with furniture and a title block demos the critique loop best).
+Record at the deployed Vercel URL. One continuous flow, one project, real floor plan (use `test-assets/floor-plans/` — the office plan with furniture and a title block demos the critique loop best).
 
 ## 0:00–0:30 — The problem
 - Landing page on screen ("bumps — maps you can feel").
@@ -29,5 +29,5 @@ Record at the deployed Cloud Run URL. One continuous flow, one project, real flo
 - VO: "A watertight STL — walls at one millimeter, symbols at one and a half, braille as spherical domes to ADA spec — plus a legend plate. Print it flat, no supports."
 
 ## 3:40–4:00 — Cloud proof + close
-- Show the Cloud Run console with both services, then the browser URL bar (`*.run.app`).
-- VO: "Two Cloud Run services, Gemini 3.5 Flash through the Agent Development Kit for TypeScript, everything else is deterministic TypeScript. A tactile map should cost a floor plan and a spool of filament — not a commission."
+- Show the Vercel and Render consoles, then the browser URL bar.
+- VO: "Vercel for the web app, Render for the API and Postgres, Gemini 3.7 Flash through the Agent Development Kit for TypeScript, and deterministic geometry. A tactile map should cost a floor plan and a spool of filament — not a commission."
