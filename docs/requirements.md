@@ -12,9 +12,9 @@ Product brief: [idea.md](idea.md). This doc locks the tech stack and the submiss
 
 | Layer | Choice | Why / hackathon rule it satisfies |
 |---|---|---|
-| Model | **Gemini 3.6 Flash via the GA Interactions API** (default; env-selectable — `MODEL_CRITICAL`/`MODEL_FAST`/`USE_INTERACTIONS_API`), tiered thinking budgets by criticality | Required: Gemini 3.5 Flash **or newer** — 3.6 qualifies. Newer flash models are served only on the Interactions API, whose free-tier quota bucket is separate from the legacy endpoint's (3.5-flash free tier is 20 requests/day — too tight for the agent loops). The Interactions path doesn't enforce response schemas server-side, so agents carry JSON-only instructions + code-side extraction/validation with bounded re-asks |
+| Model | **Gemini 3.7 Flash through Vertex AI** for the Cloud Run proof deployment; env-selectable `MODEL_CRITICAL`/`MODEL_FAST`/`MODEL_LAYOUT`/`MODEL_COMPARE` | Required: Gemini 3.5 Flash **or newer** — 3.7 qualifies. The deployed ADK uses Vertex `generateContent` (`USE_INTERACTIONS_API=false`); a live multimodal parse verified this path |
 | Agent framework | **Google ADK for TypeScript** (`@google/adk`) — ParserAgent, EditAgent, TactileAgent, ValidatorAgent | Required: ≥1 Google framework; official Google release, keeps the whole repo TypeScript |
-| Cloud infra | **Vercel** (web) + **Render** (API and Postgres) | Current public deployment; retain separate GCP proof if the original hackathon requirement still applies |
+| Cloud infra | **Vercel** (web) + **Render** (primary API and Postgres) + **Google Cloud Run, Cloud SQL, Secret Manager, Artifact Registry, Cloud Build, and Vertex AI** (proof deployment) | Cloud Run and private Cloud SQL satisfy the required Google Cloud infrastructure and video-proof requirement |
 | Web app | **Next.js (App Router) + shadcn/ui** (existing starter `apps/web`): minimal landing, wizard UI, canvas editor, three.js STL preview | Repo convention |
 | API / agents host | **Bun + Hono** (existing starter `apps/api`): uploads, ADK agents, geometry, persistence | Hosted on Render for the current public demo |
 | Geometry | **Deterministic TypeScript** in `apps/api` — tactile transform + extrusion + binary STL writer, manifold-3d (WASM) for booleans | Standards compliance must never depend on model output |
@@ -46,7 +46,7 @@ Auth, multi-floor, embosser/swell outputs, print-service integration, non-Englis
 
 ## Submission checklist
 
-- [x] Deployed on Vercel and Render, hosted URLs live — commands and storage limits documented in [deploy.md](deploy.md)
+- [x] Deployed on Vercel, Render, and Google Cloud Run with private Cloud SQL; live Vertex AI parse verified — capture the dashboards, logs, and `.run.app` response for the video using [deploy.md](deploy.md)
 - [x] Repo with spin-up instructions — README run-locally section (repo currently private; make public or grant judge access before submitting)
 - [x] Architecture diagram — mermaid in the root README
 - [ ] ~4-min demo video — script ready in [demo-script.md](demo-script.md); record against the deployed URL

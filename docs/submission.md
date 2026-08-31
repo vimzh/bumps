@@ -19,7 +19,7 @@ Four ADK agents on Gemini 3.5 Flash, two self-correcting loops, and a hard rule:
 - **Layout loop:** deterministic validator (BANA 2022 + ADA §703, measured in millimeters: 3 mm fingertip clearance, 5 mm symbols, braille footprints inside their rooms, a legibility gate against too-large floors) ↔ TactileAgent, which may only nudge braille and symbols. Export is blocked until the validator measures **zero violations**.
 - **Geometry engine** (no AI): manifold-3d extrusion with braille as true spherical caps at exact ADA dot pitch; exported STLs verify watertight (0 unmatched edges).
 
-Stack: ADK for TypeScript · Gemini 3.7 Flash · Vercel (Next.js web) · Render (Bun+Hono API and Postgres) · Drizzle · shared Zod contract package with tests.
+Stack: ADK for TypeScript · Gemini 3.7 Flash on Vertex AI · Vercel (Next.js web) · Render (primary Bun+Hono API and Postgres) · Google Cloud Run + private Cloud SQL (proof deployment) · Drizzle · shared Zod contract package with tests.
 
 ## Challenges
 

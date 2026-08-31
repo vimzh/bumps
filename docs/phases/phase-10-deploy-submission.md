@@ -1,12 +1,12 @@
 # Phase 10 — Deploy & Devpost submission
 
-**Goal:** live on Vercel and Render, submitted before **Aug 31, 5:00 PM PDT**.
+**Goal:** live on Vercel and Render with a verified Google Cloud Run proof deployment, submitted before **Aug 31, 5:00 PM PDT**.
 
 **Depends on:** everything demoable end to end (Phases 1–5 + 7–9 minimum).
 
 ## Work
 
-- Deploy `apps/web` to Vercel and `apps/api` plus Postgres to Render; wire environment variables and the database connection.
+- Deploy `apps/web` to Vercel, `apps/api` plus Postgres to Render, and the same API container to Google Cloud Run with private Cloud SQL and Vertex AI for required proof; wire environment variables and the database connection.
 - Smoke-test the full flow on the deployed URL, not just locally.
 - Architecture diagram: web / api / agents / geometry / hosting boundaries, the two loops, the floor-model contract.
 - ~4-minute demo video: upload → parse loop visibly iterating with confidence → canvas + one prompt edit → tactile conversion with validator loop → STL download + (ideally) the physical print. Include hosting-console proof of deployment.

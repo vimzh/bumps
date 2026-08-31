@@ -15,8 +15,8 @@ flowchart LR
     W --> C[Edit canvas + prompt panel]
     W --> P3[three.js STL preview]
   end
-  subgraph api["api (Bun + Hono · Render)"]
-    subgraph agents["ADK agents (Gemini 3.5 Flash)"]
+  subgraph api["api (Bun + Hono · Render + Cloud Run proof deployment)"]
+    subgraph agents["ADK agents (Gemini 3.7 Flash)"]
       PA[ParserAgent] <--> CA[CritiqueAgent]
       EA[EditAgent]
       TA[TactileAgent]
@@ -25,7 +25,7 @@ flowchart LR
       TC[tactile convert] --> V[standards validator]
       V --> M[manifold-3d mesh → binary STL]
     end
-    DB[(Render Postgres · Drizzle)]
+    DB[(Postgres · Render primary / Cloud SQL proof · Drizzle)]
   end
   W -->|HTTP + floor-model JSON| api
   PA -->|floor model + confidence| DB
@@ -57,7 +57,7 @@ bun run dev
 
 ## Deploy
 
-The web app deploys to Vercel and the API plus Postgres deploy to Render — see [docs/deploy.md](docs/deploy.md).
+The public web app deploys to Vercel and the primary API plus Postgres deploy to Render. A verified second API deployment runs on Google Cloud Run with private Cloud SQL and Vertex AI — see [docs/deploy.md](docs/deploy.md).
 
 ## Repo layout
 

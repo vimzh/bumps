@@ -29,5 +29,5 @@ Record at the deployed Vercel URL. One continuous flow, one project, real floor 
 - VO: "A watertight STL — walls at one millimeter, symbols at one and a half, braille as spherical domes to ADA spec — plus a legend plate. Print it flat, no supports."
 
 ## 3:40–4:00 — Cloud proof + close
-- Show the Vercel and Render consoles, then the browser URL bar.
-- VO: "Vercel for the web app, Render for the API and Postgres, Gemini 3.7 Flash through the Agent Development Kit for TypeScript, and deterministic geometry. A tactile map should cost a floor plan and a spool of filament — not a commission."
+- Show the `bumps-api` Cloud Run service in project `project-1ba74e2d-51e2-4753-b63`, its active revision and request logs, then open `https://bumps-api-1096378308677.asia-south1.run.app` and show the successful JSON response. Show the private `bumps-postgres` Cloud SQL instance as the database proof.
+- VO: "The public app uses Vercel and Render, while the same Bun and Hono backend also runs on Google Cloud Run with private Cloud SQL. Every agent uses Gemini 3.7 Flash directly through Vertex AI and Google's Agent Development Kit; the geometry is deterministic. A tactile map should cost a floor plan and a spool of filament — not a commission."
