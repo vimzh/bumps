@@ -1,7 +1,8 @@
 export const landingContent = {
   hero: {
     brand: "bumps",
-    subheading: "Floor plan in. Tactile map out.",
+    subheading:
+      "Create tactile maps for visually impaired visitors in minutes, not weeks.",
     tagline:
       "Accessibility you can print: turn any floor plan into a map blind visitors read by touch. Minutes to design, a few dollars to print — so every building can afford to be accessible.",
     upload: {
