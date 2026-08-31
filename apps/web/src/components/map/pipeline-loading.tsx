@@ -53,7 +53,7 @@ export function PipelineLoading({
   return (
     <div className="flex h-full min-h-0 flex-1 items-center justify-center p-6">
       <div className="flex w-full max-w-sm flex-col items-center gap-5 text-center">
-        <h2 className="text-shimmer font-pixel text-2xl tracking-tight">
+        <h2 className="text-2xl font-medium tracking-tight">
           {title}
         </h2>
         <div className="w-full">

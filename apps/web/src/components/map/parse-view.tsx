@@ -191,30 +191,29 @@ export function ParseView({
           )
         }
       />
-      <div className="relative min-h-0 flex-1">
-        {planSize && (
-          <CanvasViewport
-            contentHeight={planSize.height}
-            contentWidth={planSize.width}
-          >
-            {/* eslint-disable-next-line @next/next/no-img-element -- API-served image */}
-            <img
-              alt={mapContent.planAlt}
-              className="h-full w-full"
-              src={`${API_URL}/projects/${projectId}/plan`}
-            />
-          </CanvasViewport>
-        )}
-        {status === "parsing" && (
-          <div className="absolute inset-0 bg-background/70 backdrop-blur-[1px]">
-            <PipelineLoading
-              detail={stageDetail}
-              hint={mapContent.loading.parse.timeHint}
-              percent={percent}
-              steps={passSummaries}
-              title={mapContent.loading.parse.title}
-            />
-          </div>
+      <div className="relative min-h-0 flex-1 bg-background">
+        {status === "parsing" ? (
+          <PipelineLoading
+            detail={stageDetail}
+            hint={mapContent.loading.parse.timeHint}
+            percent={percent}
+            steps={passSummaries}
+            title={mapContent.loading.parse.title}
+          />
+        ) : (
+          planSize && (
+            <CanvasViewport
+              contentHeight={planSize.height}
+              contentWidth={planSize.width}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element -- API-served image */}
+              <img
+                alt={mapContent.planAlt}
+                className="h-full w-full"
+                src={`${API_URL}/projects/${projectId}/plan`}
+              />
+            </CanvasViewport>
+          )
         )}
       </div>
     </section>
