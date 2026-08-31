@@ -123,6 +123,27 @@ describe('edit operations', () => {
     expect(floorModelSchema.safeParse(result).success).toBe(true)
   })
 
+  test('resizes an opening without changing its wall attachment', () => {
+    const result = applyOperation(sampleFloorModel, {
+      op: 'resize-opening',
+      id: 'd-entry',
+      at: { x: 480, y: 760 },
+      width: 80,
+    })
+    const opening = result.openings.find((item) => item.id === 'd-entry')!
+    expect(opening.at).toEqual({ x: 480, y: 760 })
+    expect(opening.width).toBe(80)
+    expect(opening.wallId).toBe('w-bottom')
+    expect(() =>
+      applyOperation(sampleFloorModel, {
+        op: 'resize-opening',
+        id: 'w-top',
+        at: { x: 100, y: 100 },
+        width: 40,
+      }),
+    ).toThrow(EditOperationError)
+  })
+
   test('operation payloads validate', () => {
     expect(
       editOperationSchema.safeParse({ op: 'move', id: 'x', dx: 1, dy: 2 }).success,
@@ -143,6 +164,8 @@ describe('renderer', () => {
     }
     expect(svg).toContain('>Corridor</text>')
     expect(svg).toContain('>chairs</text>')
+    expect(svg).toContain('stroke-linecap="butt"')
+    expect(svg).not.toContain('stroke-linecap="square"')
     const dataIds = svg.match(/data-id="/g) ?? []
     // walls + openings + rooms + features + furniture + paths + roads
     expect(dataIds).toHaveLength(8 + 6 + 5 + 4 + 2 + 1 + 1)

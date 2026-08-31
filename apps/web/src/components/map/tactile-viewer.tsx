@@ -144,7 +144,7 @@ export function TactileViewer({ design }: TactileViewerProps) {
               key={element.id}
               points={element.points.map((p) => `${p.x},${p.y}`).join(" ")}
               strokeDasharray={element.style === "dashed" ? "3 2" : undefined}
-              strokeLinecap={element.style === "dashed" ? "butt" : "square"}
+              strokeLinecap="butt"
               strokeWidth={element.widthMm}
             />
           );

@@ -1,6 +1,7 @@
 import { textBrailleSize } from './braille'
 import { adjacentRectPosition, fitRectInPolygon } from './fit'
 import type { FloorModel, Point, Room, Wall } from './schema'
+import { orthogonalizeNearRectangle } from './structure'
 import {
   RELIEF_MM,
   type LegendEntry,
@@ -80,9 +81,9 @@ function distPointToSegment(p: Point, a: Point, b: Point): number {
   return Math.hypot(p.x - (a.x + t * abx), p.y - (a.y + t * aby))
 }
 
-// How far (plan px) a door may sit from a wall and still belong to it.
-function candidateThreshold(wall: Wall, doorWidth: number): number {
-  return wall.thickness / 2 + doorWidth / 2
+// How far (plan px) a door center may sit from a wall and still belong to it.
+function candidateThreshold(wall: Wall): number {
+  return Math.max(1.5 * wall.thickness, 14)
 }
 
 function centroid(polygon: Point[]): Point {
@@ -255,7 +256,10 @@ export function convertToTactile(model: FloorModel): ConversionResult {
 
   const elements: TactileElement[] = []
   const legend: LegendEntry[] = []
-  const tactileFurniture = model.furniture.filter((item) => {
+  const tactileFurniture = model.furniture.map((item) => ({
+    ...item,
+    polygon: orthogonalizeNearRectangle(item.polygon),
+  })).filter((item) => {
     const polygon = item.polygon.map(toMm)
     const width =
       Math.max(...polygon.map((point) => point.x)) -
@@ -310,7 +314,7 @@ export function convertToTactile(model: FloorModel): ConversionResult {
         }
       }
       // Only adopt a wall the door is plausibly on.
-      if (wall && best > candidateThreshold(wall, door.width)) wall = undefined
+      if (wall && best > candidateThreshold(wall)) wall = undefined
     }
     if (wall) {
       const list = doorsByWall.get(wall.id) ?? []

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useEffectEvent, useState } from "react";
 import {
   applyOperations,
   elementsNeedingReview,
@@ -32,12 +32,15 @@ function newId(kind: string): string {
 }
 
 function pointElement(
-  kind: Exclude<PlaceableKind, "furniture" | "path" | "road" | "room" | "wall">,
+  kind: Exclude<
+    PlaceableKind,
+    "door" | "furniture" | "path" | "road" | "room" | "wall"
+  >,
   at: Point,
   model: FloorModel
 ): EditOperation & { op: "add" } {
   const id = newId(kind);
-  if (kind === "door" || kind === "window") {
+  if (kind === "window") {
     return {
       op: "add",
       element: {
@@ -56,11 +59,25 @@ function pointElement(
   };
 }
 
-function rectElement(
-  kind: "furniture" | "room",
-  a: Point,
-  b: Point
+function doorElement(
+  at: Point,
+  width: number,
+  wallId: string
 ): EditOperation & { op: "add" } {
+  return {
+    op: "add",
+    element: {
+      at,
+      confidence: 1,
+      id: newId("door"),
+      kind: "door",
+      wallId,
+      width,
+    },
+  };
+}
+
+function roomElement(a: Point, b: Point): EditOperation & { op: "add" } {
   const minX = Math.min(a.x, b.x);
   const maxX = Math.max(a.x, b.x);
   const minY = Math.min(a.y, b.y);
@@ -71,19 +88,23 @@ function rectElement(
     { x: maxX, y: maxY },
     { x: minX, y: maxY },
   ];
-  if (kind === "room") {
-    return {
-      op: "add",
-      element: { confidence: 1, id: newId(kind), kind, label: null, polygon },
-    };
-  }
+  return {
+    op: "add",
+    element: { confidence: 1, id: newId("room"), kind: "room", label: null, polygon },
+  };
+}
+
+function furnitureElement(
+  polygon: Point[],
+  label: string
+): EditOperation & { op: "add" } {
   return {
     op: "add",
     element: {
       confidence: 1,
-      id: newId(kind),
-      kind,
-      label: "furniture",
+      id: newId("furniture"),
+      kind: "furniture",
+      label: label.trim() || "furniture",
       polygon,
     },
   };
@@ -155,6 +176,8 @@ export function EditStep({
   const [undoStack, setUndoStack] = useState<FloorModel[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [placing, setPlacing] = useState<PlaceableKind | null>(null);
+  const [furnitureLabel, setFurnitureLabel] = useState("");
+  const [focusLabelId, setFocusLabelId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const reviewElements = elementsNeedingReview(model);
@@ -237,8 +260,9 @@ export function EditStep({
   const gap = Math.round(widthPx * 0.04);
 
   // Cmd/Ctrl+Z, except while typing in an input.
-  const undoRef = useRef<() => Promise<void>>(async () => {});
-  undoRef.current = undo;
+  const undoFromShortcut = useEffectEvent(() => {
+    void undo();
+  });
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       if (
@@ -255,7 +279,7 @@ export function EditStep({
           return;
         }
         event.preventDefault();
-        void undoRef.current();
+        undoFromShortcut();
       }
     };
     window.addEventListener("keydown", onKeyDown);
@@ -268,7 +292,6 @@ export function EditStep({
         actions={
           <>
             {error && <p className="text-xs text-destructive">{error}</p>}
-            <AddMenu onPick={setPlacing} placing={placing} />
             <Button
               className="h-8 cursor-pointer rounded-sm px-3 text-xs"
               disabled={undoStack.length === 0}
@@ -299,6 +322,12 @@ export function EditStep({
           </span>
         }
       />
+      <AddMenu
+        furnitureLabel={furnitureLabel}
+        onFurnitureLabelChange={setFurnitureLabel}
+        onPick={setPlacing}
+        placing={placing}
+      />
       <div className="flex min-h-0 flex-1">
         <div className="min-w-0 flex-1">
           <CanvasViewport
@@ -314,7 +343,9 @@ export function EditStep({
             />
             <div className="absolute top-0" style={{ left: widthPx + gap }}>
               <EditCanvas
+                key={placing ?? "select"}
                 model={model}
+                onCancelPlace={() => setPlacing(null)}
                 onMove={(id, dx, dy) =>
                   void apply(withConfirm(id, [{ op: "move", id, dx, dy }]))
                 }
@@ -333,9 +364,18 @@ export function EditStep({
                     setSelectedId(operation.element.id)
                   );
                 }}
+                onPlaceOpening={(at, width, wallId) => {
+                  if (placing !== "door") return;
+                  const operation = doorElement(at, width, wallId);
+                  setPlacing(null);
+                  void apply([operation]).then(() =>
+                    setSelectedId(operation.element.id)
+                  );
+                }}
                 onPlacePoint={(at) => {
                   if (
                     !placing ||
+                    placing === "door" ||
                     placing === "room" ||
                     placing === "furniture" ||
                     placing === "wall" ||
@@ -350,9 +390,22 @@ export function EditStep({
                     setSelectedId(operation.element.id)
                   );
                 }}
+                onPlacePolygon={(points) => {
+                  if (placing !== "furniture") return;
+                  const shouldFocusLabel = furnitureLabel.trim() === "";
+                  const operation = furnitureElement(points, furnitureLabel);
+                  setPlacing(null);
+                  setFurnitureLabel("");
+                  void apply([operation]).then(() => {
+                    setSelectedId(operation.element.id);
+                    setFocusLabelId(
+                      shouldFocusLabel ? operation.element.id : null
+                    );
+                  });
+                }}
                 onPlaceRect={(a, b) => {
-                  if (placing !== "room" && placing !== "furniture") return;
-                  const operation = rectElement(placing, a, b);
+                  if (placing !== "room") return;
+                  const operation = roomElement(a, b);
                   setPlacing(null);
                   void apply([operation]).then(() =>
                     setSelectedId(operation.element.id)
@@ -360,6 +413,13 @@ export function EditStep({
                 }}
                 onReshape={(id, points) =>
                   void apply(withConfirm(id, [{ op: "reshape", id, points }]))
+                }
+                onResizeOpening={(id, at, width) =>
+                  void apply(
+                    withConfirm(id, [
+                      { op: "resize-opening", id, at, width },
+                    ])
+                  )
                 }
                 onSelect={setSelectedId}
                 placing={placing ? placeModeFor(placing) : null}
@@ -372,12 +432,15 @@ export function EditStep({
           {selected && (
             <div className="border-b">
               <SelectionCard
+                autoFocusLabel={focusLabelId === selected.id}
                 element={selected}
+                key={selected.id}
                 onConfirm={(id) => void apply([{ op: "confirm", id }])}
                 onDelete={(id) => {
                   setSelectedId(null);
                   void apply([{ op: "delete", id }]);
                 }}
+                onLabelFocus={() => setFocusLabelId(null)}
                 onRelabel={(id, label) =>
                   void apply(withConfirm(id, [{ op: "relabel", id, label }]))
                 }

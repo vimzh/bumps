@@ -144,11 +144,11 @@ function lineCrossSection(points: Point[], widthMm: number, yUp: (p: Point) => P
     const half = widthMm / 2
     const ux = dx / len
     const uy = dy / len
-    // Square caps: extend both ends by half the width.
-    const ax = a.x - ux * half
-    const ay = a.y - uy * half
-    const bx = b.x + ux * half
-    const by = b.y + uy * half
+    // Flat caps preserve the exact doorway gap between wall segments.
+    const ax = a.x
+    const ay = a.y
+    const bx = b.x
+    const by = b.y
     const nx = -uy * half
     const ny = ux * half
     const quad = ofPolysCCW([

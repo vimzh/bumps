@@ -292,6 +292,38 @@ describe('convertToTactile', () => {
     expect(45 * mmPerPx).toBeGreaterThan(0)
   })
 
+  test('does not widen an existing wall gap for an unattached opening', () => {
+    const model = structuredClone(sampleFloorModel)
+    model.walls = [
+      { ...model.walls[0]!, id: 'w-left', a: { x: 100, y: 100 }, b: { x: 450, y: 100 } },
+      { ...model.walls[0]!, id: 'w-right', a: { x: 550, y: 100 }, b: { x: 900, y: 100 } },
+    ]
+    model.openings = [
+      {
+        at: { x: 500, y: 100 },
+        confidence: 1,
+        id: 'door-in-existing-gap',
+        kind: 'door',
+        wallId: null,
+        width: 100,
+      },
+    ]
+    model.rooms = []
+    model.features = []
+    model.furniture = []
+    model.paths = []
+    model.roads = []
+
+    const { design } = convertToTactile(model)
+    const { toMm } = planToPlateTransform(model)
+    const left = design.elements.find((element) => element.sourceId === 'w-left')
+    expect(left?.kind).toBe('line')
+    if (!left || left.kind !== 'line') return
+    expect(Math.max(...left.points.map((point) => point.x))).toBeCloseTo(
+      toMm({ x: 450, y: 100 }).x,
+    )
+  })
+
   test('short wall legs survive when they form L, U, or T junctions', () => {
     const model = structuredClone(sampleFloorModel)
     model.openings = []

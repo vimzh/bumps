@@ -35,6 +35,12 @@ export const editOperationSchema = z.discriminatedUnion('op', [
     points: z.array(pointSchema).min(1),
   }),
   z.object({ op: z.literal('delete'), id: z.string() }),
+  z.object({
+    op: z.literal('resize-opening'),
+    id: z.string(),
+    at: pointSchema,
+    width: z.number().positive(),
+  }),
   z.object({ op: z.literal('relabel'), id: z.string(), label: z.string().nullable() }),
   z.object({
     op: z.literal('merge'),
@@ -241,6 +247,20 @@ export function applyOperation(
         furniture: keep(model.furniture),
         paths: keep(model.paths ?? []),
         roads: keep(model.roads ?? []),
+      }
+    }
+    case 'resize-opening': {
+      const element = requireElement(model, operation.id)
+      if (element.kind !== 'door' && element.kind !== 'window') {
+        throw new EditOperationError('Only openings can be resized')
+      }
+      return {
+        ...model,
+        openings: model.openings.map((opening) =>
+          opening.id === operation.id
+            ? { ...opening, at: operation.at, width: operation.width }
+            : opening,
+        ),
       }
     }
     case 'relabel': {
