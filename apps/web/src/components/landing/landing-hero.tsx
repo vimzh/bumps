@@ -10,7 +10,7 @@ export function LandingHero() {
       <p className="mt-4 text-xl font-medium tracking-tight sm:text-2xl">
         {landingContent.hero.subheading}
       </p>
-      <p className="mt-4 max-w-md text-pretty text-base leading-relaxed text-muted-foreground sm:text-lg">
+      <p className="mt-4 max-w-2xl text-pretty text-base leading-relaxed text-muted-foreground sm:text-lg">
         {landingContent.hero.tagline}
       </p>
       <div className="mt-8">
