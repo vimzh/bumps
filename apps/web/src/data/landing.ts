@@ -4,7 +4,7 @@ export const landingContent = {
     subheading:
       "Create tactile maps for visually impaired visitors in minutes, not weeks.",
     tagline:
-      "Accessibility you can print: turn any floor plan into a map blind visitors read by touch. Minutes to design, a few dollars to print — so every building can afford to be accessible.",
+      "Turns any floor plan into a 3D-printable tactile map that blind and low vision visitors read by touch. Prints on any home 3D printer for a few dollars of filament.",
     upload: {
       failed: "Upload failed. Try again.",
       guideHref: "/input-guide",
