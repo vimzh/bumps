@@ -134,8 +134,12 @@ type StlPreviewProps = {
 export function StlPreview({ betterView = false, design, url }: StlPreviewProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const meshRef = useRef<THREE.Mesh | null>(null);
+  // Latest betterView for the async STL load callback; synced in an
+  // effect because refs must not be written during render.
   const betterRef = useRef(betterView);
-  betterRef.current = betterView;
+  useEffect(() => {
+    betterRef.current = betterView;
+  }, [betterView]);
 
   useEffect(() => {
     const container = containerRef.current;

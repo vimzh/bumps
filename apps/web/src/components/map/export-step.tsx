@@ -73,8 +73,9 @@ export function ExportStep({ onBack, projectId }: ExportStepProps) {
     };
   }, [projectId]);
 
+  // State already starts (and is reset by callers) as "loading", so the
+  // mount effect never sets state synchronously.
   const generate = useCallback(async () => {
-    setState({ kind: "loading" });
     try {
       const response = await fetch(`${API_URL}/projects/${projectId}/export`, {
         method: "POST",
@@ -100,7 +101,8 @@ export function ExportStep({ onBack, projectId }: ExportStepProps) {
   }, [projectId]);
 
   useEffect(() => {
-    void generate();
+    // Deferred so no setState runs synchronously inside the effect body.
+    queueMicrotask(() => void generate());
   }, [generate]);
 
   return (
@@ -136,7 +138,10 @@ export function ExportStep({ onBack, projectId }: ExportStepProps) {
           <p className="text-sm text-destructive">{state.message}</p>
           <Button
             className="h-8 cursor-pointer rounded-sm px-3 text-xs"
-            onClick={() => void generate()}
+            onClick={() => {
+              setState({ kind: "loading" });
+              void generate();
+            }}
             size="sm"
             type="button"
           >

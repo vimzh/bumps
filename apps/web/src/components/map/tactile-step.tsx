@@ -50,8 +50,9 @@ export function TactileStep({ onBack, onNext, projectId }: TactileStepProps) {
       ? `${grid.cols} × ${grid.rows} · ${compositeSize(state.design).widthMm} × ${compositeSize(state.design).heightMm} mm ${mapContent.tactile.assembledSuffix}`
       : mapContent.tactile.plateLabel;
 
+  // State already starts (and is reset by callers) as "loading", so the
+  // mount effect never sets state synchronously.
   const convert = useCallback(async () => {
-    setState({ kind: "loading" });
     try {
       const start = await fetch(`${API_URL}/projects/${projectId}/tactile`, {
         method: "POST",
@@ -101,7 +102,8 @@ export function TactileStep({ onBack, onNext, projectId }: TactileStepProps) {
   }, [projectId]);
 
   useEffect(() => {
-    void convert();
+    // Deferred so no setState runs synchronously inside the effect body.
+    queueMicrotask(() => void convert());
   }, [convert]);
 
   return (
@@ -121,7 +123,10 @@ export function TactileStep({ onBack, onNext, projectId }: TactileStepProps) {
             <Button
               className="h-8 cursor-pointer rounded-sm px-3 text-xs"
               disabled={state.kind === "loading"}
-              onClick={() => void convert()}
+              onClick={() => {
+                setState({ kind: "loading" });
+                void convert();
+              }}
               size="sm"
               type="button"
               variant="outline"
@@ -176,7 +181,10 @@ export function TactileStep({ onBack, onNext, projectId }: TactileStepProps) {
           <p className="text-sm text-destructive">{state.message}</p>
           <Button
             className="h-8 cursor-pointer rounded-sm px-3 text-xs"
-            onClick={() => void convert()}
+            onClick={() => {
+              setState({ kind: "loading" });
+              void convert();
+            }}
             size="sm"
             type="button"
           >
