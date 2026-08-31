@@ -1,6 +1,13 @@
 "use client";
 
-import { useCallback, useLayoutEffect, useRef, useState, type ReactNode } from "react";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+  type ReactNode,
+} from "react";
 import { Maximize, ZoomIn, ZoomOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { mapContent } from "@/data/map";
@@ -60,7 +67,7 @@ export function CanvasViewport({
     return () => observer.disconnect();
   }, [fit]);
 
-  function zoomAt(clientX: number, clientY: number, factor: number) {
+  const zoomAt = useCallback((clientX: number, clientY: number, factor: number) => {
     const container = containerRef.current;
     if (!container) return;
     const rect = container.getBoundingClientRect();
@@ -80,7 +87,34 @@ export function CanvasViewport({
         ty: cy - (cy - current.ty) * ratio,
       };
     });
-  }
+  }, []);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const handleWheel = (event: WheelEvent) => {
+      event.preventDefault();
+      if (event.ctrlKey || event.metaKey) {
+        zoomAt(event.clientX, event.clientY, Math.exp(-event.deltaY * 0.01));
+        return;
+      }
+
+      userAdjustedRef.current = true;
+      setTransform((current) =>
+        current
+          ? {
+              ...current,
+              tx: current.tx - event.deltaX,
+              ty: current.ty - event.deltaY,
+            }
+          : current
+      );
+    };
+
+    container.addEventListener("wheel", handleWheel, { passive: false });
+    return () => container.removeEventListener("wheel", handleWheel);
+  }, [zoomAt]);
 
   function zoomCenter(factor: number) {
     const container = containerRef.current;
@@ -92,23 +126,6 @@ export function CanvasViewport({
   return (
     <div
       className="relative h-full w-full overflow-hidden overscroll-contain bg-muted/40"
-      onWheel={(event) => {
-        event.preventDefault();
-        if (event.ctrlKey || event.metaKey) {
-          zoomAt(event.clientX, event.clientY, Math.exp(-event.deltaY * 0.01));
-        } else {
-          userAdjustedRef.current = true;
-          setTransform((current) =>
-            current
-              ? {
-                  ...current,
-                  tx: current.tx - event.deltaX,
-                  ty: current.ty - event.deltaY,
-                }
-              : current
-          );
-        }
-      }}
       ref={containerRef}
     >
       {transform && (
