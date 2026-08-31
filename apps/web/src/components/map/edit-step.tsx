@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useEffectEvent, useState } from "react";
+import { useCallback, useEffect, useEffectEvent, useState } from "react";
 import {
   applyOperations,
   elementsNeedingReview,
@@ -18,6 +18,10 @@ import {
 } from "@/components/map/add-menu";
 import { CanvasViewport } from "@/components/map/canvas-viewport";
 import { EditCanvas } from "@/components/map/edit-canvas";
+import {
+  editorGridStep,
+  gridOriginForWalls,
+} from "@/components/map/editor-geometry";
 import { MapTopBar } from "@/components/map/map-top-bar";
 import { PromptPanel } from "@/components/map/prompt-panel";
 import { ReviewPanel } from "@/components/map/review-panel";
@@ -179,6 +183,20 @@ export function EditStep({
   const [furnitureLabel, setFurnitureLabel] = useState("");
   const [focusLabelId, setFocusLabelId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [editorGrid, setEditorGrid] = useState(() => {
+    const step = editorGridStep(initialModel.plan.widthPx);
+    return { origin: gridOriginForWalls(initialModel.walls, step), step };
+  });
+
+  const handleGridChange = useCallback((origin: Point, step: number) => {
+    setEditorGrid((current) =>
+      current.step === step &&
+      current.origin.x === origin.x &&
+      current.origin.y === origin.y
+        ? current
+        : { origin, step }
+    );
+  }, []);
 
   const reviewElements = elementsNeedingReview(model);
   const selected = selectedId ? findElement(model, selectedId) : undefined;
@@ -333,6 +351,11 @@ export function EditStep({
           <CanvasViewport
             contentHeight={heightPx}
             contentWidth={widthPx * 2 + gap}
+            grid={{
+              originX: widthPx + gap + editorGrid.origin.x,
+              originY: editorGrid.origin.y,
+              step: editorGrid.step,
+            }}
           >
             {/* eslint-disable-next-line @next/next/no-img-element -- API-served plan */}
             <img
@@ -346,6 +369,7 @@ export function EditStep({
                 key={placing ?? "select"}
                 model={model}
                 onCancelPlace={() => setPlacing(null)}
+                onGridChange={handleGridChange}
                 onMove={(id, dx, dy) =>
                   void apply(withConfirm(id, [{ op: "move", id, dx, dy }]))
                 }
@@ -451,6 +475,11 @@ export function EditStep({
             <div className="max-h-[40%] overflow-y-auto border-b p-3">
               <ReviewPanel
                 elements={reviewElements}
+                onConfirmAll={() =>
+                  void apply(
+                    reviewElements.map(({ id }) => ({ op: "confirm", id }))
+                  )
+                }
                 onConfirm={(id) => void apply([{ op: "confirm", id }])}
                 onSelect={setSelectedId}
                 selectedId={selectedId}

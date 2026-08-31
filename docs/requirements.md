@@ -26,7 +26,7 @@ Execution plan: [phases/](phases/) — 10 phases ordered by the product pipeline
 
 ## Agent quality loop (must-have, not stretch)
 
-Both critical stages run as ADK **LoopAgents** — generate → critique → refine, max 3 iterations:
+Both critical stages run as bounded ADK **LoopAgents** — generate → critique → refine:
 
 - **Parse loop:** ParserAgent produces the floor model → CritiqueAgent compares a rendering of the model against the original plan image and reports missing/extra/misplaced elements → ParserAgent refines. Exit when critique passes or iterations exhaust.
 - **Tactile loop:** TactileAgent proposes the layout → the deterministic validator (exposed as an ADK tool) reports every standards violation (spacing, sizes, collisions) → TactileAgent re-lays-out. Exit only at **zero violations**; violations are hard fails, never warnings.

@@ -3,7 +3,6 @@
 import { useEffect, useRef, useState } from "react";
 import {
   findElement,
-  NEEDS_REVIEW_THRESHOLD,
   orthogonalizeNearRectangle,
   type FloorModel,
   type Opening,
@@ -13,6 +12,7 @@ import {
 import { FeatureGlyph } from "@/components/map/feature-glyph";
 import {
   constrainWallEnd,
+  editorGridStep,
   fitEditorLabel,
   gridOriginForWall,
   gridOriginForWalls,
@@ -30,15 +30,6 @@ import { cn } from "@/lib/utils";
 import { mapContent } from "@/data/map";
 
 const DRAG_THRESHOLD_PX = 3;
-
-// Grid step as a "nice" number (1/2/5 × 10^n) sized to the plan.
-function niceStep(raw: number): number {
-  const pow = 10 ** Math.floor(Math.log10(Math.max(raw, 1)));
-  for (const m of [1, 2, 5, 10]) {
-    if (m * pow >= raw) return m * pow;
-  }
-  return 10 * pow;
-}
 
 type DragState = {
   id: string;
@@ -63,6 +54,7 @@ export type PlaceMode =
 type EditCanvasProps = {
   model: FloorModel;
   onCancelPlace: () => void;
+  onGridChange: (origin: Point, step: number) => void;
   onPlaceLine: (a: Point, b: Point) => void;
   onPlaceOpening: (at: Point, width: number, wallId: string) => void;
   onPlacePoint: (at: Point) => void;
@@ -87,6 +79,7 @@ function centroid(polygon: Point[]): Point {
 export function EditCanvas({
   model,
   onCancelPlace,
+  onGridChange,
   onMove,
   onPlaceLine,
   onPlaceOpening,
@@ -113,8 +106,7 @@ export function EditCanvas({
 
   const { heightPx, widthPx } = model.plan;
   const planBounds = { height: heightPx, width: widthPx };
-  const gridStep = niceStep(widthPx / 60);
-  const gridMajor = gridStep * 5;
+  const gridStep = editorGridStep(widthPx);
   const gridOrigin = gridOriginForWalls(model.walls, gridStep);
   const alignedWall = model.walls.find(
     (wall) => wall.id === (draw?.wallId ?? snapWallId)
@@ -122,6 +114,12 @@ export function EditCanvas({
   const displayGridOrigin = alignedWall
     ? gridOriginForWall(gridOrigin, alignedWall, gridStep)
     : gridOrigin;
+  const displayGridX = displayGridOrigin.x;
+  const displayGridY = displayGridOrigin.y;
+
+  useEffect(() => {
+    onGridChange({ x: displayGridX, y: displayGridY }, gridStep);
+  }, [displayGridX, displayGridY, gridStep, onGridChange]);
   const polygonInvalid = polygonSelfIntersects(polygonPoints);
   const wallSnapTolerance = Math.max(
     gridStep,
@@ -576,7 +574,7 @@ export function EditCanvas({
   return (
     <div
       className={cn(
-        "relative touch-none overflow-hidden bg-white",
+        "relative touch-none overflow-hidden bg-transparent",
         placing ? "cursor-crosshair" : "cursor-default"
       )}
       onClick={(event) => {
@@ -656,36 +654,6 @@ export function EditCanvas({
         viewBox={`0 0 ${widthPx} ${heightPx}`}
       >
         <defs>
-          <pattern
-            height={gridStep}
-            id="edit-grid-fine"
-            patternUnits="userSpaceOnUse"
-            width={gridStep}
-            x={displayGridOrigin.x}
-            y={displayGridOrigin.y}
-          >
-            <path
-              className="stroke-foreground/8"
-              d={`M ${gridStep} 0 L 0 0 0 ${gridStep}`}
-              fill="none"
-              strokeWidth={gridStep * 0.03}
-            />
-          </pattern>
-          <pattern
-            height={gridMajor}
-            id="edit-grid-major"
-            patternUnits="userSpaceOnUse"
-            width={gridMajor}
-            x={displayGridOrigin.x}
-            y={displayGridOrigin.y}
-          >
-            <path
-              className="stroke-foreground/15"
-              d={`M ${gridMajor} 0 L 0 0 0 ${gridMajor}`}
-              fill="none"
-              strokeWidth={gridStep * 0.05}
-            />
-          </pattern>
           {model.walls.map((wall, index) => {
             const openings = displayedOpenings.filter(
               (opening) => opening.wallId === wall.id
@@ -720,27 +688,19 @@ export function EditCanvas({
             );
           })}
         </defs>
-        {/* Grid + background hit area for deselect */}
+        {/* Transparent background hit area; CanvasViewport owns the grid. */}
         <rect
-          fill="url(#edit-grid-fine)"
+          fill="transparent"
           height={heightPx}
           onClick={() => {
             if (!placing) onSelect(null);
           }}
           width={widthPx}
         />
-        <rect
-          className="pointer-events-none"
-          fill="url(#edit-grid-major)"
-          height={heightPx}
-          width={widthPx}
-        />
         {model.rooms.map((room) => (
           <polygon
             className={cn(
               "cursor-move fill-muted stroke-border",
-              room.confidence < NEEDS_REVIEW_THRESHOLD &&
-                "stroke-destructive [stroke-dasharray:8_6]",
               selectedId === room.id && "fill-accent stroke-foreground"
             )}
             key={room.id}
@@ -748,12 +708,7 @@ export function EditCanvas({
             points={orthogonalizeNearRectangle(room.polygon)
               .map((p) => `${p.x},${p.y}`)
               .join(" ")}
-            strokeWidth={
-              selectedId === room.id ||
-              room.confidence < NEEDS_REVIEW_THRESHOLD
-                ? 4
-                : 2
-            }
+            strokeWidth={selectedId === room.id ? 4 : 2}
             transform={dragTransform(room.id)}
           />
         ))}
@@ -761,8 +716,6 @@ export function EditCanvas({
           <polygon
             className={cn(
               "cursor-move fill-muted-foreground/25 stroke-muted-foreground",
-              item.confidence < NEEDS_REVIEW_THRESHOLD &&
-                "stroke-destructive [stroke-dasharray:6_5]",
               selectedId === item.id && "fill-accent stroke-foreground"
             )}
             key={item.id}
@@ -770,12 +723,7 @@ export function EditCanvas({
             points={orthogonalizeNearRectangle(item.polygon)
               .map((p) => `${p.x},${p.y}`)
               .join(" ")}
-            strokeWidth={
-              selectedId === item.id ||
-              item.confidence < NEEDS_REVIEW_THRESHOLD
-                ? 3
-                : 1.5
-            }
+            strokeWidth={selectedId === item.id ? 3 : 1.5}
             transform={dragTransform(item.id)}
           />
         ))}
@@ -783,7 +731,6 @@ export function EditCanvas({
           <polyline
             className={cn(
               "cursor-move fill-none stroke-muted-foreground/50",
-              road.confidence < NEEDS_REVIEW_THRESHOLD && "stroke-destructive/60",
               selectedId === road.id && "stroke-(--color-brand)/70"
             )}
             key={road.id}
@@ -799,7 +746,6 @@ export function EditCanvas({
           <polyline
             className={cn(
               "cursor-move fill-none stroke-foreground/70 [stroke-dasharray:14_10]",
-              path.confidence < NEEDS_REVIEW_THRESHOLD && "stroke-destructive",
               selectedId === path.id && "stroke-(--color-brand)"
             )}
             key={path.id}
@@ -814,8 +760,6 @@ export function EditCanvas({
           <line
             className={cn(
               "cursor-move stroke-foreground",
-              wall.confidence < NEEDS_REVIEW_THRESHOLD &&
-                "stroke-destructive [stroke-dasharray:12_8]",
               selectedId === wall.id && "stroke-(--color-brand)"
             )}
             key={wall.id}
@@ -837,8 +781,6 @@ export function EditCanvas({
               opening.kind === "door"
                 ? "stroke-(--color-brand)"
                 : "stroke-muted-foreground",
-              opening.confidence < NEEDS_REVIEW_THRESHOLD &&
-                "stroke-destructive [stroke-dasharray:5_4]",
               selectedId === opening.id && "stroke-foreground"
             )}
             cx={opening.at.x}
@@ -855,16 +797,13 @@ export function EditCanvas({
           const d = dragging ? snappedDelta(feature.id) : { x: 0, y: 0 };
           const at = { x: feature.at.x + d.x, y: feature.at.y + d.y };
           const s = Math.max(20, widthPx * 0.03);
-          const flagged = feature.confidence < NEEDS_REVIEW_THRESHOLD;
           return (
             <g
               className={cn(
                 "cursor-move",
-                flagged
-                  ? "text-destructive"
-                  : feature.kind === "you-are-here"
-                    ? "text-(--color-brand)"
-                    : "text-foreground",
+                feature.kind === "you-are-here"
+                  ? "text-(--color-brand)"
+                  : "text-foreground",
                 selectedId === feature.id && "text-(--color-brand)"
               )}
               key={feature.id}
@@ -873,11 +812,10 @@ export function EditCanvas({
             >
               {/* Invisible hit area so thin linework stays easy to grab */}
               <circle fill="transparent" r={s * 0.8} />
-              {(flagged || selectedId === feature.id) && (
+              {selectedId === feature.id && (
                 <circle
                   className="fill-none stroke-current"
                   r={s * 0.85}
-                  strokeDasharray={flagged ? "5 4" : undefined}
                   strokeWidth={s * 0.06}
                 />
               )}

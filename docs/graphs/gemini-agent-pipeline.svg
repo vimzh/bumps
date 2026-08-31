@@ -52,7 +52,7 @@
   <text x="714.1" y="375.0" text-anchor="middle" class="node-title">Gemini reviews the extraction</text>
   <text x="714.1" y="406.0" text-anchor="middle" class="node-body">original plan vs rendered model</text>
   <text x="714.1" y="428.0" text-anchor="middle" class="node-body">missing · extra · misplaced · mislabeled</text>
-  <text x="714.1" y="458.0" text-anchor="middle" class="node-note">Major findings trigger another parse, up to 3 passes</text>
+  <text x="714.1" y="458.0" text-anchor="middle" class="node-note">Major findings trigger another parse, up to 5 passes</text>
   <rect class="node" data-node-id="editor" data-status="implemented" x="422.1" y="502.0" width="584.1" height="112.0" rx="22" fill="#ede9fe" stroke="#7c3aed" stroke-width="2"/>
   <text x="714.1" y="537.0" text-anchor="middle" class="node-title">Gemini translates human edits</text>
   <text x="714.1" y="568.0" text-anchor="middle" class="node-body">prompt → typed operations</text>

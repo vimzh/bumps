@@ -1,6 +1,9 @@
 "use client";
 
-import type { FloorElement } from "@bumps/floor-model";
+import {
+  NEEDS_REVIEW_THRESHOLD,
+  type FloorElement,
+} from "@bumps/floor-model";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { mapContent } from "@/data/map";
@@ -74,7 +77,7 @@ export function SelectionCard({
         />
       )}
       <div className="mt-3 flex gap-2">
-        {element.confidence < 1 && (
+        {element.confidence < NEEDS_REVIEW_THRESHOLD && (
           <Button
             className="h-7 cursor-pointer rounded-sm px-2 text-xs"
             onClick={() => onConfirm(element.id)}

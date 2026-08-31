@@ -3,6 +3,7 @@
 import {
   useCallback,
   useEffect,
+  useId,
   useLayoutEffect,
   useRef,
   useState,
@@ -17,10 +18,27 @@ const ZOOM_STEP = 1.25;
 
 type Transform = { scale: number; tx: number; ty: number };
 
+export type CanvasGrid = {
+  originX: number;
+  originY: number;
+  step: number;
+};
+
+export function gridPatternMetrics(transform: Transform, grid: CanvasGrid) {
+  const fine = grid.step * transform.scale;
+  return {
+    fine,
+    major: fine * 5,
+    x: transform.tx + grid.originX * transform.scale,
+    y: transform.ty + grid.originY * transform.scale,
+  };
+}
+
 type CanvasViewportProps = {
   children: ReactNode;
   contentHeight: number;
   contentWidth: number;
+  grid?: CanvasGrid;
 };
 
 // Figma-style viewport: pinch / ctrl+wheel zooms toward the cursor, plain
@@ -29,8 +47,10 @@ export function CanvasViewport({
   children,
   contentHeight,
   contentWidth,
+  grid,
 }: CanvasViewportProps) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const patternId = useId().replaceAll(":", "");
   const [transform, setTransform] = useState<Transform | null>(null);
   const minScaleRef = useRef(0.05);
   const userAdjustedRef = useRef(false);
@@ -123,11 +143,54 @@ export function CanvasViewport({
     zoomAt(rect.left + rect.width / 2, rect.top + rect.height / 2, factor);
   }
 
+  const gridMetrics = transform && grid ? gridPatternMetrics(transform, grid) : null;
+
   return (
     <div
       className="relative h-full w-full overflow-hidden overscroll-contain bg-muted/40"
       ref={containerRef}
     >
+      {gridMetrics && (
+        <svg
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 h-full w-full"
+        >
+          <defs>
+            <pattern
+              height={gridMetrics.fine}
+              id={`${patternId}-fine`}
+              patternUnits="userSpaceOnUse"
+              width={gridMetrics.fine}
+              x={gridMetrics.x}
+              y={gridMetrics.y}
+            >
+              <path
+                className="stroke-foreground/8"
+                d={`M ${gridMetrics.fine} 0 L 0 0 0 ${gridMetrics.fine}`}
+                fill="none"
+                strokeWidth={0.75}
+              />
+            </pattern>
+            <pattern
+              height={gridMetrics.major}
+              id={`${patternId}-major`}
+              patternUnits="userSpaceOnUse"
+              width={gridMetrics.major}
+              x={gridMetrics.x}
+              y={gridMetrics.y}
+            >
+              <path
+                className="stroke-foreground/15"
+                d={`M ${gridMetrics.major} 0 L 0 0 0 ${gridMetrics.major}`}
+                fill="none"
+                strokeWidth={1}
+              />
+            </pattern>
+          </defs>
+          <rect fill={`url(#${patternId}-fine)`} height="100%" width="100%" />
+          <rect fill={`url(#${patternId}-major)`} height="100%" width="100%" />
+        </svg>
+      )}
       {transform && (
         <div
           className="absolute left-0 top-0"

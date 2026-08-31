@@ -21,10 +21,9 @@ import {
   refineParse,
 } from './parser'
 
-// Reviewed-iteration cap. Three rounds resolve nearly all majors in
-// practice; anything left is editor material, and each extra round is two
-// image-heavy model calls.
-export const MAX_ITERATIONS = 3
+// Reviewed-iteration cap. Minor-only findings still exit early through
+// shouldStop to avoid wasteful model calls.
+export const MAX_ITERATIONS = 5
 
 export type ParseStage = 'parsing' | 'critiquing' | 'refining'
 

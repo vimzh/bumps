@@ -17,6 +17,15 @@ export type WallOpeningDraft = {
   width: number;
 };
 
+export function editorGridStep(widthPx: number): number {
+  const raw = widthPx / 60;
+  const power = 10 ** Math.floor(Math.log10(Math.max(raw, 1)));
+  for (const multiplier of [1, 2, 5, 10]) {
+    if (multiplier * power >= raw) return multiplier * power;
+  }
+  return 10 * power;
+}
+
 export function snapValue(
   value: number,
   gridStep: number,

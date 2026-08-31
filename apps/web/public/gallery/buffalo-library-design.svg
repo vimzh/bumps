@@ -1,156 +1,183 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1139 2000" width="1139" height="2000">
 <rect width="1139" height="2000" fill="white"/>
-<polygon data-id="r-hhc" points="415,170 715,170 715,236 415,236" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
-<text x="565" y="203" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">Hispanic Heritage Council Offices</text>
-<polygon data-id="r-grosvenor" points="166,545 452,545 452,575 423,575 423,890 490,890 490,1084 166,1084" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
-<text x="382.75" y="773.5" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">Grosvenor Room</text>
-<polygon data-id="r-rare" points="423,575 500,575 500,890 423,890" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
-<text x="461.5" y="732.5" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">Rare Book Display Room</text>
-<polygon data-id="r-restrooms" points="665,680 732,680 732,755 665,755" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
-<text x="698.5" y="717.5" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">Restrooms</text>
-<polygon data-id="r-twain" points="665,755 732,755 732,835 665,835" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
-<text x="698.5" y="795" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">Mark Twain Room</text>
-<polygon data-id="r-assistive" points="732,680 804,680 804,755 732,755" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
-<text x="768" y="717.5" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">Assistive Technology Room</text>
-<polygon data-id="r-study" points="830,680 910,680 910,755 830,755" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
-<text x="870" y="717.5" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">Study Rooms</text>
-<polygon data-id="r-children" points="732,755 936,755 936,1084 732,1084" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
-<text x="834" y="919.5" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">Children's Room</text>
-<polygon data-id="r-vending" points="690,1084 825,1084 825,1175 690,1175" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
-<text x="757.5" y="1129.5" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">Vending Machines</text>
-<polygon data-id="r-west" points="855,1084 936,1084 936,1250 855,1250" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
-<text x="895.5" y="1167" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">West Room</text>
-<polygon data-id="r-launch" points="855,1250 936,1250 936,1385 855,1385" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
-<text x="895.5" y="1317.5" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">Launch Pad Maker Space</text>
-<polygon data-id="r-lib-sec" points="855,1385 936,1385 936,1435 855,1435" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
-<text x="895.5" y="1410" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">Library Security</text>
-<polygon data-id="r-borrower" points="855,1435 936,1435 936,1740 855,1740" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
-<text x="895.5" y="1587.5" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">Borrower Services Desk</text>
-<polygon data-id="r-elev-corner" points="855,1740 936,1740 936,1830 855,1830" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
-<text x="895.5" y="1785" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">Elevator</text>
-<polygon data-id="r-teen" points="466,1510 690,1510 690,1830 466,1830" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
-<text x="578" y="1670" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">Teen Space</text>
-<polygon data-id="r-aud-ent" points="690,1740 768,1740 768,1830 690,1830" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
-<text x="729" y="1785" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">Entrance to Auditorium</text>
-<polygon data-id="r-wash-ent" points="768,1740 855,1740 855,1830 768,1830" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
-<text x="811.5" y="1785" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">Doors to Washington Street</text>
-<polygon data-id="fur-info-top" points="538,236 642,236 642,290 538,290" fill="#d6d3d1" stroke="#a8a29e" stroke-width="2"/>
-<text x="590" y="263" font-family="monospace" font-size="16" fill="#44403c" text-anchor="middle" dominant-baseline="middle">counter</text>
-<polygon data-id="fur-comp-1" points="406,305 470,305 470,410 406,410" fill="#d6d3d1" stroke="#a8a29e" stroke-width="2"/>
-<text x="438" y="357.5" font-family="monospace" font-size="16" fill="#44403c" text-anchor="middle" dominant-baseline="middle">desks</text>
-<polygon data-id="fur-comp-2" points="406,420 470,420 470,520 406,520" fill="#d6d3d1" stroke="#a8a29e" stroke-width="2"/>
-<text x="438" y="470" font-family="monospace" font-size="16" fill="#44403c" text-anchor="middle" dominant-baseline="middle">desks</text>
-<polygon data-id="fur-comp-3" points="711,300 777,300 777,400 711,400" fill="#d6d3d1" stroke="#a8a29e" stroke-width="2"/>
-<text x="744" y="350" font-family="monospace" font-size="16" fill="#44403c" text-anchor="middle" dominant-baseline="middle">desks</text>
-<polygon data-id="fur-comp-4" points="711,415 777,415 777,535 711,535" fill="#d6d3d1" stroke="#a8a29e" stroke-width="2"/>
-<text x="744" y="475" font-family="monospace" font-size="16" fill="#44403c" text-anchor="middle" dominant-baseline="middle">desks</text>
-<polygon data-id="fur-microform" points="310,575 378,575 378,675 310,675" fill="#d6d3d1" stroke="#a8a29e" stroke-width="2"/>
-<text x="344" y="625" font-family="monospace" font-size="16" fill="#44403c" text-anchor="middle" dominant-baseline="middle">desks</text>
-<polygon data-id="fur-comp-gros" points="308,750 375,750 375,860 308,860" fill="#d6d3d1" stroke="#a8a29e" stroke-width="2"/>
-<text x="341.5" y="805" font-family="monospace" font-size="16" fill="#44403c" text-anchor="middle" dominant-baseline="middle">desks</text>
-<polygon data-id="fur-gros-info" points="355,940 398,940 398,1050 355,1050" fill="#d6d3d1" stroke="#a8a29e" stroke-width="2"/>
-<text x="376.5" y="995" font-family="monospace" font-size="16" fill="#44403c" text-anchor="middle" dominant-baseline="middle">counter</text>
-<polygon data-id="fur-center-part" points="545,730 624,730 624,1005 545,1005" fill="#d6d3d1" stroke="#a8a29e" stroke-width="2"/>
-<text x="584.5" y="867.5" font-family="monospace" font-size="16" fill="#44403c" text-anchor="middle" dominant-baseline="middle">desks</text>
-<polygon data-id="fur-ring-knowledge" points="688,1188 808,1188 808,1308 688,1308" fill="#d6d3d1" stroke="#a8a29e" stroke-width="2"/>
-<text x="748" y="1248" font-family="monospace" font-size="16" fill="#44403c" text-anchor="middle" dominant-baseline="middle">table</text>
-<polygon data-id="fur-info-bot" points="570,1300 658,1300 658,1400 570,1400" fill="#d6d3d1" stroke="#a8a29e" stroke-width="2"/>
-<text x="614" y="1350" font-family="monospace" font-size="16" fill="#44403c" text-anchor="middle" dominant-baseline="middle">counter</text>
-<polygon data-id="fur-sec-booth" points="715,1640 765,1640 765,1720 715,1720" fill="#d6d3d1" stroke="#a8a29e" stroke-width="2"/>
-<text x="740" y="1680" font-family="monospace" font-size="16" fill="#44403c" text-anchor="middle" dominant-baseline="middle">counter</text>
-<line data-id="w-top" x1="166" y1="170" x2="936" y2="170" stroke="#1c1917" stroke-width="6" stroke-linecap="square"/>
-<line data-id="w-hhc-b" x1="415" y1="236" x2="715" y2="236" stroke="#1c1917" stroke-width="4" stroke-linecap="square"/>
-<line data-id="w-hhc-l" x1="415" y1="170" x2="415" y2="236" stroke="#1c1917" stroke-width="4" stroke-linecap="square"/>
-<line data-id="w-hhc-r" x1="715" y1="170" x2="715" y2="236" stroke="#1c1917" stroke-width="4" stroke-linecap="square"/>
-<line data-id="w-r-top" x1="936" y1="170" x2="936" y2="1084" stroke="#1c1917" stroke-width="6" stroke-linecap="square"/>
-<line data-id="w-gros-l" x1="166" y1="170" x2="166" y2="1084" stroke="#1c1917" stroke-width="6" stroke-linecap="square"/>
-<line data-id="w-gros-t" x1="166" y1="545" x2="452" y2="545" stroke="#1c1917" stroke-width="6" stroke-linecap="square"/>
-<line data-id="w-gros-b" x1="166" y1="1084" x2="490" y2="1084" stroke="#1c1917" stroke-width="6" stroke-linecap="square"/>
-<line data-id="w-gros-r" x1="490" y1="985" x2="490" y2="1084" stroke="#1c1917" stroke-width="6" stroke-linecap="square"/>
-<line data-id="w-rare-t" x1="423" y1="575" x2="500" y2="575" stroke="#1c1917" stroke-width="5" stroke-linecap="square"/>
-<line data-id="w-rare-l" x1="423" y1="575" x2="423" y2="890" stroke="#1c1917" stroke-width="5" stroke-linecap="square"/>
-<line data-id="w-rare-r" x1="500" y1="575" x2="500" y2="890" stroke="#1c1917" stroke-width="5" stroke-linecap="square"/>
-<line data-id="w-rare-b" x1="423" y1="890" x2="500" y2="890" stroke="#1c1917" stroke-width="5" stroke-linecap="square"/>
-<line data-id="w-study-t" x1="665" y1="680" x2="936" y2="680" stroke="#1c1917" stroke-width="5" stroke-linecap="square"/>
-<line data-id="w-rest-div" x1="732" y1="680" x2="732" y2="970" stroke="#1c1917" stroke-width="5" stroke-linecap="square"/>
-<line data-id="w-rest-m" x1="665" y1="755" x2="732" y2="755" stroke="#1c1917" stroke-width="4" stroke-linecap="square"/>
-<line data-id="w-rest-b" x1="665" y1="835" x2="732" y2="835" stroke="#1c1917" stroke-width="4" stroke-linecap="square"/>
-<line data-id="w-rest-l" x1="665" y1="680" x2="665" y2="970" stroke="#1c1917" stroke-width="5" stroke-linecap="square"/>
-<line data-id="w-rest-bot" x1="665" y1="970" x2="732" y2="970" stroke="#1c1917" stroke-width="5" stroke-linecap="square"/>
-<line data-id="w-tech-r" x1="804" y1="680" x2="804" y2="755" stroke="#1c1917" stroke-width="4" stroke-linecap="square"/>
-<line data-id="w-tech-b" x1="732" y1="755" x2="936" y2="755" stroke="#1c1917" stroke-width="5" stroke-linecap="square"/>
-<line data-id="w-child-b" x1="732" y1="1084" x2="936" y2="1084" stroke="#1c1917" stroke-width="6" stroke-linecap="square"/>
-<line data-id="w-vend-b" x1="690" y1="1175" x2="825" y2="1175" stroke="#1c1917" stroke-width="4" stroke-linecap="square"/>
-<line data-id="w-vend-l" x1="690" y1="1084" x2="690" y2="1175" stroke="#1c1917" stroke-width="4" stroke-linecap="square"/>
-<line data-id="w-vend-r" x1="825" y1="1084" x2="825" y2="1175" stroke="#1c1917" stroke-width="4" stroke-linecap="square"/>
-<line data-id="w-east-l" x1="855" y1="1084" x2="855" y2="1830" stroke="#1c1917" stroke-width="5" stroke-linecap="square"/>
-<line data-id="w-east-r" x1="936" y1="1084" x2="936" y2="1830" stroke="#1c1917" stroke-width="6" stroke-linecap="square"/>
-<line data-id="w-west-b" x1="855" y1="1250" x2="936" y2="1250" stroke="#1c1917" stroke-width="4" stroke-linecap="square"/>
-<line data-id="w-launch-b" x1="855" y1="1385" x2="936" y2="1385" stroke="#1c1917" stroke-width="4" stroke-linecap="square"/>
-<line data-id="w-sec-b" x1="855" y1="1435" x2="936" y2="1435" stroke="#1c1917" stroke-width="4" stroke-linecap="square"/>
-<line data-id="w-borr-b" x1="855" y1="1740" x2="936" y2="1740" stroke="#1c1917" stroke-width="4" stroke-linecap="square"/>
-<line data-id="w-teen-l" x1="466" y1="1084" x2="466" y2="1830" stroke="#1c1917" stroke-width="6" stroke-linecap="square"/>
-<line data-id="w-teen-b" x1="466" y1="1830" x2="936" y2="1830" stroke="#1c1917" stroke-width="6" stroke-linecap="square"/>
-<line data-id="w-teen-div" x1="690" y1="1740" x2="690" y2="1830" stroke="#1c1917" stroke-width="4" stroke-linecap="square"/>
-<line data-id="w-door-div" x1="768" y1="1740" x2="768" y2="1830" stroke="#1c1917" stroke-width="4" stroke-linecap="square"/>
-<line data-id="w-door-t" x1="690" y1="1740" x2="855" y2="1740" stroke="#1c1917" stroke-width="4" stroke-linecap="square"/>
-<circle data-id="d-hhc" cx="507" cy="236" r="19" fill="none" stroke="#0d9488" stroke-width="3"/>
-<circle data-id="d-gros" cx="490" cy="940" r="22.5" fill="none" stroke="#0d9488" stroke-width="3"/>
-<circle data-id="d-child" cx="732" cy="990" r="20" fill="none" stroke="#0d9488" stroke-width="3"/>
-<circle data-id="d-aud" cx="730" cy="1830" r="27.5" fill="none" stroke="#0d9488" stroke-width="3"/>
-<circle data-id="d-wash" cx="810" cy="1830" r="32.5" fill="none" stroke="#0d9488" stroke-width="3"/>
-<circle data-id="d-twain" cx="665" cy="795" r="17.5" fill="none" stroke="#0d9488" stroke-width="3"/>
-<circle data-id="d-assist" cx="768" cy="755" r="17.5" fill="none" stroke="#0d9488" stroke-width="3"/>
-<circle data-id="d-study" cx="870" cy="755" r="17.5" fill="none" stroke="#0d9488" stroke-width="3"/>
-<circle data-id="d-west" cx="855" cy="1165" r="17.5" fill="none" stroke="#0d9488" stroke-width="3"/>
-<circle data-id="d-launch" cx="855" cy="1315" r="17.5" fill="none" stroke="#0d9488" stroke-width="3"/>
-<circle data-id="d-rare" cx="460" cy="890" r="17.5" fill="none" stroke="#0d9488" stroke-width="3"/>
-<g data-id="f-exit" transform="translate(507 246) rotate(0)">
-<rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
-<text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">X</text>
-</g>
-<g data-id="f-stairs-1" transform="translate(680 258) rotate(45)">
+<polygon data-id="r-hh" points="472,170 715,170 715,239 472,239" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="593.5" y="204.5" font-family="monospace" font-size="11" fill="#44403c" text-anchor="middle" dominant-baseline="middle">Hispanic Heritage Council Offices</text>
+<polygon data-id="r-nf-left" points="189,170 472,170 472,239 715,239 715,495 189,495" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="458.6666666666667" y="301.3333333333333" font-family="monospace" font-size="12.5" fill="#44403c" text-anchor="middle" dominant-baseline="middle">Nonfiction Arranged A - N</text>
+<polygon data-id="r-nf-right" points="715,170 942,170 942,720 735,720 735,595 715,595" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="797.3333333333334" y="495" font-family="monospace" font-size="12.5" fill="#44403c" text-anchor="middle" dominant-baseline="middle">Nonfiction Arranged P - Z</text>
+<polygon data-id="r-grosvenor" points="189,495 495,495 495,540 455,540 455,850 535,850 535,1076 189,1076" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="418.5" y="740.25" font-family="monospace" font-size="18" fill="#44403c" text-anchor="middle" dominant-baseline="middle">Grosvenor Room</text>
+<polygon data-id="r-rarebook" points="455,540 535,540 535,850 455,850" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="495" y="695" font-family="monospace" font-size="14" fill="#44403c" text-anchor="middle" dominant-baseline="middle">Rare Book Display Room</text>
+<polygon data-id="r-restroom" points="660,595 735,595 735,720 660,720" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="697.5" y="657.5" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">Restrooms</text>
+<polygon data-id="r-marktwain" points="660,720 735,720 735,790 660,790" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="697.5" y="755" font-family="monospace" font-size="17.5" fill="#44403c" text-anchor="middle" dominant-baseline="middle">Mark Twain Room</text>
+<polygon data-id="r-assistive" points="735,635 805,635 805,720 735,720" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="770" y="677.5" font-family="monospace" font-size="12.5" fill="#44403c" text-anchor="middle" dominant-baseline="middle">Assistive Technology Room</text>
+<polygon data-id="r-study" points="830,665 910,665 910,720 830,720" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="870" y="692.5" font-family="monospace" font-size="19.5" fill="#44403c" text-anchor="middle" dominant-baseline="middle">Study Rooms</text>
+<polygon data-id="r-children" points="735,780 942,780 942,1076 735,1076" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="838.5" y="928" font-family="monospace" font-size="17.5" fill="#44403c" text-anchor="middle" dominant-baseline="middle">Children's Room</text>
+<polygon data-id="r-vending" points="680,1076 855,1076 855,1175 680,1175" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="767.5" y="1125.5" font-family="monospace" font-size="17" fill="#44403c" text-anchor="middle" dominant-baseline="middle">Vending Machines</text>
+<polygon data-id="r-west" points="855,1076 942,1076 942,1285 855,1285" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="898.5" y="1180.5" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">West Room</text>
+<polygon data-id="r-launchpad" points="855,1285 942,1285 942,1450 855,1450" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="898.5" y="1367.5" font-family="monospace" font-size="14" fill="#44403c" text-anchor="middle" dominant-baseline="middle">Launch Pad Maker Space</text>
+<polygon data-id="r-libsec" points="855,1450 942,1450 942,1510 855,1510" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="898.5" y="1480" font-family="monospace" font-size="17" fill="#44403c" text-anchor="middle" dominant-baseline="middle">Library Security</text>
+<polygon data-id="r-borrower" points="855,1510 942,1510 942,1706 855,1706" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="898.5" y="1608" font-family="monospace" font-size="14" fill="#44403c" text-anchor="middle" dominant-baseline="middle">Borrower Services Desk</text>
+<polygon data-id="r-teen" points="533,1440 675,1440 675,1815 533,1815" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="604" y="1627.5" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">Teen Space</text>
+<polygon data-id="r-media" points="533,1076 855,1076 855,1440 533,1440" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="694" y="1258" font-family="monospace" font-size="15.5" fill="#44403c" text-anchor="middle" dominant-baseline="middle">Media Movies • DVDs</text>
+<polygon data-id="r-audit-vest" points="675,1706 755,1706 755,1815 675,1815" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="715" y="1760.5" font-family="monospace" font-size="14" fill="#44403c" text-anchor="middle" dominant-baseline="middle">Entrance to Auditorium</text>
+<polygon data-id="r-wash-vest" points="755,1706 855,1706 855,1815 755,1815" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="805" y="1760.5" font-family="monospace" font-size="12" fill="#44403c" text-anchor="middle" dominant-baseline="middle">Doors to Washington Street</text>
+<polygon data-id="r-elev-vest" points="855,1706 942,1706 942,1815 855,1815" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="898.5" y="1760.5" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">Elevator</text>
+<polygon data-id="fur-comp-1" points="445,270 520,270 520,330 445,330" fill="#d6d3d1" stroke="#a8a29e" stroke-width="2"/>
+<text x="482.5" y="300" font-family="monospace" font-size="16" fill="#44403c" text-anchor="middle" dominant-baseline="middle">desks</text>
+<polygon data-id="fur-comp-2" points="445,345 520,345 520,405 445,405" fill="#d6d3d1" stroke="#a8a29e" stroke-width="2"/>
+<text x="482.5" y="375" font-family="monospace" font-size="16" fill="#44403c" text-anchor="middle" dominant-baseline="middle">desks</text>
+<polygon data-id="fur-comp-3" points="735,270 810,270 810,330 735,330" fill="#d6d3d1" stroke="#a8a29e" stroke-width="2"/>
+<text x="772.5" y="300" font-family="monospace" font-size="16" fill="#44403c" text-anchor="middle" dominant-baseline="middle">desks</text>
+<polygon data-id="fur-comp-4" points="735,345 810,345 810,405 735,405" fill="#d6d3d1" stroke="#a8a29e" stroke-width="2"/>
+<text x="772.5" y="375" font-family="monospace" font-size="16" fill="#44403c" text-anchor="middle" dominant-baseline="middle">desks</text>
+<polygon data-id="fur-microform" points="355,540 425,540 425,650 355,650" fill="#d6d3d1" stroke="#a8a29e" stroke-width="2"/>
+<text x="390" y="595" font-family="monospace" font-size="16" fill="#44403c" text-anchor="middle" dominant-baseline="middle">table</text>
+<polygon data-id="fur-comp-gros" points="355,710 425,710 425,810 355,810" fill="#d6d3d1" stroke="#a8a29e" stroke-width="2"/>
+<text x="390" y="760" font-family="monospace" font-size="16" fill="#44403c" text-anchor="middle" dominant-baseline="middle">desks</text>
+<polygon data-id="fur-col-center" points="545,600 625,600 625,930 545,930" fill="#d6d3d1" stroke="#a8a29e" stroke-width="2"/>
+<text x="585" y="765" font-family="monospace" font-size="16" fill="#44403c" text-anchor="middle" dominant-baseline="middle">column</text>
+<polygon data-id="fur-ring-knowledge" points="593,1010 591,1021 585,1030 576,1036 565,1038 554,1036 545,1030 539,1021 537,1010 539,999 545,990 554,984 565,982 576,984 585,990 591,999" fill="#d6d3d1" stroke="#a8a29e" stroke-width="2"/>
+<text x="565" y="1010" font-family="monospace" font-size="16" fill="#44403c" text-anchor="middle" dominant-baseline="middle">counter</text>
+<polygon data-id="fur-ring" points="760,1215 752,1245 730,1267 700,1275 670,1267 648,1245 640,1215 648,1185 670,1163 700,1155 730,1163 752,1185" fill="#d6d3d1" stroke="#a8a29e" stroke-width="2"/>
+<text x="700" y="1215" font-family="monospace" font-size="16" fill="#44403c" text-anchor="middle" dominant-baseline="middle">table</text>
+<polygon data-id="fur-sec-desk" points="700,1580 755,1580 755,1675 700,1675" fill="#d6d3d1" stroke="#a8a29e" stroke-width="2"/>
+<text x="727.5" y="1627.5" font-family="monospace" font-size="16" fill="#44403c" text-anchor="middle" dominant-baseline="middle">counter</text>
+<polygon data-id="fur-info-desk-media" points="590,1270 680,1270 680,1360 590,1360" fill="#d6d3d1" stroke="#a8a29e" stroke-width="2"/>
+<text x="635" y="1315" font-family="monospace" font-size="16" fill="#44403c" text-anchor="middle" dominant-baseline="middle">counter</text>
+<polygon data-id="fur-info-desk-gros" points="435,860 485,860 485,950 435,950" fill="#d6d3d1" stroke="#a8a29e" stroke-width="2"/>
+<text x="460" y="905" font-family="monospace" font-size="16" fill="#44403c" text-anchor="middle" dominant-baseline="middle">counter</text>
+<polygon data-id="fur-mcd-shelf" points="540,1076 735,1076 735,1090 540,1090" fill="#d6d3d1" stroke="#a8a29e" stroke-width="2"/>
+<text x="637.5" y="1083" font-family="monospace" font-size="16" fill="#44403c" text-anchor="middle" dominant-baseline="middle">bookshelves</text>
+<line data-id="w-top" x1="189" y1="170" x2="942" y2="170" stroke="#1c1917" stroke-width="10" stroke-linecap="butt"/>
+<line data-id="w-right" x1="942" y1="170" x2="942" y2="1815" stroke="#1c1917" stroke-width="10" stroke-linecap="butt"/>
+<line data-id="w-bot" x1="533" y1="1815" x2="942" y2="1815" stroke="#1c1917" stroke-width="10" stroke-linecap="butt"/>
+<line data-id="w-left-teen" x1="533" y1="1815" x2="534.3333333333334" y2="1076" stroke="#1c1917" stroke-width="8" stroke-linecap="butt"/>
+<line data-id="w-gros-b" x1="189" y1="1076" x2="534.3333333333334" y2="1076" stroke="#1c1917" stroke-width="8" stroke-linecap="butt"/>
+<line data-id="w-left-gros" x1="189" y1="1076" x2="189" y2="170" stroke="#1c1917" stroke-width="10" stroke-linecap="butt"/>
+<line data-id="w-hh-l" x1="472" y1="170" x2="472" y2="239" stroke="#1c1917" stroke-width="6" stroke-linecap="butt"/>
+<line data-id="w-hh-r" x1="715" y1="170" x2="715" y2="239" stroke="#1c1917" stroke-width="6" stroke-linecap="butt"/>
+<line data-id="w-hh-b" x1="472" y1="239" x2="715" y2="239" stroke="#1c1917" stroke-width="6" stroke-linecap="butt"/>
+<line data-id="w-gros-t" x1="189" y1="495" x2="495" y2="495" stroke="#1c1917" stroke-width="8" stroke-linecap="butt"/>
+<line data-id="w-nf-rb-conn" x1="495" y1="495" x2="495" y2="540" stroke="#1c1917" stroke-width="8" stroke-linecap="butt"/>
+<line data-id="w-rb-t" x1="455" y1="540" x2="535" y2="540" stroke="#1c1917" stroke-width="8" stroke-linecap="butt"/>
+<line data-id="w-rb-l" x1="455" y1="540" x2="455" y2="850" stroke="#1c1917" stroke-width="8" stroke-linecap="butt"/>
+<line data-id="w-rb-r" x1="535" y1="540" x2="535" y2="850" stroke="#1c1917" stroke-width="8" stroke-linecap="butt"/>
+<line data-id="w-rb-b" x1="455" y1="850" x2="535" y2="850" stroke="#1c1917" stroke-width="8" stroke-linecap="butt"/>
+<line data-id="w-gros-r1" x1="535" y1="850" x2="535" y2="875" stroke="#1c1917" stroke-width="8" stroke-linecap="butt"/>
+<line data-id="w-gros-r2" x1="535" y1="935" x2="534.3333333333334" y2="1076" stroke="#1c1917" stroke-width="8" stroke-linecap="butt"/>
+<line data-id="w-core-l" x1="660" y1="595" x2="660" y2="922" stroke="#1c1917" stroke-width="8" stroke-linecap="butt"/>
+<line data-id="w-core-r" x1="735" y1="595" x2="735" y2="922" stroke="#1c1917" stroke-width="8" stroke-linecap="butt"/>
+<line data-id="w-core-t" x1="660" y1="595" x2="735" y2="595" stroke="#1c1917" stroke-width="8" stroke-linecap="butt"/>
+<line data-id="w-core-b" x1="660" y1="922" x2="735" y2="922" stroke="#1c1917" stroke-width="8" stroke-linecap="butt"/>
+<line data-id="w-core-d1" x1="660" y1="720" x2="735" y2="720" stroke="#1c1917" stroke-width="6" stroke-linecap="butt"/>
+<line data-id="w-core-d2" x1="660" y1="790" x2="735" y2="785" stroke="#1c1917" stroke-width="6" stroke-linecap="butt"/>
+<line data-id="w-at-t" x1="735" y1="635" x2="805" y2="635" stroke="#1c1917" stroke-width="6" stroke-linecap="butt"/>
+<line data-id="w-at-r" x1="805" y1="635" x2="805" y2="720" stroke="#1c1917" stroke-width="6" stroke-linecap="butt"/>
+<line data-id="w-sr-l" x1="830" y1="665" x2="830" y2="720" stroke="#1c1917" stroke-width="6" stroke-linecap="butt"/>
+<line data-id="w-sr-t" x1="830" y1="665" x2="910" y2="665" stroke="#1c1917" stroke-width="6" stroke-linecap="butt"/>
+<line data-id="w-sr-r" x1="910" y1="665" x2="910" y2="720" stroke="#1c1917" stroke-width="6" stroke-linecap="butt"/>
+<line data-id="w-sr-div1" x1="857" y1="665" x2="857" y2="720" stroke="#1c1917" stroke-width="4" stroke-linecap="butt"/>
+<line data-id="w-sr-div2" x1="883" y1="665" x2="883" y2="720" stroke="#1c1917" stroke-width="4" stroke-linecap="butt"/>
+<line data-id="w-corr-t" x1="735" y1="720" x2="942" y2="720" stroke="#1c1917" stroke-width="6" stroke-linecap="butt"/>
+<line data-id="w-child-t" x1="735" y1="785" x2="942" y2="780" stroke="#1c1917" stroke-width="6" stroke-linecap="butt"/>
+<line data-id="w-child-stub-t" x1="735" y1="922" x2="735" y2="950" stroke="#1c1917" stroke-width="8" stroke-linecap="butt"/>
+<line data-id="w-child-l" x1="735" y1="975" x2="735" y2="1076" stroke="#1c1917" stroke-width="8" stroke-linecap="butt"/>
+<line data-id="w-child-b" x1="680" y1="1076" x2="942" y2="1076" stroke="#1c1917" stroke-width="6" stroke-linecap="butt"/>
+<line data-id="w-vend-l" x1="680" y1="1076" x2="680" y2="1175" stroke="#1c1917" stroke-width="6" stroke-linecap="butt"/>
+<line data-id="w-vend-b" x1="680" y1="1175" x2="855" y2="1175" stroke="#1c1917" stroke-width="6" stroke-linecap="butt"/>
+<line data-id="w-east-spine" x1="855" y1="1076" x2="855" y2="1706" stroke="#1c1917" stroke-width="8" stroke-linecap="butt"/>
+<line data-id="w-east-d1" x1="855" y1="1285" x2="942" y2="1285" stroke="#1c1917" stroke-width="6" stroke-linecap="butt"/>
+<line data-id="w-east-d2" x1="855" y1="1450" x2="942" y2="1450" stroke="#1c1917" stroke-width="6" stroke-linecap="butt"/>
+<line data-id="w-east-d-sec" x1="855" y1="1510" x2="942" y2="1510" stroke="#1c1917" stroke-width="6" stroke-linecap="butt"/>
+<line data-id="w-east-d3" x1="855" y1="1706" x2="942" y2="1706" stroke="#1c1917" stroke-width="6" stroke-linecap="butt"/>
+<line data-id="w-cc-t" x1="675" y1="1310" x2="745" y2="1310" stroke="#1c1917" stroke-width="6" stroke-linecap="butt"/>
+<line data-id="w-cc-l" x1="675" y1="1310" x2="675" y2="1440" stroke="#1c1917" stroke-width="6" stroke-linecap="butt"/>
+<line data-id="w-cc-b" x1="675" y1="1440" x2="745" y2="1440" stroke="#1c1917" stroke-width="6" stroke-linecap="butt"/>
+<line data-id="w-cc-r" x1="745" y1="1310" x2="745" y2="1440" stroke="#1c1917" stroke-width="6" stroke-linecap="butt"/>
+<line data-id="w-spine-mid" x1="675" y1="1440" x2="675" y2="1706" stroke="#1c1917" stroke-width="8" stroke-linecap="butt"/>
+<line data-id="w-vest-t" x1="675" y1="1706" x2="855" y2="1706" stroke="#1c1917" stroke-width="6" stroke-linecap="butt"/>
+<line data-id="w-vest-d1" x1="755" y1="1706" x2="755" y2="1815" stroke="#1c1917" stroke-width="6" stroke-linecap="butt"/>
+<line data-id="w-vest-d2" x1="855" y1="1706" x2="855" y2="1815" stroke="#1c1917" stroke-width="6" stroke-linecap="butt"/>
+<line data-id="w-vest-l" x1="675" y1="1706" x2="675" y2="1815" stroke="#1c1917" stroke-width="6" stroke-linecap="butt"/>
+<circle data-id="d-wash-ext" cx="805" cy="1815" r="30" fill="none" stroke="#0d9488" stroke-width="3"/>
+<circle data-id="d-audit-ext" cx="715" cy="1815" r="25" fill="none" stroke="#0d9488" stroke-width="3"/>
+<circle data-id="d-wash-int" cx="805" cy="1706" r="30" fill="none" stroke="#0d9488" stroke-width="3"/>
+<circle data-id="d-audit-int" cx="715" cy="1706" r="25" fill="none" stroke="#0d9488" stroke-width="3"/>
+<circle data-id="d-hh-exit" cx="515" cy="239" r="20" fill="none" stroke="#0d9488" stroke-width="3"/>
+<circle data-id="d-gros-entry" cx="535" cy="905" r="30" fill="none" stroke="#0d9488" stroke-width="3"/>
+<circle data-id="d-child-entry" cx="735" cy="950" r="12.5" fill="none" stroke="#0d9488" stroke-width="3"/>
+<g data-id="f-stair-1" transform="translate(660 260) rotate(45)">
 <rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
 <text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">S</text>
 </g>
-<g data-id="f-stairs-2" transform="translate(473 855) rotate(45)">
+<g data-id="f-stair-2" transform="translate(460 820) rotate(45)">
 <rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
 <text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">S</text>
 </g>
-<g data-id="f-restroom" transform="translate(698 705) rotate(0)">
+<g data-id="f-stair-3" transform="translate(697 880) rotate(45)">
+<rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
+<text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">S</text>
+</g>
+<g data-id="f-stair-4" transform="translate(715 1395) rotate(45)">
+<rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
+<text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">S</text>
+</g>
+<g data-id="f-elev-1" transform="translate(515 1045) rotate(0)">
+<rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
+<text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">E</text>
+</g>
+<g data-id="f-elev-2" transform="translate(697 830) rotate(0)">
+<rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
+<text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">E</text>
+</g>
+<g data-id="f-elev-3" transform="translate(898 1760) rotate(0)">
+<rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
+<text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">E</text>
+</g>
+<g data-id="f-rr-1" transform="translate(697 660) rotate(0)">
 <rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
 <text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">WC</text>
 </g>
-<g data-id="f-elev-1" transform="translate(682 875) rotate(0)">
-<rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
-<text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">E</text>
-</g>
-<g data-id="f-stairs-3" transform="translate(680 940) rotate(45)">
-<rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
-<text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">S</text>
-</g>
-<g data-id="f-elev-2" transform="translate(488 1115) rotate(0)">
-<rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
-<text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">E</text>
-</g>
-<g data-id="f-stairs-4" transform="translate(750 1475) rotate(45)">
-<rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
-<text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">S</text>
-</g>
-<g data-id="f-elev-3" transform="translate(895 1785) rotate(0)">
-<rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
-<text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">E</text>
-</g>
-<g data-id="f-ent-1" transform="translate(730 1830) rotate(0)">
+<g data-id="f-ent-1" transform="translate(765 1815) rotate(0)">
 <rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
 <text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">→</text>
 </g>
-<g data-id="f-ent-2" transform="translate(810 1830) rotate(0)">
+<g data-id="f-exit-1" transform="translate(515 242) rotate(180)">
 <rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
-<text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">→</text>
+<text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">X</text>
 </g>
-<g data-id="f-ramp" transform="translate(665 1940) rotate(0)">
+<g data-id="f-info-1" transform="translate(587 272) rotate(0)">
 <rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
-<text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">R</text>
+<text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">i</text>
+</g>
+<g data-id="f-info-2" transform="translate(460 905) rotate(0)">
+<rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
+<text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">i</text>
+</g>
+<g data-id="f-info-3" transform="translate(635 1315) rotate(0)">
+<rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
+<text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">i</text>
+</g>
+<g data-id="f-info-4" transform="translate(898 1610) rotate(0)">
+<rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
+<text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">RC</text>
 </g>
 </svg>

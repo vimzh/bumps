@@ -22,10 +22,7 @@ export default async function MapPage({ params }: PageProps<"/map/[id]">) {
   }
   const project = (await projectResponse.json()) as Project;
 
-  const modelResponse = await fetch(`${API_URL}/projects/${id}/model`, {
-    cache: "no-store",
-  });
-  if (!modelResponse.ok) {
+  if (project.status !== "parsed") {
     return (
       <ParseView
         initialError={project.parseError}
@@ -36,6 +33,11 @@ export default async function MapPage({ params }: PageProps<"/map/[id]">) {
       />
     );
   }
+
+  const modelResponse = await fetch(`${API_URL}/projects/${id}/model`, {
+    cache: "no-store",
+  });
+  if (!modelResponse.ok) notFound();
   const { model, version } = (await modelResponse.json()) as {
     model: FloorModel;
     version: number;

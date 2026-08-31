@@ -1,14 +1,10 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { CanvasViewport } from "@/components/map/canvas-viewport";
 import { MapTopBar } from "@/components/map/map-top-bar";
-import {
-  PipelineLoading,
-  useCreepingPercent,
-} from "@/components/map/pipeline-loading";
+import { PipelineLoading } from "@/components/map/pipeline-loading";
 import { mapContent } from "@/data/map";
 import { API_URL } from "@/lib/api";
 
@@ -36,33 +32,6 @@ type ParseViewProps = {
   projectName: string;
 };
 
-// Maps the parse loop's stage/iteration onto a monotonic percent window.
-// The first parse is the bulk of a typical run (the loop usually accepts
-// after one or two reviews), so it takes 0-45%; each later critique or
-// refine unit closes 45% of the remaining distance to 98%.
-function parsePercentWindow(progress: ParseProgress | null): {
-  ceiling: number;
-  floor: number;
-} {
-  const unitsDone =
-    progress === null || progress.stage === "parsing"
-      ? 0
-      : progress.stage === "critiquing"
-        ? 1 + 2 * (progress.iteration - 1)
-        : 2 * progress.iteration - 2;
-  const boundary = (units: number): number => {
-    let percent = 0;
-    for (let i = 0; i < units; i++) {
-      percent = i === 0 ? 40 : percent + (98 - percent) * 0.38;
-    }
-    return percent;
-  };
-  return {
-    ceiling: boundary(unitsDone + 1),
-    floor: Math.max(2, boundary(unitsDone)),
-  };
-}
-
 export function ParseView({
   initialError,
   initialProgress,
@@ -70,7 +39,6 @@ export function ParseView({
   projectId,
   projectName,
 }: ParseViewProps) {
-  const router = useRouter();
   const [status, setStatus] = useState<ParseStatus>(initialStatus);
   const [error, setError] = useState<string | null>(initialError);
   const [progress, setProgress] = useState<ParseProgress | null>(
@@ -97,7 +65,9 @@ export function ParseView({
     if (status !== "parsing") {
       return;
     }
-    const interval = setInterval(async () => {
+    let cancelled = false;
+    let timeout: ReturnType<typeof setTimeout>;
+    const poll = async () => {
       try {
         const response = await fetch(`${API_URL}/projects/${projectId}`, {
           cache: "no-store",
@@ -111,7 +81,8 @@ export function ParseView({
           status: ParseStatus;
         };
         if (project.status === "parsed") {
-          router.refresh();
+          window.location.reload();
+          return;
         } else if (project.status !== "parsing") {
           setStatus(project.status);
           setError(project.parseError);
@@ -122,16 +93,16 @@ export function ParseView({
       } catch {
         // Transient poll failure; keep polling.
       }
-    }, 2000);
-    return () => clearInterval(interval);
-  }, [projectId, router, status]);
-
-  const percentWindow = parsePercentWindow(progress);
-  const percent = useCreepingPercent(
-    percentWindow.floor,
-    percentWindow.ceiling,
-    status === "parsing"
-  );
+      if (!cancelled) {
+        timeout = setTimeout(poll, 2000);
+      }
+    };
+    void poll();
+    return () => {
+      cancelled = true;
+      clearTimeout(timeout);
+    };
+  }, [projectId, status]);
   const stageDetail = progress
     ? `${mapContent.parse.passLabel} ${progress.iteration}/${progress.maxIterations} · ${mapContent.parse.stages[progress.stage]}`
     : mapContent.parse.stages.parsing;
@@ -196,7 +167,6 @@ export function ParseView({
           <PipelineLoading
             detail={stageDetail}
             hint={mapContent.loading.parse.timeHint}
-            percent={percent}
             steps={passSummaries}
             title={mapContent.loading.parse.title}
           />

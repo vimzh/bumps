@@ -1,59 +1,63 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 909 609" width="909" height="609">
 <rect width="909" height="609" fill="white"/>
-<polygon data-id="r-1" points="6,6 388,6 388,112 495,112 495,447 734,447 734,603 177,603 177,447 6,447" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
-<text x="360" y="323" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">LIBRARY</text>
-<polygon data-id="r-2" points="495,6 903,6 903,447 495,447" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
-<text x="699" y="226.5" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">STUDY ROOM</text>
-<polygon data-id="r-3" points="6,447 177,447 177,603 6,603" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
-<text x="91.5" y="525" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">RESTROOM</text>
-<polygon data-id="r-4" points="734,447 903,447 903,603 734,603" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
-<text x="818.5" y="525" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">RESTROOM</text>
-<polygon data-id="r-5" points="388,6 495,6 495,112 388,112" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
-<polygon data-id="fur-1" points="20,30 285,30 285,150 20,150" fill="#d6d3d1" stroke="#a8a29e" stroke-width="2"/>
-<text x="152.5" y="90" font-family="monospace" font-size="16" fill="#44403c" text-anchor="middle" dominant-baseline="middle">counter</text>
-<polygon data-id="fur-2" points="70,185 430,185 430,245 70,245" fill="#d6d3d1" stroke="#a8a29e" stroke-width="2"/>
-<text x="250" y="215" font-family="monospace" font-size="16" fill="#44403c" text-anchor="middle" dominant-baseline="middle">bookshelves</text>
-<polygon data-id="fur-3" points="70,265 430,265 430,325 70,325" fill="#d6d3d1" stroke="#a8a29e" stroke-width="2"/>
-<text x="250" y="295" font-family="monospace" font-size="16" fill="#44403c" text-anchor="middle" dominant-baseline="middle">bookshelves</text>
-<polygon data-id="fur-4" points="70,370 430,370 430,405 70,405" fill="#d6d3d1" stroke="#a8a29e" stroke-width="2"/>
-<text x="250" y="387.5" font-family="monospace" font-size="16" fill="#44403c" text-anchor="middle" dominant-baseline="middle">bookshelves</text>
-<polygon data-id="fur-5" points="505,12 745,12 745,80 505,80" fill="#d6d3d1" stroke="#a8a29e" stroke-width="2"/>
-<text x="625" y="46" font-family="monospace" font-size="16" fill="#44403c" text-anchor="middle" dominant-baseline="middle">desks</text>
-<polygon data-id="fur-6" points="820,12 895,12 895,160 820,160" fill="#d6d3d1" stroke="#a8a29e" stroke-width="2"/>
-<text x="857.5" y="86" font-family="monospace" font-size="16" fill="#44403c" text-anchor="middle" dominant-baseline="middle">desk</text>
-<polygon data-id="fur-7" points="555,120 705,120 705,260 555,260" fill="#d6d3d1" stroke="#a8a29e" stroke-width="2"/>
-<text x="630" y="190" font-family="monospace" font-size="16" fill="#44403c" text-anchor="middle" dominant-baseline="middle">table</text>
-<polygon data-id="fur-8" points="685,235 830,235 830,375 685,375" fill="#d6d3d1" stroke="#a8a29e" stroke-width="2"/>
-<text x="757.5" y="305" font-family="monospace" font-size="16" fill="#44403c" text-anchor="middle" dominant-baseline="middle">table</text>
-<polygon data-id="fur-9" points="505,410 845,410 845,445 505,445" fill="#d6d3d1" stroke="#a8a29e" stroke-width="2"/>
-<text x="675" y="427.5" font-family="monospace" font-size="16" fill="#44403c" text-anchor="middle" dominant-baseline="middle">counter</text>
-<polygon data-id="fur-10" points="490,455 640,455 640,535 490,535" fill="#d6d3d1" stroke="#a8a29e" stroke-width="2"/>
-<text x="565" y="495" font-family="monospace" font-size="16" fill="#44403c" text-anchor="middle" dominant-baseline="middle">sofa</text>
-<line data-id="w-1" x1="6" y1="6" x2="903" y2="6" stroke="#1c1917" stroke-width="12" stroke-linecap="square"/>
-<line data-id="w-2" x1="903" y1="6" x2="903" y2="603" stroke="#1c1917" stroke-width="12" stroke-linecap="square"/>
-<line data-id="w-3" x1="903" y1="603" x2="6" y2="603" stroke="#1c1917" stroke-width="12" stroke-linecap="square"/>
-<line data-id="w-4" x1="6" y1="603" x2="6" y2="6" stroke="#1c1917" stroke-width="12" stroke-linecap="square"/>
-<line data-id="w-5" x1="6" y1="447" x2="177" y2="447" stroke="#1c1917" stroke-width="10" stroke-linecap="square"/>
-<line data-id="w-6" x1="177" y1="447" x2="177" y2="603" stroke="#1c1917" stroke-width="10" stroke-linecap="square"/>
-<line data-id="w-7" x1="388" y1="6" x2="388" y2="112" stroke="#1c1917" stroke-width="6" stroke-linecap="square"/>
-<line data-id="w-8" x1="388" y1="112" x2="495" y2="112" stroke="#1c1917" stroke-width="6" stroke-linecap="square"/>
-<line data-id="w-9" x1="495" y1="6" x2="495" y2="447" stroke="#1c1917" stroke-width="10" stroke-linecap="square"/>
-<line data-id="w-10" x1="495" y1="447" x2="903" y2="447" stroke="#1c1917" stroke-width="10" stroke-linecap="square"/>
-<line data-id="w-11" x1="734" y1="447" x2="734" y2="603" stroke="#1c1917" stroke-width="10" stroke-linecap="square"/>
-<circle data-id="d-1" cx="375" cy="603" r="80" fill="none" stroke="#0d9488" stroke-width="3"/>
-<circle data-id="d-2" cx="177" cy="550" r="37.5" fill="none" stroke="#0d9488" stroke-width="3"/>
-<circle data-id="d-3" cx="734" cy="550" r="37.5" fill="none" stroke="#0d9488" stroke-width="3"/>
-<circle data-id="d-4" cx="495" cy="300" r="40" fill="none" stroke="#0d9488" stroke-width="3"/>
-<g data-id="f-1" transform="translate(375 595) rotate(0)">
+<polygon data-id="r-1" points="10,10 390,10 390,112 495,112 495,454 737,454 737,600 173,600 173,447 10,447" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<polygon data-id="r-2" points="495,10 899,10 899,454 495,454" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<polygon data-id="r-3" points="10,447 173,447 173,600 10,600" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<polygon data-id="r-4" points="737,454 899,454 899,600 737,600" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<polygon data-id="r-5" points="390,10 495,10 495,112 390,112" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<polygon data-id="fur-counter" points="12,32 287,32 287,148 12,148" fill="#d6d3d1" stroke="#a8a29e" stroke-width="2"/>
+<text x="149.5" y="90" font-family="monospace" font-size="16" fill="#44403c" text-anchor="middle" dominant-baseline="middle">counter</text>
+<polygon data-id="fur-bookshelf-1" points="72,186 433,186 433,248 72,248" fill="#d6d3d1" stroke="#a8a29e" stroke-width="2"/>
+<text x="252.5" y="217" font-family="monospace" font-size="16" fill="#44403c" text-anchor="middle" dominant-baseline="middle">bookshelves</text>
+<polygon data-id="fur-bookshelf-2" points="72,282 433,282 433,344 72,344" fill="#d6d3d1" stroke="#a8a29e" stroke-width="2"/>
+<text x="252.5" y="313" font-family="monospace" font-size="16" fill="#44403c" text-anchor="middle" dominant-baseline="middle">bookshelves</text>
+<polygon data-id="fur-bookshelf-3" points="72,378 433,378 433,409 72,409" fill="#d6d3d1" stroke="#a8a29e" stroke-width="2"/>
+<text x="252.5" y="393.5" font-family="monospace" font-size="16" fill="#44403c" text-anchor="middle" dominant-baseline="middle">bookshelves</text>
+<polygon data-id="fur-desks" points="505,18 742,18 742,80 505,80" fill="#d6d3d1" stroke="#a8a29e" stroke-width="2"/>
+<text x="623.5" y="49" font-family="monospace" font-size="16" fill="#44403c" text-anchor="middle" dominant-baseline="middle">desks</text>
+<polygon data-id="fur-corner-desk" points="748,18 890,18 890,160 850,160 850,52 748,52" fill="#d6d3d1" stroke="#a8a29e" stroke-width="2"/>
+<text x="829.3333333333334" y="76.66666666666667" font-family="monospace" font-size="16" fill="#44403c" text-anchor="middle" dominant-baseline="middle">counter</text>
+<polygon data-id="fur-table-1" points="565,120 708,120 708,260 565,260" fill="#d6d3d1" stroke="#a8a29e" stroke-width="2"/>
+<text x="636.5" y="190" font-family="monospace" font-size="16" fill="#44403c" text-anchor="middle" dominant-baseline="middle">table</text>
+<polygon data-id="fur-table-2" points="695,265 838,265 838,405 695,405" fill="#d6d3d1" stroke="#a8a29e" stroke-width="2"/>
+<text x="766.5" y="335" font-family="monospace" font-size="16" fill="#44403c" text-anchor="middle" dominant-baseline="middle">table</text>
+<polygon data-id="fur-bookshelf-study" points="505,415 742,415 742,445 505,445" fill="#d6d3d1" stroke="#a8a29e" stroke-width="2"/>
+<text x="623.5" y="430" font-family="monospace" font-size="16" fill="#44403c" text-anchor="middle" dominant-baseline="middle">bookshelves</text>
+<polygon data-id="fur-counter-study" points="742,415 890,415 890,445 742,445" fill="#d6d3d1" stroke="#a8a29e" stroke-width="2"/>
+<text x="816" y="430" font-family="monospace" font-size="16" fill="#44403c" text-anchor="middle" dominant-baseline="middle">counter</text>
+<polygon data-id="fur-sofa" points="495,456 645,456 645,535 495,535" fill="#d6d3d1" stroke="#a8a29e" stroke-width="2"/>
+<text x="570" y="495.5" font-family="monospace" font-size="16" fill="#44403c" text-anchor="middle" dominant-baseline="middle">sofa</text>
+<line data-id="w-top" x1="10" y1="10" x2="899" y2="10" stroke="#1c1917" stroke-width="14" stroke-linecap="butt"/>
+<line data-id="w-right" x1="899" y1="10" x2="899" y2="600" stroke="#1c1917" stroke-width="14" stroke-linecap="butt"/>
+<line data-id="w-left" x1="10" y1="10" x2="10" y2="600" stroke="#1c1917" stroke-width="14" stroke-linecap="butt"/>
+<line data-id="w-bottom-left" x1="10" y1="600" x2="296" y2="600" stroke="#1c1917" stroke-width="14" stroke-linecap="butt"/>
+<line data-id="w-bottom-right" x1="456" y1="600" x2="899" y2="600" stroke="#1c1917" stroke-width="14" stroke-linecap="butt"/>
+<line data-id="w-rest-l-top" x1="10" y1="447" x2="173" y2="447" stroke="#1c1917" stroke-width="14" stroke-linecap="butt"/>
+<line data-id="w-rest-l-right" x1="173" y1="447" x2="173" y2="515" stroke="#1c1917" stroke-width="14" stroke-linecap="butt"/>
+<line data-id="w-shaft-left" x1="390" y1="10" x2="390" y2="112" stroke="#1c1917" stroke-width="14" stroke-linecap="butt"/>
+<line data-id="w-shaft-bottom" x1="390" y1="112" x2="495" y2="112" stroke="#1c1917" stroke-width="14" stroke-linecap="butt"/>
+<line data-id="w-div-top" x1="495" y1="10" x2="495" y2="260" stroke="#1c1917" stroke-width="14" stroke-linecap="butt"/>
+<line data-id="w-div-mid" x1="495" y1="342" x2="495" y2="454" stroke="#1c1917" stroke-width="14" stroke-linecap="butt"/>
+<line data-id="w-study-bottom" x1="495" y1="454" x2="899" y2="454" stroke="#1c1917" stroke-width="14" stroke-linecap="butt"/>
+<line data-id="w-rest-r-left" x1="737" y1="454" x2="737" y2="515" stroke="#1c1917" stroke-width="14" stroke-linecap="butt"/>
+<circle data-id="d-entrance" cx="376" cy="600" r="80" fill="none" stroke="#0d9488" stroke-width="3"/>
+<circle data-id="d-rest-left" cx="173" cy="558" r="42.5" fill="none" stroke="#0d9488" stroke-width="3"/>
+<circle data-id="d-rest-right" cx="737" cy="558" r="42.5" fill="none" stroke="#0d9488" stroke-width="3"/>
+<circle data-id="d-study" cx="495" cy="301" r="41" fill="none" stroke="#0d9488" stroke-width="3"/>
+<g data-id="f-entrance" transform="translate(376 599) rotate(0)">
 <rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
 <text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">→</text>
 </g>
-<g data-id="f-2" transform="translate(92 525) rotate(0)">
+<g data-id="f-restroom-1" transform="translate(92 524) rotate(0)">
 <rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
 <text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">WC</text>
 </g>
-<g data-id="f-3" transform="translate(818 525) rotate(0)">
+<g data-id="f-restroom-2" transform="translate(818 524) rotate(0)">
 <rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
 <text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">WC</text>
+</g>
+<g data-id="f-reception" transform="translate(150 115) rotate(0)">
+<rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
+<text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">RC</text>
 </g>
 </svg>

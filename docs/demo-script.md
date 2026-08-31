@@ -1,33 +1,35 @@
-# Demo video script (~4 minutes)
+Hi, this is bumps! It turns weeks of expensive tactile-map design into a process that takes minutes.
 
-Record at the deployed Vercel URL. One continuous flow, one project, real floor plan (use `test-assets/floor-plans/` — the office plan with furniture and a title block demos the critique loop best).
+A blind or low-vision visitor can enter a building without knowing where the rooms, stairs, or exits are. Public buildings, libraries, stores, railway stations, and museums must be accessible. Yet many still do not have a tactile map.
 
-## 0:00–0:30 — The problem
-- Landing page on screen ("bumps — maps you can feel").
-- VO: "A blind visitor walks into an unfamiliar building with nothing. A tactile map fixes that — but each one is a custom commission from a specialist, so almost no building has one. bumps makes one from a floor plan, automatically."
+A tactile map gives the visitor the building through touch before the first step.
 
-## 0:30–1:20 — Upload → the parse loop (the Taskmaster moment #1)
-- Click Upload floor plan, pick the plan. Land on the wizard.
-- Point at the live loop line: "Pass 1/3 · Reviewing the extraction against the plan…" and the history ("pass 1: 2 findings · confidence 0.91").
-- VO: "Two Gemini agents built with Google's ADK: a parser extracts walls, rooms, doors — then a critic compares a rendering of that extraction against the original image and sends it back to fix what's wrong. It also scores its own confidence per element."
+Today, a specialist must interpret each plan, simplify it, add braille, and check every detail. This work is slow and expensive. bumps automates it for a standard 3D printer.
 
-## 1:20–2:20 — Edit: human in the loop
-- The model appears. Point at dashed-red flagged elements and "Needs review · N".
-- Confirm one from the panel; drag one element; show Next disabled until the list drains.
-- Type into the prompt panel: "rename OFFICE 101 to Studio" → summary appears, canvas updates. Optionally: "delete this" with a door selected.
-- Place "you are here" from the Add menu — "because a tactile map is read where it's mounted."
-- VO: "Everything the AI did is reviewable. The agent that applies these prompts can only emit typed operations — it physically can't corrupt the model."
+Four Gemini agents help with the design. The system uses two iteration loops to find and correct errors.
 
-## 2:20–3:10 — Tactile conversion + the validator loop (Taskmaster moment #2)
-- Click Next. Show "Converting & validating against tactile standards…", then the plate: braille dots, symbols, legend.
-- Point at "Layout passes: 2 → 0" and the badge "Zero violations — ready to print".
-- VO: "Deterministic code converts to a 200-millimeter plate under BANA and ADA rules — exact braille dot geometry, minimum fingertip clearances. Too big for one plate? It decides for you: a two-by-one or two-by-two grid, because a smaller map physically cannot be read by a finger. Geometry fixes what geometry can — labels are placed by search, seam conflicts by arithmetic — and an agent nudges only the judgment calls until the validator measures zero violations. Not zero? It cannot be exported."
+In the first loop, the parser extracts walls, rooms, doors, and labels. The critic compares this result with the source image. The parser then corrects each error that the critic finds.
 
-## 3:10–3:40 — Export
-- Click Next. Orbit the three.js STL — for a large venue this is the assembled multi-plate map as one seamless solid. Download one STL per plate + the legend.
-- If a print exists, show the physical plate here and run a finger over it.
-- VO: "A watertight STL — walls at one millimeter, symbols at one and a half, braille as spherical domes to ADA spec — plus a legend plate. Print it flat, no supports."
+Every map element gets a confidence score from zero to one. The loop continues until the review passes or the total confidence reaches its target.
 
-## 3:40–4:00 — Cloud proof + close
-- Show the `bumps-api` Cloud Run service in project `project-1ba74e2d-51e2-4753-b63`, its active revision and request logs, then open `https://bumps-api-1096378308677.asia-south1.run.app` and show the successful JSON response. Show the private `bumps-postgres` Cloud SQL instance as the database proof.
-- VO: "The public app uses Vercel and Render, while the same Bun and Hono backend also runs on Google Cloud Run with private Cloud SQL. Every agent uses Gemini 3.7 Flash directly through Vertex AI and Google's Agent Development Kit; the geometry is deterministic. A tactile map should cost a floor plan and a spool of filament — not a commission."
+Low-confidence elements are easy to find, and you can edit any map element. Move, add, delete, rename, or confirm it directly. You can also describe a change in plain language. The edit engine converts it into controlled operations with valid element IDs.
+
+Next, bumps selects the plate layout automatically. Each 200-by-200-millimeter plate fits common consumer 3D printers. The system selects the smallest readable grid, from one plate up to a 4-by-4 grid. It never shrinks tactile features below a readable size.
+
+We follow the BANA 2022 tactile-graphics guidelines and ADA Section 703. The system uses Grade 1 UEB braille with exact ADA dot size and spacing.
+
+The title appears in braille. Rooms use short braille keys, and the system creates the full braille legend automatically. It also includes the “you are here” marker.
+
+The validator checks plate margins, braille geometry, symbol sizes, wall heights, and spacing between tactile elements. It also checks doors, corridors, labels, and plate seams for readability.
+
+In the second loop, an agent adjusts labels and symbols. The validator measures the complete tactile layout after each change.
+
+The loop must reach zero violations. If any violation remains, the app blocks export and shows the exact problem. We never export a map that fails these checks.
+
+The agents make the decisions. The geometry engine enforces the rules.
+
+Finally, bumps creates a watertight STL file. A standard 3D printer can print each plate flat without supports. Large maps use multiple plates that join into one readable map.
+
+This live backend runs on Google Cloud Run. Its logs show Gemini 3.7 Flash calls through Vertex AI and Google’s Agent Development Kit. A private Cloud SQL database stores the project data.
+
+bumps turns an existing floor plan into a printable tactile map in minutes. People can review the complete result and trust every measured feature.

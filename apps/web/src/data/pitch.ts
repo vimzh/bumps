@@ -2,7 +2,7 @@ export const pitchSlides = [
   {
     id: "visitor",
     section: "The missing overview",
-    title: "Every public place needs a tactile map. Most still don’t have one.",
+    title: "Public buildings must be accessible. Most still have no tactile map.",
     body:
       "Blind and low-vision visitors are asked to navigate unfamiliar spaces without the overview sighted visitors get for free.",
     hero: {
@@ -53,7 +53,7 @@ export const pitchSlides = [
   {
     id: "agent",
     section: "The agentic answer",
-    title: "AI proposes. Geometry disposes.",
+    title: "Agents make the decisions. Geometry enforces the rules.",
     body:
       "Four focused agents do the judgment work. Typed operations, human review, and measured geometry keep the result trustworthy.",
     stages: [

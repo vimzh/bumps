@@ -1,6 +1,25 @@
-# Gemini Is the Engine Behind My Agentic Tactile Map Pipeline
+# Building bumps: From Floor Plans to 3D-Printable Tactile Maps with Gemini
 
-_A technical deep dive into how I used Gemini 3.7 Flash and Google ADK to turn floor-plan pixels into reviewed, standards-validated, 3D-printable tactile geometry._
+_How an agentic review pipeline, deterministic accessibility validator, and constrained geometry system turn visual building plans into maps blind users can feel._
+
+I created this article for the purposes of entering the All Things Agentic Hackathon.
+
+![bumps converts a visual floor plan into a tactile map for blind navigation](./assets/medium/bumps-cover.png)
+
+**bumps is a web application that converts an ordinary floor plan into a standards-validated, 3D-printable tactile map for blind and low-vision users.** A user uploads a PDF or image, reviews the extracted structure on an editable canvas, converts it into tactile geometry, and downloads a watertight STL with braille keys and a matching legend plate.
+
+The product is intended to compress a specialist workflow that can take weeks into a guided process that takes minutes. It does not ask a language model to generate a plausible-looking mesh. It builds a typed representation of the building, exposes uncertainty for human review, and refuses export when deterministic measurements fail.
+
+## What bumps actually does
+
+The user journey has four stages:
+
+1. **Parse:** Gemini reads a top-down architectural plan and extracts walls, rooms, doors, windows, entrances, stairs, elevators, restrooms, ramps, printed labels, paths, and roads into versioned vector JSON.
+2. **Edit:** the user inspects confidence flags, moves or relabels elements directly, or gives a natural-language instruction that becomes a bounded edit operation.
+3. **Tactile:** deterministic code simplifies visual detail, applies the tactile symbol vocabulary, generates braille keys and a legend, selects an appropriate plate grid, and measures every result in millimetres.
+4. **Export:** only a zero-violation design is extruded, checked for watertightness, previewed in Three.js, and written as one or more binary STL files.
+
+That end-to-end flow is the reason I built bumps as an agentic system rather than a collection of disconnected AI features. Each stage produces evidence and constraints for the next stage. The agents do not merely answer prompts; they advance a persistent physical-design workflow under explicit gates.
 
 The hardest part of building **bumps** was not generating an STL.
 
@@ -15,6 +34,14 @@ That model is **Gemini 3.7 Flash**.
 I use Gemini across a team of specialized agents built with Google’s Agent Development Kit for TypeScript. Gemini parses the original plan, critiques its own extraction, converts natural-language corrections into typed operations, and resolves tactile-layout problems under a deterministic validator.
 
 The result is a pipeline that can turn a PDF or floor-plan image into a watertight, 3D-printable tactile map with braille in minutes instead of weeks.
+
+## What makes the workflow agentic
+
+I use “agentic” here in a narrow engineering sense. The system accepts a goal, decomposes it across specialized roles, preserves state between calls, invokes deterministic tools, critiques intermediate work, and continues until a measurable exit condition is satisfied or the user must intervene.
+
+The Parser Agent does not hand its first answer directly to the editor. Its output is normalized, rendered, structurally audited, and reviewed by a separate Critique Agent. The Tactile Layout Agent does not declare success after proposing a visually convincing arrangement. Its moves are applied to the real design and checked again by the same deterministic validator that guards export.
+
+This distinction matters because a linear prompt chain can produce several outputs without taking responsibility for the state transitions between them. bumps makes those transitions explicit: schema validation, confidence gates, critique findings, typed edits, measured violations, and an HTTP 409 export failure when the physical contract is not satisfied.
 
 ## Why Gemini fits this problem unusually well
 
@@ -71,7 +98,7 @@ The Critique Agent receives the source image, the rendered extraction, and the s
 
 Its job is adversarial: find what the parser got wrong.
 
-It labels each finding as missing, extra, misplaced, or mislabeled and assigns severity based on whether the error could mislead a blind reader. Major findings force another parsing pass. The loop runs until the review passes, confidence reaches the target without major issues, or the three-pass limit is reached.
+It labels each finding as missing, extra, misplaced, or mislabeled and assigns severity based on whether the error could mislead a blind reader. Major findings force another parsing pass. The loop runs until the review passes, confidence reaches the target without major issues, or the five-pass limit is reached.
 
 Conceptually, the loop is simple:
 
@@ -125,7 +152,7 @@ Gemini is excellent at perception, comparison, language, and constrained spatial
 
 That boundary became the project’s engineering principle:
 
-> **AI proposes. Geometry disposes.**
+> **Agents make the decisions. Geometry enforces the rules.**
 
 Gemini performs the work that benefits from reasoning. TypeScript performs the work that must be exact.
 
@@ -186,6 +213,18 @@ The binary STL writer serializes the final mesh for download. Multi-plate files 
 
 Gemini’s work remains visible all the way to this stage. The walls, rooms, labels, and features in the physical model originate in its multimodal interpretation—but only after critique, human review, schema validation, tactile transformation, and measurable standards checks.
 
+![Close view of a generated tactile map with raised geometry and braille](./assets/medium/tactile-map-detail.png)
+
+_The output is physical information, not a visual mock-up: raised walls, distinct symbols, braille keys, and a separate legend are generated as printable geometry._
+
+## Deployment is part of the proof
+
+The public frontend runs on Next.js. The primary Bun and Hono API uses PostgreSQL through Drizzle, while the hackathon proof deployment runs on Google Cloud Run with private Cloud SQL, Secret Manager, Artifact Registry, Cloud Build, and Vertex AI.
+
+The deployed agent path uses Gemini 3.7 Flash through Vertex AI. This matters because a local prototype that happens to call a hosted model is not the same thing as a reproducible cloud system. The submission includes the public application, the Cloud Run services, the database deployment, the architecture evidence, and repository instructions that let judges trace the request from upload through agent execution and export.
+
+I kept model roles independently configurable but intentionally used one Gemini family across perception, critique, editing, and layout. The separation comes from instructions, schemas, permissions, context, and thinking budgets—not from introducing more services than the product needs.
+
 ## Why I chose Gemini instead of stitching together narrow models
 
 I could have assembled separate OCR, floor-plan segmentation, object detection, instruction parsing, and layout models.
@@ -229,10 +268,20 @@ Gemini is what made that goal technically believable for me. It collapsed a frag
 
 That is the kind of agentic AI I want to keep building: not a model that merely produces impressive output, but one that can participate in a system designed to earn trust.
 
+## Why I entered bumps in the All Things Agentic Hackathon
+
+The Taskmaster track asks for agents that take a goal and carry out multi-step work. “Upload a floor plan and produce a printable tactile map” is exactly that kind of goal: it crosses multimodal perception, review, human correction, standards conversion, spatial optimization, and mesh generation.
+
+The hackathon also forced a useful architectural discipline. The most impressive demo would have been easy to optimize for: one plan, one model call, one attractive STL. I chose the harder boundary instead. The system has to show its intermediate model, surface uncertainty, preserve element identities across revisions, expose validator failures, and reject an unsafe export.
+
+That makes the agent work visible, but it also makes the product honest. A blind user should not have to trust that a model probably interpreted the building correctly. The software should show where it is uncertain and prove which physical constraints it actually measured.
+
 ---
 
 **bumps was built solo for the #AllThingsAgentic Hackathon using Gemini 3.7 Flash, Google ADK for TypeScript, Next.js, Bun, Hono, Three.js, manifold-3d, PostgreSQL, Vercel, Render, and Google Cloud Run.**
 
-Demo: [add link]
+Live demo: [bumps on Google Cloud Run](https://bumps-web-1096378308677.asia-south1.run.app/)
 
-Project: [add Devpost or repository link]
+Source code and reproducible testing instructions: [github.com/vimzh/bumps](https://github.com/vimzh/bumps)
+
+#AllThingsAgentic #Gemini #GoogleADK #GoogleCloud #AIAgents #Accessibility #3DPrinting

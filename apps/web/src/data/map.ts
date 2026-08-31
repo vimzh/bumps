@@ -5,6 +5,7 @@ export const mapContent = {
     cancelHint: "Esc to cancel",
     confidencePrefix: "confidence",
     confirmLabel: "Confirm",
+    confirmAllLabel: "Confirm all",
     deleteLabel: "Delete",
     doorHint: "Drag along a wall to set the door opening. Release to finish.",
     furnitureAreaLabel: "Furniture area",

@@ -166,15 +166,16 @@
 }
 
 .agentHeading {
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(20rem, 0.8fr);
   align-items: end;
-  justify-content: space-between;
   gap: clamp(2rem, 6vw, 7rem);
 }
 
 .agentHeading .displayTitle {
-  max-width: none;
-  white-space: nowrap;
+  max-width: 23ch;
+  font-size: clamp(3rem, 4vw, 5rem);
+  white-space: normal;
 }
 
 .agentHeading .lede {
@@ -183,7 +184,7 @@
 
 .pipeline {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 0.8rem;
   min-height: 0;
   list-style: none;
@@ -321,7 +322,7 @@
   }
 
   .agentHeading {
-    display: grid;
+    grid-template-columns: 1fr;
   }
 
   .agentHeading .displayTitle {

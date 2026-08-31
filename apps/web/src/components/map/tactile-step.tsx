@@ -15,10 +15,7 @@ import { Button } from "@/components/ui/button";
 import { CanvasViewport } from "@/components/map/canvas-viewport";
 import { MapTopBar } from "@/components/map/map-top-bar";
 import { ValidationChecks } from "@/components/map/validation-checks";
-import {
-  PipelineLoading,
-  useCreepingPercent,
-} from "@/components/map/pipeline-loading";
+import { PipelineLoading } from "@/components/map/pipeline-loading";
 import { TactileViewer } from "@/components/map/tactile-viewer";
 import { mapContent } from "@/data/map";
 import { API_URL } from "@/lib/api";
@@ -43,7 +40,6 @@ type State =
 
 export function TactileStep({ onBack, onNext, projectId }: TactileStepProps) {
   const [state, setState] = useState<State>({ kind: "loading" });
-  const percent = useCreepingPercent(3, 92, state.kind === "loading");
   // The floor model the design was converted from, for the checks report.
   const [model, setModel] = useState<FloorModel | null>(null);
   useEffect(() => {
@@ -86,7 +82,10 @@ export function TactileStep({ onBack, onNext, projectId }: TactileStepProps) {
         method: "POST",
       });
       if (!start.ok && start.status !== 202) {
-        throw new Error(`Conversion start failed with status ${start.status}`);
+        const payload = (await start.json().catch(() => null)) as {
+          error?: string;
+        } | null;
+        throw new Error(payload?.error ?? mapContent.tactile.failed);
       }
       // Poll until the background convert-validate-layout loop settles.
       for (let attempt = 0; attempt < 150; attempt++) {
@@ -124,8 +123,12 @@ export function TactileStep({ onBack, onNext, projectId }: TactileStepProps) {
         return;
       }
       throw new Error("Conversion timed out");
-    } catch {
-      setState({ kind: "error", message: mapContent.tactile.failed });
+    } catch (error) {
+      setState({
+        kind: "error",
+        message:
+          error instanceof Error ? error.message : mapContent.tactile.failed,
+      });
     }
   }, [projectId]);
 
@@ -201,7 +204,6 @@ export function TactileStep({ onBack, onNext, projectId }: TactileStepProps) {
       {state.kind === "loading" && (
         <PipelineLoading
           detail={mapContent.tactile.converting}
-          percent={percent}
           title={mapContent.loading.tactile.title}
         />
       )}

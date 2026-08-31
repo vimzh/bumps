@@ -14,7 +14,7 @@ export function GalleryEntry({ entry }: GalleryEntryProps) {
       <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
         {entry.description}
       </p>
-      <div className="mt-4 grid grid-cols-1 divide-y overflow-hidden rounded-sm border md:grid-cols-3 md:divide-x md:divide-y-0">
+      <div className="mt-4 grid grid-cols-1 divide-y overflow-hidden rounded-sm border md:grid-cols-2 md:divide-x md:divide-y-0">
         <figure>
           <figcaption className="border-b px-3 py-2 font-mono text-xs text-muted-foreground">
             {galleryContent.sourceLabel}
@@ -24,17 +24,6 @@ export function GalleryEntry({ entry }: GalleryEntryProps) {
             alt={`${entry.title} — ${galleryContent.sourceLabel}`}
             className="aspect-square w-full bg-white object-contain"
             src={entry.source}
-          />
-        </figure>
-        <figure>
-          <figcaption className="border-b px-3 py-2 font-mono text-xs text-muted-foreground">
-            {galleryContent.designLabel}
-          </figcaption>
-          {/* eslint-disable-next-line @next/next/no-img-element -- static gallery asset */}
-          <img
-            alt={`${entry.title} — ${galleryContent.designLabel}`}
-            className="aspect-square w-full bg-white object-contain"
-            src={entry.design}
           />
         </figure>
         <figure>

@@ -5,6 +5,7 @@ import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { STLLoader } from "three/addons/loaders/STLLoader.js";
 import {
+  BRAILLE_MM,
   compositeSize,
   textBrailleSize,
   type Point,
@@ -50,7 +51,7 @@ function pointInPolygon(px: number, py: number, polygon: Point[]): boolean {
 
 // Classify every vertex by which design element it belongs to. Runs on the
 // raw STL coordinates (x right, y up = plate height - design y, z relief).
-function buildReviewColors(
+export function buildReviewColors(
   geometry: THREE.BufferGeometry,
   design: TactileDesign
 ): THREE.BufferAttribute {
@@ -69,14 +70,33 @@ function buildReviewColors(
       size: e.kind === "braille" ? textBrailleSize(e.key) : { heightMm: 8, widthMm: 16 },
     }));
 
-  for (let i = 0; i < positions.count; i++) {
-    const x = positions.getX(i);
-    const designY = plateH - positions.getY(i);
-    const z = positions.getZ(i);
+  for (let i = 0; i < positions.count; i += 3) {
+    const triangleSize = Math.min(3, positions.count - i);
+    let x = 0;
+    let designY = 0;
+    let maxZ = -Infinity;
+    let maxEdge = 0;
+    for (let vertex = 0; vertex < triangleSize; vertex++) {
+      x += positions.getX(i + vertex);
+      designY += plateH - positions.getY(i + vertex);
+      maxZ = Math.max(maxZ, positions.getZ(i + vertex));
+      for (let other = 0; other < vertex; other++) {
+        maxEdge = Math.max(
+          maxEdge,
+          Math.hypot(
+            positions.getX(i + vertex) - positions.getX(i + other),
+            positions.getY(i + vertex) - positions.getY(i + other),
+            positions.getZ(i + vertex) - positions.getZ(i + other)
+          )
+        );
+      }
+    }
+    x /= triangleSize;
+    designY /= triangleSize;
     let color = REVIEW_COLORS.base;
-    if (z > baseTop - 0.6) {
+    if (maxZ > baseTop) {
       const nearBraille =
-        z > baseTop &&
+        maxEdge <= BRAILLE_MM.dotDiameter * 2 &&
         brailleRuns.some(
           ({ at, size }) =>
             x >= at.x - 2 &&
@@ -87,7 +107,6 @@ function buildReviewColors(
       if (nearBraille) {
         color = REVIEW_COLORS.braille;
       } else if (
-        z > baseTop &&
         symbols.some(
           (s) =>
             s.kind === "symbol" &&
@@ -96,7 +115,6 @@ function buildReviewColors(
       ) {
         color = REVIEW_COLORS.symbol;
       } else if (
-        z > baseTop &&
         lines.some(
           (l) =>
             l.kind === "line" &&
@@ -110,7 +128,6 @@ function buildReviewColors(
       ) {
         color = REVIEW_COLORS.line;
       } else if (
-        z > baseTop &&
         areas.some(
           (a) => a.kind === "area" && pointInPolygon(x, designY, a.polygon)
         )
@@ -118,9 +135,13 @@ function buildReviewColors(
         color = REVIEW_COLORS.area;
       }
     }
-    colors[3 * i] = color.r;
-    colors[3 * i + 1] = color.g;
-    colors[3 * i + 2] = color.b;
+    // STL triangles are non-indexed. One color per face prevents WebGL from
+    // interpolating unrelated semantic colors into a gradient.
+    for (let vertex = 0; vertex < triangleSize; vertex++) {
+      colors[3 * (i + vertex)] = color.r;
+      colors[3 * (i + vertex) + 1] = color.g;
+      colors[3 * (i + vertex) + 2] = color.b;
+    }
   }
   return new THREE.BufferAttribute(colors, 3);
 }

@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 
 type ReviewPanelProps = {
   elements: FloorElement[];
+  onConfirmAll: () => void;
   onConfirm: (id: string) => void;
   onSelect: (id: string) => void;
   selectedId: string | null;
@@ -14,15 +15,29 @@ type ReviewPanelProps = {
 
 export function ReviewPanel({
   elements,
+  onConfirmAll,
   onConfirm,
   onSelect,
   selectedId,
 }: ReviewPanelProps) {
   return (
     <div>
-      <h2 className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-        {mapContent.edit.reviewTitle} · {elements.length}
-      </h2>
+      <div className="flex items-center justify-between gap-2">
+        <h2 className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+          {mapContent.edit.reviewTitle} · {elements.length}
+        </h2>
+        {elements.length > 1 && (
+          <Button
+            className="h-6 cursor-pointer rounded-sm px-2 text-xs"
+            onClick={onConfirmAll}
+            size="sm"
+            type="button"
+            variant="outline"
+          >
+            {mapContent.edit.confirmAllLabel}
+          </Button>
+        )}
+      </div>
       {elements.length === 0 ? (
         <p className="mt-2 text-xs text-muted-foreground">
           {mapContent.edit.reviewEmpty}

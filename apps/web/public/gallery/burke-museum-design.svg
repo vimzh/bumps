@@ -1,80 +1,76 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1036 2000" width="1036" height="2000">
 <rect width="1036" height="2000" fill="white"/>
-<polygon data-id="r-1" points="138,98 446,98 446,636 138,636" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
-<text x="292" y="367" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">ARTS &amp; CULTURES COLLECTIONS</text>
-<polygon data-id="r-2" points="138,650 446,650 446,906 138,906" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
-<text x="292" y="778" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">ARTS &amp; CULTURES WORKROOM</text>
-<polygon data-id="r-3" points="446,98 928,98 928,650 552,650 552,906 446,906 446,98" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
-<text x="614" y="486.57142857142856" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">NORTHWEST NATIVE ART GALLERY</text>
-<polygon data-id="r-4" points="138,906 552,906 552,1360 138,1360" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
-<text x="345" y="1133" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">CULTURE IS LIVING GALLERY</text>
-<polygon data-id="r-5" points="658,650 928,650 928,830 658,830" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
-<text x="793" y="740" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">ARTIST STUDIO</text>
-<polygon data-id="r-6" points="658,830 928,830 928,1010 658,1010" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
-<text x="793" y="920" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">RESTROOM</text>
-<polygon data-id="r-7" points="658,1010 928,1010 928,1220 658,1220" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
-<text x="793" y="1115" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">COAT CHECK</text>
-<polygon data-id="r-8" points="658,1360 928,1360 928,1600 658,1600" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
-<text x="793" y="1480" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">OFF THE REZ CAFÉ</text>
-<polygon data-id="r-9" points="138,1360 552,1360 552,1600 138,1600" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
-<text x="345" y="1480" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">ADMISSION + STORE</text>
-<polygon data-id="r-10" points="482,1750 928,1750 928,1968 482,1968" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
-<text x="705" y="1859" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">CASCADE ROOM</text>
-<line data-id="w-1" x1="138" y1="98" x2="928" y2="98" stroke="#1c1917" stroke-width="4" stroke-linecap="square"/>
-<line data-id="w-2" x1="928" y1="98" x2="928" y2="1640" stroke="#1c1917" stroke-width="4" stroke-linecap="square"/>
-<line data-id="w-3" x1="928" y1="1750" x2="928" y2="1968" stroke="#1c1917" stroke-width="4" stroke-linecap="square"/>
-<line data-id="w-4" x1="928" y1="1968" x2="138" y2="1968" stroke="#1c1917" stroke-width="4" stroke-linecap="square"/>
-<line data-id="w-5" x1="138" y1="1968" x2="138" y2="98" stroke="#1c1917" stroke-width="4" stroke-linecap="square"/>
-<line data-id="w-6" x1="446" y1="98" x2="446" y2="636" stroke="#1c1917" stroke-width="4" stroke-linecap="square"/>
-<line data-id="w-7" x1="138" y1="636" x2="446" y2="636" stroke="#1c1917" stroke-width="4" stroke-linecap="square"/>
-<line data-id="w-8" x1="138" y1="650" x2="446" y2="650" stroke="#1c1917" stroke-width="4" stroke-linecap="square"/>
-<line data-id="w-9" x1="446" y1="650" x2="446" y2="906" stroke="#1c1917" stroke-width="4" stroke-linecap="square"/>
-<line data-id="w-10" x1="138" y1="906" x2="446" y2="906" stroke="#1c1917" stroke-width="4" stroke-linecap="square"/>
-<line data-id="w-11" x1="658" y1="650" x2="928" y2="650" stroke="#1c1917" stroke-width="4" stroke-linecap="square"/>
-<line data-id="w-12" x1="658" y1="650" x2="658" y2="1220" stroke="#1c1917" stroke-width="4" stroke-linecap="square"/>
-<line data-id="w-13" x1="658" y1="830" x2="928" y2="830" stroke="#1c1917" stroke-width="4" stroke-linecap="square"/>
-<line data-id="w-14" x1="658" y1="1010" x2="928" y2="1010" stroke="#1c1917" stroke-width="4" stroke-linecap="square"/>
-<line data-id="w-15" x1="658" y1="1360" x2="928" y2="1360" stroke="#1c1917" stroke-width="4" stroke-linecap="square"/>
-<line data-id="w-16" x1="658" y1="1360" x2="658" y2="1600" stroke="#1c1917" stroke-width="4" stroke-linecap="square"/>
-<line data-id="w-17" x1="658" y1="1600" x2="928" y2="1600" stroke="#1c1917" stroke-width="4" stroke-linecap="square"/>
-<line data-id="w-18" x1="150" y1="1600" x2="446" y2="1600" stroke="#1c1917" stroke-width="4" stroke-linecap="square"/>
-<line data-id="w-19" x1="658" y1="1750" x2="928" y2="1750" stroke="#1c1917" stroke-width="4" stroke-linecap="square"/>
-<line data-id="w-20" x1="482" y1="1750" x2="482" y2="1968" stroke="#1c1917" stroke-width="4" stroke-linecap="square"/>
-<circle data-id="d-1" cx="928" cy="1695" r="55" fill="none" stroke="#0d9488" stroke-width="3"/>
-<g data-id="f-1" transform="translate(860 130) rotate(0)">
+<polygon data-id="r-collections" points="140,98 459,98 459,708 140,708" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="299.5" y="403" font-family="monospace" font-size="11.5" fill="#44403c" text-anchor="middle" dominant-baseline="middle">ARTS &amp; CULTURES COLLECTIONS</text>
+<polygon data-id="r-workroom" points="140,708 459,708 459,962 140,962" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="299.5" y="835" font-family="monospace" font-size="13" fill="#44403c" text-anchor="middle" dominant-baseline="middle">ARTS &amp; CULTURES WORKROOM</text>
+<polygon data-id="r-nw-native-art" points="459,98 812,98 812,178 925,178 925,640 677,640 677,962 459,962" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="718.25" y="469.5" font-family="monospace" font-size="11" fill="#44403c" text-anchor="middle" dominant-baseline="middle">NORTHWEST NATIVE ART GALLERY</text>
+<polygon data-id="r-culture-living" points="140,962 677,962 677,1390 140,1390" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="408.5" y="1176" font-family="monospace" font-size="12.5" fill="#44403c" text-anchor="middle" dominant-baseline="middle">CULTURE IS LIVING GALLERY</text>
+<polygon data-id="r-artist-studio" points="677,640 925,640 925,820 677,820" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="801" y="730" font-family="monospace" font-size="18.5" fill="#44403c" text-anchor="middle" dominant-baseline="middle">ARTIST STUDIO</text>
+<polygon data-id="r-restroom" points="677,820 925,820 925,1150 677,1150" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="801" y="985" font-family="monospace" font-size="20" fill="#44403c" text-anchor="middle" dominant-baseline="middle">RESTROOM</text>
+<polygon data-id="r-cafe" points="677,1398 925,1398 925,1675 677,1675" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="801" y="1536.5" font-family="monospace" font-size="17" fill="#44403c" text-anchor="middle" dominant-baseline="middle">OFF THE REZ CAFÉ</text>
+<polygon data-id="r-admission-store" points="140,1390 677,1390 677,1612 458,1612 458,1750 140,1750" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="425" y="1584" font-family="monospace" font-size="16.5" fill="#44403c" text-anchor="middle" dominant-baseline="middle">ADMISSION + STORE</text>
+<polygon data-id="r-cascade-room" points="415,1750 815,1750 815,1970 415,1970" fill="#f5f5f4" stroke="#d6d3d1" stroke-width="1"/>
+<text x="615" y="1860" font-family="monospace" font-size="19" fill="#44403c" text-anchor="middle" dominant-baseline="middle">CASCADE ROOM</text>
+<line data-id="w-top" x1="140" y1="98" x2="925" y2="98" stroke="#1c1917" stroke-width="4" stroke-linecap="butt"/>
+<line data-id="w-left" x1="140" y1="98" x2="140" y2="1970" stroke="#1c1917" stroke-width="4" stroke-linecap="butt"/>
+<line data-id="w-bottom" x1="140" y1="1970" x2="815" y2="1970" stroke="#1c1917" stroke-width="4" stroke-linecap="butt"/>
+<line data-id="w-right-top" x1="925" y1="98" x2="925" y2="1675" stroke="#1c1917" stroke-width="4" stroke-linecap="butt"/>
+<line data-id="w-cascade-right" x1="815" y1="1750" x2="815" y2="1970" stroke="#1c1917" stroke-width="4" stroke-linecap="butt"/>
+<line data-id="w-cascade-top" x1="415" y1="1750" x2="815" y2="1750" stroke="#1c1917" stroke-width="4" stroke-linecap="butt"/>
+<line data-id="w-elev1-left" x1="812" y1="98" x2="812" y2="178" stroke="#1c1917" stroke-width="4" stroke-linecap="butt"/>
+<line data-id="w-elev1-bot" x1="812" y1="178" x2="925" y2="178" stroke="#1c1917" stroke-width="4" stroke-linecap="butt"/>
+<line data-id="w-art-top" x1="677" y1="640" x2="925" y2="640" stroke="#1c1917" stroke-width="4" stroke-linecap="butt"/>
+<line data-id="w-art-bot" x1="677" y1="820" x2="925" y2="820" stroke="#1c1917" stroke-width="4" stroke-linecap="butt"/>
+<line data-id="w-stair-right" x1="677" y1="640" x2="677" y2="1150" stroke="#1c1917" stroke-width="4" stroke-linecap="butt"/>
+<line data-id="w-restroom-mid" x1="740" y1="980" x2="925" y2="980" stroke="#1c1917" stroke-width="4" stroke-linecap="butt"/>
+<line data-id="w-elev2-top" x1="677" y1="1270" x2="780" y2="1270" stroke="#1c1917" stroke-width="4" stroke-linecap="butt"/>
+<line data-id="w-elev2-left" x1="677" y1="1270" x2="677" y2="1398" stroke="#1c1917" stroke-width="4" stroke-linecap="butt"/>
+<line data-id="w-elev2-right" x1="780" y1="1270" x2="780" y2="1398" stroke="#1c1917" stroke-width="4" stroke-linecap="butt"/>
+<line data-id="w-cafe-top" x1="677" y1="1398" x2="925" y2="1398" stroke="#1c1917" stroke-width="4" stroke-linecap="butt"/>
+<line data-id="w-cafe-left" x1="677" y1="1398" x2="677" y2="1675" stroke="#1c1917" stroke-width="4" stroke-linecap="butt"/>
+<line data-id="w-cafe-bot" x1="677" y1="1675" x2="925" y2="1675" stroke="#1c1917" stroke-width="4" stroke-linecap="butt"/>
+<line data-id="w-admin-div" x1="160" y1="1612" x2="458" y2="1612" stroke="#1c1917" stroke-width="4" stroke-linecap="butt"/>
+<line data-id="w-elev3-left" x1="390" y1="1765" x2="390" y2="1970" stroke="#1c1917" stroke-width="4" stroke-linecap="butt"/>
+<line data-id="w-elev3-right" x1="498" y1="1765" x2="498" y2="1970" stroke="#1c1917" stroke-width="4" stroke-linecap="butt"/>
+<line data-id="w-elev3-top" x1="390" y1="1765" x2="498" y2="1765" stroke="#1c1917" stroke-width="4" stroke-linecap="butt"/>
+<circle data-id="d-1" cx="750" cy="1675" r="45" fill="none" stroke="#0d9488" stroke-width="3"/>
+<g data-id="f-elev-1" transform="translate(868 138) rotate(0)">
 <rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
 <text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">E</text>
 </g>
-<g data-id="f-2" transform="translate(604 965) rotate(0)">
+<g data-id="f-elev-2" transform="translate(710 1335) rotate(0)">
+<rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
+<text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">E</text>
+</g>
+<g data-id="f-elev-3" transform="translate(444 1825) rotate(0)">
+<rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
+<text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">E</text>
+</g>
+<g data-id="f-stairs-1" transform="translate(615 970) rotate(0)">
 <rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
 <text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">S</text>
 </g>
-<g data-id="f-3" transform="translate(793 920) rotate(0)">
+<g data-id="f-stairs-2" transform="translate(335 1755) rotate(270)">
+<rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
+<text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">S</text>
+</g>
+<g data-id="f-restroom-1" transform="translate(763 880) rotate(0)">
 <rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
 <text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">WC</text>
 </g>
-<g data-id="f-4" transform="translate(810 1220) rotate(90)">
-<rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
-<text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">X</text>
-</g>
-<g data-id="f-5" transform="translate(709 1305) rotate(0)">
-<rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
-<text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">E</text>
-</g>
-<g data-id="f-6" transform="translate(618 1695) rotate(180)">
+<g data-id="f-entrance-1" transform="translate(645 1650) rotate(180)">
 <rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
 <text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">→</text>
 </g>
-<g data-id="f-7" transform="translate(330 1710) rotate(90)">
+<g data-id="f-exit-1" transform="translate(810 1215) rotate(90)">
 <rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
-<text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">S</text>
-</g>
-<g data-id="f-8" transform="translate(430 1859) rotate(0)">
-<rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
-<text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">E</text>
-</g>
-<g data-id="f-9" transform="translate(925 1690) rotate(0)">
-<rect x="-16" y="-16" width="32" height="32" fill="white" stroke="#7c3aed" stroke-width="3"/>
-<text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">R</text>
+<text font-family="monospace" font-size="18" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle">X</text>
 </g>
 </svg>

@@ -37,7 +37,7 @@
       "zone": "agents",
       "title": "Gemini reviews the extraction",
       "body": ["original plan vs rendered model", "missing · extra · misplaced · mislabeled"],
-      "note": "Major findings trigger another parse, up to 3 passes",
+      "note": "Major findings trigger another parse, up to 5 passes",
       "status": "implemented",
       "size": "wide",
       "row": 2,

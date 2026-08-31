@@ -5,10 +5,7 @@ import { compositeSize, type TactileDesign } from "@bumps/floor-model";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { MapTopBar } from "@/components/map/map-top-bar";
-import {
-  PipelineLoading,
-  useCreepingPercent,
-} from "@/components/map/pipeline-loading";
+import { PipelineLoading } from "@/components/map/pipeline-loading";
 import { StlPreview } from "@/components/map/stl-preview";
 import { mapContent } from "@/data/map";
 import { API_URL } from "@/lib/api";
@@ -45,7 +42,6 @@ type ExportStepProps = {
 
 export function ExportStep({ onBack, projectId }: ExportStepProps) {
   const [state, setState] = useState<State>({ kind: "loading" });
-  const percent = useCreepingPercent(3, 92, state.kind === "loading");
   const [betterView, setBetterView] = useState(true);
   const [design, setDesign] = useState<TactileDesign | null>(null);
   const grid = design?.grid ?? { cols: 1, rows: 1 };
@@ -129,7 +125,6 @@ export function ExportStep({ onBack, projectId }: ExportStepProps) {
       {state.kind === "loading" && (
         <PipelineLoading
           detail={mapContent.export.generating}
-          percent={percent}
           title={mapContent.loading.export.title}
         />
       )}

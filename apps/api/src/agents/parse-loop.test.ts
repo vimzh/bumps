@@ -1,8 +1,10 @@
-import { describe, expect, mock, test } from 'bun:test'
+import { describe, expect, mock, setDefaultTimeout, test } from 'bun:test'
 import { sampleFloorModel, type FloorModel } from '@bumps/floor-model'
 
 const parser = await import('./parser')
 const critique = await import('./critique')
+
+setDefaultTimeout(15_000)
 
 type MockFinding = {
   at: { x: number; y: number } | null
@@ -48,6 +50,11 @@ function majorFinding(elementId: string | null): MockFinding {
 }
 
 describe('parse review gate', () => {
+  test('caps parsing at five review passes', async () => {
+    const { MAX_ITERATIONS } = await import('./parse-loop')
+    expect(MAX_ITERATIONS).toBe(5)
+  })
+
   test('accepts with warnings at the iteration limit, flagging the majors for review', async () => {
     const { MAX_ITERATIONS, runParseLoop } = await import('./parse-loop')
     mockState.findings = [majorFinding('w-div-bottom')]
