@@ -11,6 +11,10 @@ import {
 import { Button } from "@/components/ui/button";
 import { CanvasViewport } from "@/components/map/canvas-viewport";
 import { MapTopBar } from "@/components/map/map-top-bar";
+import {
+  PipelineLoading,
+  useCreepingPercent,
+} from "@/components/map/pipeline-loading";
 import { TactileViewer } from "@/components/map/tactile-viewer";
 import { mapContent } from "@/data/map";
 import { API_URL } from "@/lib/api";
@@ -35,6 +39,7 @@ type State =
 
 export function TactileStep({ onBack, onNext, projectId }: TactileStepProps) {
   const [state, setState] = useState<State>({ kind: "loading" });
+  const percent = useCreepingPercent(3, 92, state.kind === "loading");
   const grid =
     state.kind === "ready"
       ? (state.design.grid ?? { cols: 1, rows: 1 })
@@ -160,9 +165,11 @@ export function TactileStep({ onBack, onNext, projectId }: TactileStepProps) {
         }
       />
       {state.kind === "loading" && (
-        <p className="animate-pulse p-4 text-sm text-muted-foreground">
-          {mapContent.tactile.converting}
-        </p>
+        <PipelineLoading
+          detail={mapContent.tactile.converting}
+          percent={percent}
+          title={mapContent.loading.tactile.title}
+        />
       )}
       {state.kind === "error" && (
         <div className="flex items-center gap-3 p-4">

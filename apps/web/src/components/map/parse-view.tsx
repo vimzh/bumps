@@ -5,6 +5,10 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { CanvasViewport } from "@/components/map/canvas-viewport";
 import { MapTopBar } from "@/components/map/map-top-bar";
+import {
+  PipelineLoading,
+  useCreepingPercent,
+} from "@/components/map/pipeline-loading";
 import { mapContent } from "@/data/map";
 import { API_URL } from "@/lib/api";
 
@@ -31,6 +35,33 @@ type ParseViewProps = {
   projectId: string;
   projectName: string;
 };
+
+// Maps the parse loop's stage/iteration onto a monotonic percent window.
+// The first parse is the bulk of a typical run (the loop usually accepts
+// after one or two reviews), so it takes 0-45%; each later critique or
+// refine unit closes 45% of the remaining distance to 98%.
+function parsePercentWindow(progress: ParseProgress | null): {
+  ceiling: number;
+  floor: number;
+} {
+  const unitsDone =
+    progress === null || progress.stage === "parsing"
+      ? 0
+      : progress.stage === "critiquing"
+        ? 1 + 2 * (progress.iteration - 1)
+        : 2 * progress.iteration - 2;
+  const boundary = (units: number): number => {
+    let percent = 0;
+    for (let i = 0; i < units; i++) {
+      percent = i === 0 ? 40 : percent + (98 - percent) * 0.38;
+    }
+    return percent;
+  };
+  return {
+    ceiling: boundary(unitsDone + 1),
+    floor: Math.max(2, boundary(unitsDone)),
+  };
+}
 
 export function ParseView({
   initialError,
@@ -95,6 +126,20 @@ export function ParseView({
     return () => clearInterval(interval);
   }, [projectId, router, status]);
 
+  const percentWindow = parsePercentWindow(progress);
+  const percent = useCreepingPercent(
+    percentWindow.floor,
+    percentWindow.ceiling,
+    status === "parsing"
+  );
+  const stageDetail = progress
+    ? `${mapContent.parse.passLabel} ${progress.iteration}/${progress.maxIterations} · ${mapContent.parse.stages[progress.stage]}`
+    : mapContent.parse.stages.parsing;
+  const passSummaries = (progress?.history ?? []).map(
+    (entry) =>
+      `${mapContent.parse.passLabel.toLowerCase()} ${entry.iteration} · ${entry.findingsCount} ${mapContent.parse.findingsSuffix} · ${mapContent.parse.confidenceLabel} ${entry.aggregateConfidence.toFixed(2)}`
+  );
+
   async function startParse() {
     setError(null);
     try {
@@ -121,27 +166,8 @@ export function ParseView({
           </span>
         }
         actions={
-          <div aria-live="polite" className="flex items-center gap-3">
-          {status === "parsing" ? (
-            <>
-              {progress?.history.map((entry) => (
-                <p
-                  className="font-mono text-xs text-muted-foreground"
-                  key={entry.iteration}
-                >
-                  {mapContent.parse.passLabel.toLowerCase()} {entry.iteration}:{" "}
-                  {entry.findingsCount} {mapContent.parse.findingsSuffix} ·{" "}
-                  {entry.aggregateConfidence.toFixed(2)}
-                </p>
-              ))}
-              <p className="animate-pulse text-sm text-muted-foreground">
-                {progress
-                  ? `${mapContent.parse.passLabel} ${progress.iteration}/${progress.maxIterations} · ${mapContent.parse.stages[progress.stage]}`
-                  : mapContent.parse.parsingHint}
-              </p>
-            </>
-          ) : (
-            <>
+          status !== "parsing" && (
+            <div className="flex items-center gap-3">
               {(status === "failed" || error) && (
                 <p className="max-w-md text-sm text-destructive">
                   {error
@@ -161,12 +187,11 @@ export function ParseView({
                   ? mapContent.parse.retryLabel
                   : mapContent.parse.parseLabel}
               </Button>
-            </>
-          )}
-          </div>
+            </div>
+          )
         }
       />
-      <div className="min-h-0 flex-1">
+      <div className="relative min-h-0 flex-1">
         {planSize && (
           <CanvasViewport
             contentHeight={planSize.height}
@@ -179,6 +204,17 @@ export function ParseView({
               src={`${API_URL}/projects/${projectId}/plan`}
             />
           </CanvasViewport>
+        )}
+        {status === "parsing" && (
+          <div className="absolute inset-0 bg-background/70 backdrop-blur-[1px]">
+            <PipelineLoading
+              detail={stageDetail}
+              hint={mapContent.loading.parse.timeHint}
+              percent={percent}
+              steps={passSummaries}
+              title={mapContent.loading.parse.title}
+            />
+          </div>
         )}
       </div>
     </section>
