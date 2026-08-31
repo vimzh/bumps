@@ -103,6 +103,17 @@ export const mapContent = {
   },
   tactile: {
     assembledSuffix: "assembled",
+    checks: {
+      buttonLabel: "Checks",
+      columnCheck: "Check",
+      columnMeasured: "Measured",
+      columnRequirement: "Requirement",
+      failSummary: "violations remain — export stays blocked until zero.",
+      passSummary: "checks passed. This design exports with zero violations.",
+      title: "Standards checks",
+      subtitle:
+        "Deterministic measurements of this exact design against the tactile standards.",
+    },
     converting: "Converting & validating against tactile standards…",
     exportHint: "STL export is the next build step.",
     failed: "Conversion failed.",

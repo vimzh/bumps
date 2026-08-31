@@ -1,16 +1,20 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
+  buildValidationContext,
+  buildValidationReport,
   compositeSize,
   textToBrailleCells,
   type ConversionNote,
+  type FloorModel,
   type TactileDesign,
   type ValidationViolation,
 } from "@bumps/floor-model";
 import { Button } from "@/components/ui/button";
 import { CanvasViewport } from "@/components/map/canvas-viewport";
 import { MapTopBar } from "@/components/map/map-top-bar";
+import { ValidationChecks } from "@/components/map/validation-checks";
 import {
   PipelineLoading,
   useCreepingPercent,
@@ -40,6 +44,30 @@ type State =
 export function TactileStep({ onBack, onNext, projectId }: TactileStepProps) {
   const [state, setState] = useState<State>({ kind: "loading" });
   const percent = useCreepingPercent(3, 92, state.kind === "loading");
+  // The floor model the design was converted from, for the checks report.
+  const [model, setModel] = useState<FloorModel | null>(null);
+  useEffect(() => {
+    let cancelled = false;
+    void fetch(`${API_URL}/projects/${projectId}/model`, { cache: "no-store" })
+      .then((response) => (response.ok ? response.json() : null))
+      .then((payload: { model?: FloorModel } | null) => {
+        if (!cancelled && payload?.model) {
+          setModel(payload.model);
+        }
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, [projectId]);
+  const report = useMemo(() => {
+    if (state.kind !== "ready" || !model) return null;
+    try {
+      return buildValidationReport(state.design, buildValidationContext(model));
+    } catch {
+      return null;
+    }
+  }, [state, model]);
   const grid =
     state.kind === "ready"
       ? (state.design.grid ?? { cols: 1, rows: 1 })
@@ -111,6 +139,7 @@ export function TactileStep({ onBack, onNext, projectId }: TactileStepProps) {
       <MapTopBar
         actions={
           <>
+            {report && <ValidationChecks report={report} />}
             <Button
               className="h-8 cursor-pointer rounded-sm px-3 text-xs"
               onClick={onBack}

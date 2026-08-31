@@ -77,6 +77,8 @@ export {
 } from './tactile-convert'
 export type { ConversionNote, ConversionResult } from './tactile-convert'
 export { resolveMechanicalViolations } from './mechanical-fixes'
+export { buildValidationReport } from './validation-report'
+export type { ValidationCheck, ValidationReport } from './validation-report'
 export {
   auditFloorModel,
   elementPosition,
