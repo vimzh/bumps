@@ -127,13 +127,29 @@ export function fitPositionsInPolygon(
       Math.hypot(a.x - prefer.x, a.y - prefer.y) -
       Math.hypot(b.x - prefer.x, b.y - prefer.y),
   )
+  // Nearest positions first (initial placement reads from the head), then
+  // widely-spread positions across the rest of the polygon: repair needs
+  // escape routes out of a congested neighborhood, and a purely
+  // nearest-N set never reaches the calm far side of a large room.
   const picked: Point[] = []
   const minSpread = Math.max(2, width / 2)
+  const nearCount = Math.max(1, Math.ceil(count * 0.6))
+  for (const candidate of fitting) {
+    if (picked.length >= nearCount) break
+    if (
+      picked.every(
+        (p) => Math.hypot(p.x - candidate.x, p.y - candidate.y) >= minSpread,
+      )
+    ) {
+      picked.push(candidate)
+    }
+  }
+  const farSpread = minSpread * 3
   for (const candidate of fitting) {
     if (picked.length >= count) break
     if (
       picked.every(
-        (p) => Math.hypot(p.x - candidate.x, p.y - candidate.y) >= minSpread,
+        (p) => Math.hypot(p.x - candidate.x, p.y - candidate.y) >= farSpread,
       )
     ) {
       picked.push(candidate)

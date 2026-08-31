@@ -52,8 +52,12 @@ function renderRoom(room: Room): string {
   ]
   if (room.label) {
     const center = centroid(room.polygon)
+    // Long labels shrink instead of spilling far outside small rooms —
+    // this render also feeds the critique loop, where spilled text reads
+    // as misplaced geometry.
+    const fontSize = Math.max(11, 20 - Math.max(0, room.label.length - 10) / 2)
     parts.push(
-      `<text x="${center.x}" y="${center.y}" font-family="monospace" font-size="20" fill="${COLORS.label}" text-anchor="middle" dominant-baseline="middle">${escapeXml(room.label)}</text>`,
+      `<text x="${center.x}" y="${center.y}" font-family="monospace" font-size="${fontSize}" fill="${COLORS.label}" text-anchor="middle" dominant-baseline="middle">${escapeXml(room.label)}</text>`,
     )
   }
   return parts.join('\n')
@@ -94,7 +98,7 @@ export function renderFloorModelSvg(model: FloorModel): string {
   }
   for (const wall of model.walls) {
     parts.push(
-      `<line data-id="${wall.id}" x1="${wall.a.x}" y1="${wall.a.y}" x2="${wall.b.x}" y2="${wall.b.y}" stroke="${COLORS.wall}" stroke-width="${wall.thickness}" stroke-linecap="square"/>`,
+      `<line data-id="${wall.id}" x1="${wall.a.x}" y1="${wall.a.y}" x2="${wall.b.x}" y2="${wall.b.y}" stroke="${COLORS.wall}" stroke-width="${wall.thickness}" stroke-linecap="butt"/>`,
     )
   }
   for (const opening of model.openings) {
@@ -118,6 +122,20 @@ export function renderFloorModelSvg(model: FloorModel): string {
   return parts.join('\n')
 }
 
+// Overlay palette, chosen to stay distinguishable from typical plan inks
+// (black linework, gray hatching, blue prints): every extracted element
+// class appears so the critic can audit alignment for all of them.
+const OVERLAY = {
+  wall: '#dc2626',
+  door: '#0891b2',
+  window: '#2563eb',
+  room: '#16a34a',
+  furniture: '#7c3aed',
+  feature: '#d946ef',
+  path: '#ea580c',
+  road: '#f59e0b',
+}
+
 export function renderFloorTopologyOverlaySvg(
   model: FloorModel,
   sourceDataUri: string,
@@ -128,18 +146,43 @@ export function renderFloorTopologyOverlaySvg(
     `<image href="${escapeXml(sourceDataUri)}" x="0" y="0" width="${widthPx}" height="${heightPx}" preserveAspectRatio="none"/>`,
   ]
 
+  for (const road of model.roads ?? []) {
+    parts.push(
+      `<polyline data-id="${road.id}" points="${polygonPoints(road.points)}" fill="none" stroke="${OVERLAY.road}" stroke-width="${road.widthPx}" stroke-linecap="round" stroke-linejoin="round" opacity="0.35"/>`,
+    )
+  }
+  for (const room of model.rooms) {
+    parts.push(
+      `<polygon data-id="${room.id}" points="${polygonPoints(room.polygon)}" fill="none" stroke="${OVERLAY.room}" stroke-width="3" opacity="0.9"/>`,
+    )
+  }
+  for (const item of model.furniture ?? []) {
+    parts.push(
+      `<polygon data-id="${item.id}" points="${polygonPoints(item.polygon)}" fill="none" stroke="${OVERLAY.furniture}" stroke-width="3" stroke-dasharray="8 6" opacity="0.9"/>`,
+    )
+  }
+  for (const path of model.paths ?? []) {
+    parts.push(
+      `<polyline data-id="${path.id}" points="${polygonPoints(path.points)}" fill="none" stroke="${OVERLAY.path}" stroke-width="4" stroke-dasharray="12 8" stroke-linecap="round" opacity="0.9"/>`,
+    )
+  }
   for (const wall of model.walls) {
     const width = Math.max(wall.thickness, 4)
     const radius = Math.max(width / 3, 2)
     parts.push(
-      `<line data-id="${wall.id}" x1="${wall.a.x}" y1="${wall.a.y}" x2="${wall.b.x}" y2="${wall.b.y}" stroke="#dc2626" stroke-width="${width}" stroke-linecap="round" opacity="0.8"/>`,
-      `<circle cx="${wall.a.x}" cy="${wall.a.y}" r="${radius}" fill="#dc2626"/>`,
-      `<circle cx="${wall.b.x}" cy="${wall.b.y}" r="${radius}" fill="#dc2626"/>`,
+      `<line data-id="${wall.id}" x1="${wall.a.x}" y1="${wall.a.y}" x2="${wall.b.x}" y2="${wall.b.y}" stroke="${OVERLAY.wall}" stroke-width="${width}" stroke-linecap="round" opacity="0.8"/>`,
+      `<circle cx="${wall.a.x}" cy="${wall.a.y}" r="${radius}" fill="${OVERLAY.wall}"/>`,
+      `<circle cx="${wall.b.x}" cy="${wall.b.y}" r="${radius}" fill="${OVERLAY.wall}"/>`,
     )
   }
   for (const opening of model.openings) {
     parts.push(
-      `<circle data-id="${opening.id}" cx="${opening.at.x}" cy="${opening.at.y}" r="${Math.max(opening.width / 2, 5)}" fill="none" stroke="${opening.kind === 'door' ? '#0891b2' : '#2563eb'}" stroke-width="4"/>`,
+      `<circle data-id="${opening.id}" cx="${opening.at.x}" cy="${opening.at.y}" r="${Math.max(opening.width / 2, 5)}" fill="none" stroke="${opening.kind === 'door' ? OVERLAY.door : OVERLAY.window}" stroke-width="4"/>`,
+    )
+  }
+  for (const feature of model.features) {
+    parts.push(
+      `<rect data-id="${feature.id}" x="${feature.at.x - 10}" y="${feature.at.y - 10}" width="20" height="20" fill="none" stroke="${OVERLAY.feature}" stroke-width="4"/>`,
     )
   }
 

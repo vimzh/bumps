@@ -238,8 +238,25 @@ function candidateMoves(
       (violation.requiredMm ?? 3) - (violation.measuredMm ?? 0) + EXTRA_CLEAR_MM
     // Several magnitudes per direction: the exact shortfall can land in a
     // fresh conflict (a parallel wall, another label) that a slightly
-    // longer hop clears.
-    const magnitudes = [shortfall, shortfall + 2, shortfall + 5, shortfall + 10]
+    // longer hop clears. Overlapping same-spot labels measure 0 mm apart
+    // yet need a full element-extent hop to actually separate, so include
+    // one magnitude sized to the largest involved element.
+    const largestExtent = Math.max(
+      ...violation.elementIds.map((id) => {
+        const movable = movableOf(design, id)
+        return movable
+          ? Math.max(movable.x.max - movable.x.min, movable.y.max - movable.y.min)
+          : 0
+      }),
+      0,
+    )
+    const magnitudes = [
+      shortfall,
+      shortfall + 2,
+      shortfall + 5,
+      shortfall + 10,
+      shortfall + largestExtent,
+    ]
     for (const id of violation.elementIds) {
       const movable = movableOf(design, id)
       if (!movable) continue
@@ -277,14 +294,31 @@ function candidateMoves(
 /**
  * Greedily repairs margin, seam-clearance, label-fit, and pairwise-clearance violations with
  * exact arithmetic nudges, keeping only steps that lower the total
- * violation count. Anything it cannot improve is left for the layout
- * agent.
+ * violation count. A violation gets one attempt per sweep, but a sweep
+ * that improved anything earns the survivors a fresh sweep: an accepted
+ * side-effect improvement must not permanently consume a violation's only
+ * chance at its own fix. Anything still standing after the sweeps is left
+ * for the layout agent.
  */
 export function resolveMechanicalViolations(
   initial: TactileDesign,
   context: ValidationContext,
 ): TactileDesign {
   let design = initial
+  for (let sweep = 0; sweep < 3; sweep++) {
+    const result = runRepairSweep(design, context)
+    design = result.design
+    if (!result.improved) break
+  }
+  return design
+}
+
+function runRepairSweep(
+  initial: TactileDesign,
+  context: ValidationContext,
+): { design: TactileDesign; improved: boolean } {
+  let design = initial
+  let improved = false
   let violations = validateTactileDesign(design, context)
   const attempted = new Set<string>()
   for (let step = 0; step < initial.elements.length; step++) {
@@ -328,7 +362,8 @@ export function resolveMechanicalViolations(
     ) {
       design = best.design
       violations = best.violations
+      improved = true
     }
   }
-  return design
+  return { design, improved }
 }

@@ -33,6 +33,21 @@ describe('plan input quality gate', () => {
     expect(PARSER_INSTRUCTION).not.toContain(
       'Almost every enclosed room has at least one door',
     )
+    // Evidence tiers: gap-evidenced doors are emitted at review-flag
+    // confidence instead of being either invented or dropped.
+    expect(PARSER_INSTRUCTION).toContain('confidence 0.5-0.7')
+    expect(PARSER_INSTRUCTION).toContain('SIGNIFICANCE FILTER')
+    expect(PARSER_INSTRUCTION).toContain('Notation dialects')
+    expect(PARSER_INSTRUCTION).toContain('Sweep order')
+    expect(CRITIQUE_INSTRUCTION).toContain('DETERMINISTIC STRUCTURAL AUDIT')
+    expect(CRITIQUE_INSTRUCTION).toContain(
+      'Never copy an audit line into findings without image evidence',
+    )
+    // Door-precision, gate, and stair-tread rules from the Harris study.
+    expect(PARSER_INSTRUCTION).toContain('POSITION PRECISION')
+    expect(PARSER_INSTRUCTION).toContain('NEVER trace stair treads as walls')
+    expect(CRITIQUE_INSTRUCTION).toContain('arrows at the building perimeter mark gates')
+    expect(CRITIQUE_INSTRUCTION).toContain('set "at" to the approximate [x, y]')
     expect(CRITIQUE_INSTRUCTION).toContain(
       'A sealed room is not evidence of a missing door',
     )

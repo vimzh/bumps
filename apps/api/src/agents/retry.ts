@@ -43,6 +43,11 @@ export async function withModelRetry<T>(fn: () => Promise<T>): Promise<T> {
         throw error
       }
       const delay = retryAfterMs(message) ?? FALLBACK_DELAYS_MS[attempt]!
+      // Retries are billable and previously invisible: a run could burn
+      // its whole budget looking merely "slow" in the log.
+      console.warn(
+        `[llm] transient model error (attempt ${attempt + 1}/${FALLBACK_DELAYS_MS.length + 1}, retrying in ${Math.round(delay / 1000)}s): ${message.slice(0, 160)}`,
+      )
       await new Promise((resolve) => setTimeout(resolve, delay))
     }
   }

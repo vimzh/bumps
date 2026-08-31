@@ -6,15 +6,15 @@ export const MODEL_PROVIDER = providerSchema.parse(
   process.env.MODEL_PROVIDER ?? 'gemini',
 )
 
-// Model tiers, env-selectable. Default is gemini-3.6-flash on the GA
-// Interactions API: newer than the hackathon's 3.5-flash floor, and its
-// quota bucket is separate from the legacy generateContent endpoint's.
+// Model tiers, env-selectable. Default is gemini-3.7-flash (best observed
+// extraction quality) on the GA Interactions API, whose quota bucket is
+// separate from the legacy generateContent endpoint's.
 // Set USE_INTERACTIONS_API=false to run e.g. gemini-3.5-flash on the
 // legacy endpoint (where response schemas are enforced server-side).
 const DEFAULT_MODEL =
   MODEL_PROVIDER === 'openrouter'
     ? 'google/gemini-3.7-flash'
-    : 'gemini-3.6-flash'
+    : 'gemini-3.7-flash'
 export const MODEL_CRITICAL = process.env.MODEL_CRITICAL ?? DEFAULT_MODEL
 export const MODEL_FAST = process.env.MODEL_FAST ?? DEFAULT_MODEL
 // Role-specific Gemini models can be selected independently when needed.
@@ -109,8 +109,13 @@ export async function runOpenRouterTurn(options: {
       'OPENROUTER_API_KEY is required when MODEL_PROVIDER=openrouter',
     )
   }
+  // Without a cap OpenRouter reserves the model's full output budget
+  // (65k tokens) per request, which both overcharges and starts failing
+  // with 402 long before the balance is actually empty.
+  const maxOutputTokens = Number(process.env.MODEL_MAX_OUTPUT_TOKENS ?? 32_768)
   const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
     body: JSON.stringify({
+      max_tokens: maxOutputTokens,
       messages: [
         { content: options.instruction, role: 'system' },
         {
@@ -148,6 +153,10 @@ export async function runOpenRouterTurn(options: {
   return text
 }
 
+// Every model call is billable: count and log them so a run's spend is
+// always visible in the server log.
+let llmCallCount = 0
+
 /** Runs one configured model turn and returns its final text output. */
 export async function runAgentTurn(options: {
   adkAgent: LlmAgent
@@ -155,6 +164,11 @@ export async function runAgentTurn(options: {
   instruction: string
   parts: MessagePart[]
 }): Promise<string> {
+  llmCallCount += 1
+  const images = options.parts.filter((part) => 'inlineData' in part).length
+  console.log(
+    `[llm] call #${llmCallCount}: ${options.agentName} (${images} image${images === 1 ? '' : 's'})`,
+  )
   if (MODEL_PROVIDER === 'openrouter') {
     const configuredModel = options.adkAgent.model
     const model =

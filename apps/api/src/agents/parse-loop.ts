@@ -2,22 +2,29 @@ import { Resvg } from '@resvg/resvg-js'
 import {
   aggregateConfidence,
   allElements,
+  auditFloorModel,
+  elementPosition,
+  normalizeFloorModel,
   PARSE_TARGET_CONFIDENCE,
   renderFloorModelSvg,
   renderFloorTopologyOverlaySvg,
   type FloorModel,
 } from '@bumps/floor-model'
+import { computeInkCoverage, type CoverageReport } from '../lib/coverage'
 import { cropPlanImage } from '../lib/rasterize'
 import type { MessagePart } from './llm'
 import { runCritique, type Critique } from './critique'
+import { applyOpeningsAudit, runOpeningsAudit } from './openings-audit'
 import {
-  DETAIL_CROPS,
   loadPlanImageParts,
   parsePlanImage,
   refineParse,
 } from './parser'
 
-export const MAX_ITERATIONS = 5
+// Reviewed-iteration cap. Three rounds resolve nearly all majors in
+// practice; anything left is editor material, and each extra round is two
+// image-heavy model calls.
+export const MAX_ITERATIONS = 3
 
 export type ParseStage = 'parsing' | 'critiquing' | 'refining'
 
@@ -71,6 +78,9 @@ function renderModelPngBase64(model: FloorModel): string {
   return Buffer.from(png).toString('base64')
 }
 
+// Full overlay only: the plan detail crops plus the deterministic audit
+// carry the fine-grained signal, and four extra overlay crops per critique
+// were the single largest token cost in the loop.
 function renderTopologyOverlayParts(
   model: FloorModel,
   source: Extract<MessagePart, { inlineData: unknown }>['inlineData'],
@@ -84,31 +94,214 @@ function renderTopologyOverlayParts(
   })
     .render()
     .asPng())
-  const parts: MessagePart[] = [
+  return [
     { inlineData: { data: Buffer.from(png).toString('base64'), mimeType: 'image/png' } },
   ]
-  if (Math.max(model.plan.widthPx, model.plan.heightPx) < 1200) return parts
-
-  for (const { crop, label } of DETAIL_CROPS) {
-    parts.push(
-      { text: `OVERLAY DETAIL — ${label}` },
-      {
-        inlineData: {
-          data: Buffer.from(cropPlanImage(png, 'image/png', crop)).toString(
-            'base64',
-          ),
-          mimeType: 'image/png',
-        },
-      },
-    )
-  }
-  return parts
 }
 
-function shouldStop(critique: Critique, aggregate: number): boolean {
+// Accept-with-warnings gate at the iteration cap: a broadly confident
+// model with a handful of residual majors flags them for the human; a
+// low-confidence or major-riddled model (the fabrication signature seen on
+// transit diagrams) still fails outright.
+export const ACCEPT_WITH_WARNINGS_MIN_CONFIDENCE = 0.75
+export const ACCEPT_WITH_WARNINGS_MAX_MAJORS = 6
+
+/**
+ * Caps the confidence of every element a remaining major finding points
+ * at, so the wizard's review queue surfaces exactly those places.
+ */
+export function flagFindingsForReview(
+  model: FloorModel,
+  critique: Critique,
+): FloorModel {
+  const flagged = new Set(
+    critique.findings
+      .filter((f) => f.severity === 'major' && f.elementId)
+      .map((f) => f.elementId!),
+  )
+  if (flagged.size === 0) return model
+  const cap = <T extends { id: string; confidence: number }>(items: T[]) =>
+    items.map((item) =>
+      flagged.has(item.id)
+        ? { ...item, confidence: Math.min(item.confidence, 0.55) }
+        : item,
+    )
+  return {
+    ...model,
+    features: cap(model.features),
+    furniture: cap(model.furniture ?? []),
+    openings: cap(model.openings),
+    paths: cap(model.paths ?? []),
+    roads: cap(model.roads ?? []),
+    rooms: cap(model.rooms),
+    walls: cap(model.walls),
+  }
+}
+
+export function shouldStop(
+  critique: Critique,
+  aggregate: number,
+  iteration: number,
+): boolean {
   const hasMajor = critique.findings.some((f) => f.severity === 'major')
-  if (critique.verdict === 'pass' && !hasMajor) return true
-  return aggregate >= PARSE_TARGET_CONFIDENCE && !hasMajor
+  if (hasMajor) return false
+  if (critique.verdict === 'pass') return true
+  if (aggregate >= PARSE_TARGET_CONFIDENCE) return true
+  // Credit guard: once two reviewed iterations leave only minor findings,
+  // another parse+critique round buys cosmetics the editor handles better.
+  return iteration >= 2
+}
+
+/**
+ * Deterministic mechanical cleanup of a fresh parse; a normalization bug
+ * must degrade to the raw model, never fail the parse.
+ */
+function normalizeSafely(model: FloorModel): { model: FloorModel; notes: string[] } {
+  try {
+    return normalizeFloorModel(model)
+  } catch (error) {
+    console.error('[parse] model normalization failed; using raw parse', error)
+    return { model, notes: [] }
+  }
+}
+
+/**
+ * Magnified crops at reviewer-finding locations so the refiner sees real
+ * pixels at each problem site instead of relying on the whole-plan views.
+ */
+function findingZoomParts(
+  planBytes: Uint8Array,
+  mimeType: string,
+  model: FloorModel,
+  findings: Critique['findings'],
+): MessagePart[] {
+  const { heightPx, widthPx } = model.plan
+  const ordered = [...findings].sort(
+    (a, b) => Number(b.severity === 'major') - Number(a.severity === 'major'),
+  )
+  const parts: MessagePart[] = []
+  const used: { x: number; y: number }[] = []
+  for (const finding of ordered) {
+    const at =
+      finding.at ??
+      (finding.elementId ? elementPosition(model, finding.elementId) : null)
+    if (!at) continue
+    if (used.some((p) => Math.hypot(p.x - at.x, p.y - at.y) < 150)) continue
+    const half = 190
+    const x0 = Math.max(0, Math.round(at.x - half))
+    const y0 = Math.max(0, Math.round(at.y - half))
+    const x1 = Math.min(widthPx, Math.round(at.x + half))
+    const y1 = Math.min(heightPx, Math.round(at.y + half))
+    if (x1 - x0 < 40 || y1 - y0 < 40) continue
+    let crop: Uint8Array
+    try {
+      crop = cropPlanImage(
+        planBytes,
+        mimeType,
+        {
+          height: (y1 - y0) / heightPx,
+          left: x0 / widthPx,
+          top: y0 / heightPx,
+          width: (x1 - x0) / widthPx,
+        },
+        800,
+      )
+    } catch {
+      continue
+    }
+    used.push(at)
+    parts.push(
+      {
+        text: `FINDING ZOOM — full-plan pixel bounds x=${x0}..${x1}, y=${y0}..${y1}; finding: ${finding.description.slice(0, 200)}`,
+      },
+      { inlineData: { data: Buffer.from(crop).toString('base64'), mimeType: 'image/png' } },
+    )
+    if (used.length >= 4) break
+  }
+  return parts.length > 0
+    ? [
+        {
+          text: 'ZOOMED SOURCE VIEWS AT REVIEWER FINDINGS — use these to fix each finding precisely; report coordinates in FULL PLAN space:',
+        },
+        ...parts,
+      ]
+    : []
+}
+
+/**
+ * One final doors-and-gates verification on the accepted model. Failure
+ * degrades to the unaudited model — acceptance is never blocked by it.
+ */
+async function auditAcceptedOpenings(
+  model: FloorModel,
+  planBytes: Uint8Array,
+  mimeType: string,
+): Promise<{ changed: boolean; model: FloorModel }> {
+  try {
+    const ops = await runOpeningsAudit({ mimeType, model, planBytes })
+    const applied = applyOpeningsAudit(model, ops)
+    if (applied.notes.length > 0) {
+      console.log(`[parse] openings audit: ${applied.notes.join('; ')}`)
+    }
+    const changed =
+      JSON.stringify(applied.model.openings) !== JSON.stringify(model.openings)
+    if (!changed) return { changed: false, model }
+    return { changed: true, model: normalizeSafely(applied.model).model }
+  } catch (error) {
+    console.error('[parse] openings audit failed; keeping accepted model', error)
+    return { changed: false, model }
+  }
+}
+
+/**
+ * Code-computed attention hints for the critique and refine agents:
+ * geometric audit findings, pixel-coverage gaps, and what normalization
+ * already fixed. Returns null when there is nothing worth flagging.
+ */
+function buildStructuralAudit(
+  model: FloorModel,
+  planBytes: Uint8Array | null,
+  mimeType: string | null,
+  notes: string[],
+): string | null {
+  const lines: string[] = []
+  try {
+    for (const finding of auditFloorModel(model)) {
+      lines.push(`- [${finding.kind}] ${finding.message}`)
+    }
+  } catch (error) {
+    console.error('[parse] structural audit failed', error)
+  }
+
+  let coverage: CoverageReport | null = null
+  if (planBytes && mimeType) {
+    try {
+      coverage = computeInkCoverage(planBytes, mimeType, model)
+    } catch (error) {
+      console.error('[parse] coverage audit failed', error)
+    }
+  }
+  if (coverage) {
+    const percent = Math.round(coverage.coveredInkRatio * 100)
+    if (coverage.regions.length > 0) {
+      const boxes = coverage.regions
+        .map((r) => `x ${r.x0}-${r.x1}, y ${r.y0}-${r.y1}`)
+        .join('; ')
+      lines.push(
+        `- [coverage] Extracted geometry accounts for ~${percent}% of the source's dark linework. Densest uncovered linework (full-plan pixels): ${boxes}. Each region may be a missed wall, room, or symbol — or just text, dimensioning, or hatching; judge from the image.`,
+      )
+    } else if (coverage.coveredInkRatio < 0.5) {
+      lines.push(
+        `- [coverage] Extracted geometry accounts for only ~${percent}% of the source's dark linework, spread diffusely. Check whether whole element classes were under-extracted.`,
+      )
+    }
+  }
+
+  for (const note of notes) {
+    lines.push(`- [normalization] Code already ${note}.`)
+  }
+  if (lines.length === 0) return null
+  return `DETERMINISTIC STRUCTURAL AUDIT — computed by code from the extracted geometry and a pixel-coverage comparison. These are attention directives, NOT confirmed errors: verify each against the source image and dismiss any the image does not support.\n${lines.join('\n')}`
 }
 
 export async function runParseLoop(params: {
@@ -137,16 +330,50 @@ export async function runParseLoop(params: {
     })
 
   await progress('parsing', 1, null)
-  let model = await parsePlanImage(planPath, dimensions)
+  const parsed = normalizeSafely(await parsePlanImage(planPath, dimensions))
+  let model = parsed.model
+  let normalizationNotes = parsed.notes
   const planParts = await loadPlanImageParts(planPath)
   const source = planParts.find(
     (part): part is Extract<MessagePart, { inlineData: unknown }> =>
       'inlineData' in part,
   )?.inlineData
   if (!source) throw new Error('Parser did not load the source plan image')
+  const planBytes = Buffer.from(source.data, 'base64')
+
+  // The last model a critique actually reviewed, for salvage when a later
+  // model call dies mid-loop (credit exhaustion, provider outage): reviewed
+  // work is never thrown away if it meets the accept-with-warnings bar.
+  let lastReviewed: { critique: Critique; model: FloorModel } | null = null
+  const salvageLastReviewed = async (cause: string): Promise<boolean> => {
+    if (!lastReviewed) return false
+    const aggregate = aggregateConfidence(lastReviewed.model)
+    const majors = lastReviewed.critique.findings.filter(
+      (f) => f.severity === 'major',
+    ).length
+    if (
+      aggregate < ACCEPT_WITH_WARNINGS_MIN_CONFIDENCE ||
+      majors > ACCEPT_WITH_WARNINGS_MAX_MAJORS
+    ) {
+      return false
+    }
+    console.warn(
+      `[parse] ${cause}; salvaging last reviewed model with ${majors} major finding${majors === 1 ? '' : 's'} flagged`,
+    )
+    const flagged = flagFindingsForReview(lastReviewed.model, lastReviewed.critique)
+    const audited = await auditAcceptedOpenings(flagged, planBytes, source.mimeType)
+    await saveIteration(audited.model, MAX_ITERATIONS + 1, null)
+    return true
+  }
 
   for (let iteration = 1; iteration <= MAX_ITERATIONS; iteration++) {
     await progress('critiquing', iteration, aggregateConfidence(model))
+    const structuralAudit = buildStructuralAudit(
+      model,
+      planBytes,
+      source.mimeType,
+      normalizationNotes,
+    )
     let critique: Critique
     try {
       critique = await runCritique({
@@ -154,9 +381,13 @@ export async function runParseLoop(params: {
         overlayParts: renderTopologyOverlayParts(model, source),
         planParts,
         renderPngBase64: renderModelPngBase64(model),
+        structuralAudit,
       })
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error)
+      if (await salvageLastReviewed(`critique failed (${message.slice(0, 120)})`)) {
+        return
+      }
       throw new Error(`Critique unavailable; parse was not accepted: ${message}`)
     }
     // Drop adjustments pointing at ids that don't exist.
@@ -165,6 +396,7 @@ export async function runParseLoop(params: {
       (a) => validIds.has(a.elementId),
     )
     model = applyConfidenceAdjustments(model, critique)
+    lastReviewed = { critique, model }
     const aggregate = aggregateConfidence(model)
     history.push({
       aggregateConfidence: aggregate,
@@ -175,30 +407,62 @@ export async function runParseLoop(params: {
     })
     await saveIteration(model, iteration, critique)
 
-    if (shouldStop(critique, aggregate)) {
-      return
-    }
-    if (iteration === MAX_ITERATIONS) {
-      const majorCount = critique.findings.filter(
-        (finding) => finding.severity === 'major',
-      ).length
-      if (majorCount > 0) {
-        throw new Error(
-          `Parse did not pass review after ${MAX_ITERATIONS} iterations: ${majorCount} major finding${majorCount === 1 ? '' : 's'} remain`,
+    const majorCount = critique.findings.filter(
+      (finding) => finding.severity === 'major',
+    ).length
+    const accepted =
+      shouldStop(critique, aggregate, iteration) ||
+      (iteration === MAX_ITERATIONS && majorCount === 0)
+    // At the iteration cap a broadly-sound model with residual majors is
+    // still far more useful flagged for human review than a hard failure —
+    // the editor exists exactly for this. Persistent low confidence or a
+    // pile of majors still fails: that is the fabrication signature.
+    const acceptedWithWarnings =
+      !accepted &&
+      iteration === MAX_ITERATIONS &&
+      aggregate >= ACCEPT_WITH_WARNINGS_MIN_CONFIDENCE &&
+      majorCount <= ACCEPT_WITH_WARNINGS_MAX_MAJORS
+    if (accepted || acceptedWithWarnings) {
+      if (acceptedWithWarnings) {
+        model = flagFindingsForReview(model, critique)
+        console.warn(
+          `[parse] accepted with warnings: ${majorCount} major finding${majorCount === 1 ? '' : 's'} flagged for review`,
         )
+      }
+      const audited = await auditAcceptedOpenings(
+        model,
+        planBytes,
+        source.mimeType,
+      )
+      if (audited.changed || acceptedWithWarnings) {
+        await saveIteration(audited.model, iteration + 1, null)
       }
       return
     }
+    if (iteration === MAX_ITERATIONS) {
+      throw new Error(
+        `Parse did not pass review after ${MAX_ITERATIONS} iterations: ${majorCount} major finding${majorCount === 1 ? '' : 's'} remain`,
+      )
+    }
     await progress('refining', iteration + 1, aggregate)
     try {
-      model = await refineParse(
-        planPath,
-        dimensions,
-        model,
-        JSON.stringify(critique.findings),
+      const refined = normalizeSafely(
+        await refineParse(
+          planPath,
+          dimensions,
+          model,
+          JSON.stringify(critique.findings),
+          structuralAudit,
+          findingZoomParts(planBytes, source.mimeType, model, critique.findings),
+        ),
       )
+      model = refined.model
+      normalizationNotes = refined.notes
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error)
+      if (await salvageLastReviewed(`refinement failed (${message.slice(0, 120)})`)) {
+        return
+      }
       throw new Error(`Refinement failed; reviewed parse was saved: ${message}`)
     }
   }

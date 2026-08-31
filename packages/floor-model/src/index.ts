@@ -78,6 +78,19 @@ export {
 export type { ConversionNote, ConversionResult } from './tactile-convert'
 export { resolveMechanicalViolations } from './mechanical-fixes'
 export {
+  auditFloorModel,
+  elementPosition,
+  FURNITURE_CAP,
+  isBlockPlan,
+  normalizeFloorModel,
+  orthogonalizeNearRectangle,
+} from './structure'
+export type {
+  NormalizedFloorModel,
+  StructuralFinding,
+  StructuralFindingKind,
+} from './structure'
+export {
   adjacentRectPosition,
   fitRectInPolygon,
   pointInPolygon,

@@ -17,6 +17,7 @@ function renderPage(
   doc: mupdf.Document,
   pageIndex: number,
   crop?: NormalizedCrop,
+  maxPx: number = MAX_PLAN_PX,
 ): Uint8Array {
   const page = doc.loadPage(pageIndex)
   const [x0, y0, x1, y1] = page.getBounds()
@@ -24,7 +25,7 @@ function renderPage(
     (x1 - x0) * (crop?.width ?? 1),
     (y1 - y0) * (crop?.height ?? 1),
   )
-  const maxPixelZoom = maxPt > 0 ? MAX_PLAN_PX / maxPt : 1
+  const maxPixelZoom = maxPt > 0 ? maxPx / maxPt : 1
   const zoom = crop ? maxPixelZoom : Math.min(RASTER_DPI / 72, maxPixelZoom)
   if (crop) {
     const cropX = x0 + (x1 - x0) * crop.left
@@ -104,15 +105,19 @@ export function downscalePlanImage(
   }
 }
 
-/** Crops a raster plan and expands that detail view to the vision budget. */
+/**
+ * Crops a raster plan and expands that detail view up to `maxPx` on its
+ * longer edge (default: the full vision budget).
+ */
 export function cropPlanImage(
   bytes: Uint8Array,
   mimeType: string,
   crop: NormalizedCrop,
+  maxPx: number = MAX_PLAN_PX,
 ): Uint8Array {
   const doc = mupdf.Document.openDocument(bytes, mimeType)
   try {
-    return renderPage(doc, 0, crop)
+    return renderPage(doc, 0, crop, maxPx)
   } finally {
     doc.destroy()
   }

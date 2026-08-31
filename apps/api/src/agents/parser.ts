@@ -129,7 +129,21 @@ function furniturePolygon(item: {
 
 export const PARSER_INSTRUCTION = `You are an expert architectural-drawing analyst extracting structured geometry from ONE floor plan (or campus/site plan) image, to be turned into a tactile map for blind readers. Everything you emit becomes raised geometry under a blind reader's fingertip, and everything you miss is simply absent from their world — extract with care.
 
-You receive one full-plan image. All coordinates must use that image's pixel coordinate system.
+You receive the full-plan image and, for larger plans, overlapping zoomed DETAIL views labeled with their full-plan pixel bounds. Use the detail views to catch what the full view blurs — small doors, thin partition walls, short stubs, symbol marks — but ALWAYS report coordinates in the FULL PLAN pixel coordinate system.
+
+## Notation dialects (plans differ; recognize all of these)
+- Walls: two parallel lines (hollow, solid-black poché, gray, or hatched between), or a single thick stroke. All are walls; thickness = the full drawn band.
+- Doors: a quarter-circle swing arc with a straight leaf line rooted at a wall gap (the gap is where the opening belongs, not the arc's far end); double doors = two mirrored arcs; sliding doors = overlapping parallel panels along the wall line; pocket doors = a leaf vanishing into a wall cavity; folding doors = a zigzag; an archway/open passage = a clean framed gap, sometimes with thin threshold lines across it.
+- Windows: one to three thin parallel lines bridging a break in the wall band, flush with the wall.
+- Stairs: a run of parallel rungs, often with a direction arrow and "UP"/"DN" text.
+Treat marks you cannot classify conservatively: geometry you cannot identify is better omitted than guessed into the wrong class.
+
+## Sweep order (work systematically; completeness is graded)
+1. Building perimeter first: trace the outer shell completely around.
+2. Interior walls: sweep room by room, left to right, top to bottom.
+3. Openings pass: revisit EVERY room boundary and record its doors; corridors connect rooms, so check both sides of every corridor wall.
+4. Features, then significant furniture, then paths/roads.
+5. Self-check before answering: for every room you emitted with zero openings, re-examine its boundary in the detail views once for a door notation drawn small; if you still find none, keep the room sealed and lower its confidence. Sanity-check your wall count against the drawing — a plan with thirty drawn wall segments must not yield twelve.
 
 ## First, classify the drawing
 - floor-plan: a clear orthographic 2D building plan with traceable room boundaries, walls, and openings.
@@ -149,13 +163,21 @@ walls — load-bearing and partition walls as straight segments (a, b endpoints)
 - CURVED WALLS ARE REQUIRED: approximate every visible curve with a connected chain of 6-16 short wall segments whose endpoints touch and visibly follow the arc. Never omit a curve or replace it with one straight chord.
 - thickness = drawn wall thickness in pixels.
 - Include SHORT stubs and partial partitions — even segments barely a door-width long shape navigation; never merge them away.
+- NEVER trace stair treads as walls: the short parallel rungs of a drawn stair flight are one stairs feature, not geometry. Extract the flight's enclosing walls only.
 - Follow the drawn geometry precisely: endpoints ON the wall centerlines, not approximations.
 
 openings — doors and windows in walls.
 - kind MUST be exactly "door" or "window". Encode an archway or open passage through a wall as "door" because it becomes the same tactile wall gap.
 - "at" = center of the opening; width = its size along the wall in pixels; wallId = id of the interrupted wall (or null).
+- POSITION PRECISION: place "at" at the CENTER of the drawn gap or swing root — never at the wall's corner or junction. A door reported at the wrong spot on the right wall still sends a blind reader to the wrong place.
+- One drawn opening = ONE emitted opening. Do not report the same gap twice from two overlapping views.
+- Entrance/exit arrows at the building perimeter mark gates: emit the entrance feature AND look for the gap in the perimeter wall at that arrow — where the drawing shows the perimeter open there, emit that opening too.
 - A door requires DIRECT VISIBLE EVIDENCE: a door leaf plus swing arc rooted at a wall gap, parallel sliding-door panels at a wall gap, or an unmistakable open passage interrupting a wall. A quarter-circle curve by itself, curved furniture, dimension marks, or nearby text is not a door.
 - A plain open passage is directly evidenced when two aligned wall strokes visibly terminate on opposite sides of a plausible doorway-width gap between navigable spaces. Trace these gaps even when the drawing omits a swing arc. Do not treat an arbitrary missing boundary or large unbounded area as a passage.
+- Grade the evidence and set confidence to match:
+  - Explicit door symbol (leaf + swing arc, sliding panels, labeled door): confidence 0.85-1.0.
+  - Clean framed doorway-width gap between two aligned wall ends, no symbol: confidence 0.5-0.7. Emit these — a human reviews everything below 0.7 — but the gap itself must be visible in the image.
+  - Anything weaker (a smudge, a break in a single stroke, an unclear junction): emit NO opening.
 - Never infer or invent a door because a room would otherwise be sealed. If no doorway is visibly traceable, emit no opening there and lower the room confidence.
 - Assign wallId whenever the interrupted wall is identifiable. If you cannot locate the opening on a specific visible wall, omit it rather than guessing.
 
@@ -173,10 +195,14 @@ features — stairs, elevator, entrance, exit, restroom, ramp — when their sym
 - "info-point" means a staffed visitor information or reception point. A Wi-Fi hotspot is never an info-point.
 
 furniture — furniture and fixed interior landmarks generalized into tactile areas, never per-item outlines.
+- SIGNIFICANCE FILTER — extract only what a blind visitor would navigate by or collide with:
+  - Significant (extract): reception/service counters, fixed seating banks and waiting-area rows, shelving stacks, stages, kitchen islands, large tables, beds, fountains and large planters that act as landmarks, freestanding structural columns in open space (label "column").
+  - Insignificant (skip): individual chairs, potted plants, rugs and floor patterns, small side tables, wastebaskets, sink/toilet fixtures inside small restrooms (the restroom feature already marks the room), appliances, decor.
+- On a dense plan, cap yourself at roughly 12 blocks: keep the largest and most navigation-relevant, and skip the rest deliberately rather than emitting dozens of slivers.
 - CLUB adjacent same-kind items: a row of chairs is ONE block "chairs"; a desk group is one "desks" block.
 - Blocks TIGHTLY bound the drawn items (at most 10% padding); prefer two tight blocks over one inflated one.
 - PRESERVE SHAPE for navigation landmarks. A round fountain, circular desk, round planter, or curved counter must use a 12-24 point polygon following its visible outline — never a square or rectangular bounds box. Rectangular furniture may use bounds.
-- label: short generic lowercase noun ("fountain", "sofa", "chairs", "desks", "table", "counter"), plural when clubbed.
+- label: short generic lowercase noun ("fountain", "sofa", "chairs", "desks", "table", "counter", "bookshelves", "column"), plural when clubbed. Name what the item IS: a shelving row is "bookshelves", never "table".
 - Skip tiny isolated items; do not miss chair clusters.
 
 paths — pedestrian walkways, guide routes, marked trails — ONLY when actually drawn.
@@ -223,15 +249,6 @@ const MIME_BY_EXT: Record<string, string> = {
   '.jpg': 'image/jpeg',
   '.png': 'image/png',
   '.webp': 'image/webp',
-}
-
-export async function loadPlanImagePart(planPath: string) {
-  const bytes = await Bun.file(planPath).bytes()
-  const mimeType = MIME_BY_EXT[path.extname(planPath).toLowerCase()]
-  if (!mimeType) {
-    throw new Error(`Unsupported plan image type: ${planPath}`)
-  }
-  return { data: Buffer.from(bytes).toString('base64'), mimeType }
 }
 
 export const DETAIL_CROPS: { crop: NormalizedCrop; label: string }[] = [
@@ -370,13 +387,15 @@ export async function parsePlanImage(
   planPath: string,
   dimensions: { widthPx: number; heightPx: number },
 ): Promise<FloorModel> {
-  const imagePart = await loadPlanImagePart(planPath)
+  // Full plan plus zoomed detail views: small doors, thin partitions, and
+  // symbol marks routinely vanish at whole-plan resolution.
+  const planParts = await loadPlanImageParts(planPath)
   return runParser(
     [
       {
-        text: `Parse this floor plan. The image is ${dimensions.widthPx}x${dimensions.heightPx} pixels.`,
+        text: `Parse this floor plan. The full image is ${dimensions.widthPx}x${dimensions.heightPx} pixels.`,
       },
-      { inlineData: imagePart },
+      ...planParts,
     ],
     dimensions,
     null,
@@ -388,16 +407,24 @@ export async function refineParse(
   dimensions: { widthPx: number; heightPx: number },
   previousModel: FloorModel,
   critiqueJson: string,
+  structuralAudit?: string | null,
+  findingParts: MessagePart[] = [],
 ): Promise<FloorModel> {
-  const imagePart = await loadPlanImagePart(planPath)
+  const planParts = await loadPlanImageParts(planPath)
   return runParser(
     [
       {
-        text: `Parse this floor plan. The image is ${dimensions.widthPx}x${dimensions.heightPx} pixels.`,
+        text: `Parse this floor plan. The full image is ${dimensions.widthPx}x${dimensions.heightPx} pixels.`,
       },
-      { inlineData: imagePart },
+      ...planParts,
+      ...findingParts,
       {
-        text: `Your previous extraction:\n${JSON.stringify(previousModel)}\n\nA reviewer compared it against the plan and found:\n${critiqueJson}\n\nProduce a corrected COMPLETE model: fix every finding, keep unaffected elements and their ids unchanged, and re-assess confidence honestly. Never add an opening merely to satisfy a sealed-room finding; a new door still requires direct visible evidence in the source image.`,
+        text:
+          `Your previous extraction:\n${JSON.stringify(previousModel)}\n\nA reviewer compared it against the plan and found:\n${critiqueJson}\n\n` +
+          (structuralAudit
+            ? `${structuralAudit}\n\n`
+            : '') +
+          `Produce a corrected COMPLETE model: fix every finding, keep unaffected elements and their ids unchanged, and re-assess confidence honestly. Never add an opening merely to satisfy a sealed-room finding; a new door still requires direct visible evidence in the source image.`,
       },
     ],
     dimensions,
