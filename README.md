@@ -10,7 +10,7 @@ Built for the All Things Agentic Hackathon (Taskmaster track). Product brief: [d
 
 ```mermaid
 flowchart LR
-  subgraph web["web (Next.js · Vercel)"]
+  subgraph web["web (Next.js · Vercel + Cloud Run)"]
     U[Upload] --> W[Wizard: Parse → Edit → Tactile → Export]
     W --> C[Edit canvas + prompt panel]
     W --> P3[three.js STL preview]
@@ -57,7 +57,7 @@ bun run dev
 
 ## Deploy
 
-The public web app deploys to Vercel and the primary API plus Postgres deploy to Render. A verified second API deployment runs on Google Cloud Run with private Cloud SQL and Vertex AI — see [docs/deploy.md](docs/deploy.md).
+The public web app runs on both Vercel and Google Cloud Run. The primary API plus Postgres run on Render, with a verified second deployment on Cloud Run, private Cloud SQL, and Vertex AI — see [docs/deploy.md](docs/deploy.md).
 
 ## Repo layout
 

@@ -1,6 +1,6 @@
 # Deploying bumps
 
-The web app runs on Vercel. The Bun/Hono API and PostgreSQL database run in Render's Singapore region.
+The web app runs on Vercel and Google Cloud Run. The Bun/Hono API and PostgreSQL database run in Render's Singapore region, with a second Google Cloud deployment for proof.
 
 ## API and database on Render
 
@@ -21,6 +21,18 @@ This is a fresh-database cutover. Existing local SQLite demo records are not cop
 ## Web on Vercel
 
 Set `NEXT_PUBLIC_API_URL` to `https://bumps-api.onrender.com` and deploy `apps/web`. Git integrations on both hosts redeploy `main` automatically.
+
+## Web on Google Cloud Run
+
+The Google-hosted frontend is live at `https://bumps-web-1096378308677.asia-south1.run.app` and is built with `NEXT_PUBLIC_API_URL=https://bumps-api-1096378308677.asia-south1.run.app`.
+
+```bash
+WEB_IMAGE=asia-south1-docker.pkg.dev/project-1ba74e2d-51e2-4753-b63/bumps/web:latest
+gcloud builds submit . --config cloudbuild.web.yaml \
+  --substitutions=_IMAGE=$WEB_IMAGE,_API_URL=https://bumps-api-1096378308677.asia-south1.run.app
+gcloud run deploy bumps-web --image=$WEB_IMAGE --region=asia-south1 \
+  --allow-unauthenticated --memory=512Mi --cpu=1 --min=0 --max=1
+```
 
 ## Google Cloud proof deployment
 

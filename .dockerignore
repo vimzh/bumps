@@ -3,6 +3,8 @@ node_modules
 **/.next
 **/dist
 **/data
+!apps/web/src/data
+!apps/web/src/data/**
 **/*.db
 **/*.db-shm
 **/*.db-wal
